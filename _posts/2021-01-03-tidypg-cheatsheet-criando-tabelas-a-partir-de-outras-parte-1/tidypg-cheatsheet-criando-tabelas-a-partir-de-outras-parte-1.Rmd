@@ -10,6 +10,7 @@ date: 01-03-2021
 output:
   distill::distill_article:
     self_contained: false
+preview: "bind_rows.png"
 ---
 
 ```{r setup, include=FALSE}
