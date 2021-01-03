@@ -1,13 +1,13 @@
 ---
-title: "Welcome to Ciência de Dados com R e PostgreSQL"
+title: "Bem-vinda à  Ciência de Dados com R e PostgreSQL"
 description: |
-  Welcome to our new blog, Ciência de Dados com R e PostgreSQL. We hope you enjoy 
-  reading what we have to say!
+  Bem-vindo a este blog sobre Ciência de Dados com R e PostgreSQL. Periodicamente, irei
+  postar tutoriais sobre !
 author:
-  - name: Nora Jones 
-    url: https://example.com/norajones
-    affiliation: Spacely Sprockets
-    affiliation_url: https://example.com/spacelysprokets
+  - name: José de Jesus Filho 
+    url: https://rpg.consudata.com.br
+    affiliation: Consudata
+    affiliation_url: https://consudata.com.br
 date: 01-03-2021
 output:
   distill::distill_article:
