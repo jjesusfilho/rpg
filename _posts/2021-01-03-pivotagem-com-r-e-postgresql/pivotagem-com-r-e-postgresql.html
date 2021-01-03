@@ -85,621 +85,39 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </style>
 
   <!--radix_placeholder_meta_tags-->
-  <title>Ciência de Dados com R e PostgreSQL</title>
+  <title>Pivotagem com R e PostgreSQL</title>
+
+  <meta property="description" itemprop="description" content="Nesta postagem, eu mostro como converter dataframes e tabelas&#10;entre os formatos wide e long tanto no R quanto no PostgreSQL,&#10;além de permitir realizar essas operações no banco do próprio R."/>
 
 
-
+  <!--  https://schema.org/Article -->
+  <meta property="article:published" itemprop="datePublished" content="2021-01-03"/>
+  <meta property="article:created" itemprop="dateCreated" content="2021-01-03"/>
+  <meta name="article:author" content="José de Jesus Filho"/>
 
   <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
-  <meta property="og:title" content="Ciência de Dados com R e PostgreSQL"/>
+  <meta property="og:title" content="Pivotagem com R e PostgreSQL"/>
   <meta property="og:type" content="article"/>
+  <meta property="og:description" content="Nesta postagem, eu mostro como converter dataframes e tabelas&#10;entre os formatos wide e long tanto no R quanto no PostgreSQL,&#10;além de permitir realizar essas operações no banco do próprio R."/>
   <meta property="og:locale" content="en_US"/>
-  <meta property="og:site_name" content="Ciência de Dados com R e PostgreSQL"/>
 
   <!--  https://dev.twitter.com/cards/types/summary -->
   <meta property="twitter:card" content="summary"/>
-  <meta property="twitter:title" content="Ciência de Dados com R e PostgreSQL"/>
+  <meta property="twitter:title" content="Pivotagem com R e PostgreSQL"/>
+  <meta property="twitter:description" content="Nesta postagem, eu mostro como converter dataframes e tabelas&#10;entre os formatos wide e long tanto no R quanto no PostgreSQL,&#10;além de permitir realizar essas operações no banco do próprio R."/>
 
   <!--/radix_placeholder_meta_tags-->
   <!--radix_placeholder_rmarkdown_metadata-->
 
   <script type="text/json" id="radix-rmarkdown-metadata">
-  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","site","listing"]}},"value":[{"type":"character","attributes":{},"value":["Ciência de Dados com R e PostgreSQL"]},{"type":"character","attributes":{},"value":["distill::distill_website"]},{"type":"character","attributes":{},"value":["posts"]}]}
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","output"]}},"value":[{"type":"character","attributes":{},"value":["Pivotagem com R e PostgreSQL"]},{"type":"character","attributes":{},"value":["Nesta postagem, eu mostro como converter dataframes e tabelas\nentre os formatos wide e long tanto no R quanto no PostgreSQL,\nalém de permitir realizar essas operações no banco do próprio R.\n"]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","url"]}},"value":[{"type":"character","attributes":{},"value":["José de Jesus Filho"]},{"type":"character","attributes":{},"value":["https://rpg.consudata.com.br/pivotagem"]}]}]},{"type":"character","attributes":{},"value":["01-03-2021"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained"]}},"value":[{"type":"logical","attributes":{},"value":[false]}]}]}]}
   </script>
   <!--/radix_placeholder_rmarkdown_metadata-->
+  
+  <script type="text/json" id="radix-resource-manifest">
+  {"type":"character","attributes":{},"value":["pivotagem-com-r-e-postgresql_files/anchor-4.2.2/anchor.min.js","pivotagem-com-r-e-postgresql_files/bowser-1.9.3/bowser.min.js","pivotagem-com-r-e-postgresql_files/distill-2.2.21/template.v2.js","pivotagem-com-r-e-postgresql_files/figure-html5/unnamed-chunk-7-1.png","pivotagem-com-r-e-postgresql_files/header-attrs-2.6/header-attrs.js","pivotagem-com-r-e-postgresql_files/jquery-1.11.3/jquery.min.js","pivotagem-com-r-e-postgresql_files/webcomponents-2.0.0/webcomponents.js"]}
+  </script>
   <!--radix_placeholder_navigation_in_header-->
-  <meta name="distill:offset" content=""/>
-
-  <script type="application/javascript">
-
-    window.headroom_prevent_pin = false;
-
-    window.document.addEventListener("DOMContentLoaded", function (event) {
-
-      // initialize headroom for banner
-      var header = $('header').get(0);
-      var headerHeight = header.offsetHeight;
-      var headroom = new Headroom(header, {
-        tolerance: 5,
-        onPin : function() {
-          if (window.headroom_prevent_pin) {
-            window.headroom_prevent_pin = false;
-            headroom.unpin();
-          }
-        }
-      });
-      headroom.init();
-      if(window.location.hash)
-        headroom.unpin();
-      $(header).addClass('headroom--transition');
-
-      // offset scroll location for banner on hash change
-      // (see: https://github.com/WickyNilliams/headroom.js/issues/38)
-      window.addEventListener("hashchange", function(event) {
-        window.scrollTo(0, window.pageYOffset - (headerHeight + 25));
-      });
-
-      // responsive menu
-      $('.distill-site-header').each(function(i, val) {
-        var topnav = $(this);
-        var toggle = topnav.find('.nav-toggle');
-        toggle.on('click', function() {
-          topnav.toggleClass('responsive');
-        });
-      });
-
-      // nav dropdowns
-      $('.nav-dropbtn').click(function(e) {
-        $(this).next('.nav-dropdown-content').toggleClass('nav-dropdown-active');
-        $(this).parent().siblings('.nav-dropdown')
-           .children('.nav-dropdown-content').removeClass('nav-dropdown-active');
-      });
-      $("body").click(function(e){
-        $('.nav-dropdown-content').removeClass('nav-dropdown-active');
-      });
-      $(".nav-dropdown").click(function(e){
-        e.stopPropagation();
-      });
-    });
-  </script>
-
-  <style type="text/css">
-
-  /* Theme (user-documented overrideables for nav appearance) */
-
-  .distill-site-nav {
-    color: rgba(255, 255, 255, 0.8);
-    background-color: #0F2E3D;
-    font-size: 15px;
-    font-weight: 300;
-  }
-
-  .distill-site-nav a {
-    color: inherit;
-    text-decoration: none;
-  }
-
-  .distill-site-nav a:hover {
-    color: white;
-  }
-
-  @media print {
-    .distill-site-nav {
-      display: none;
-    }
-  }
-
-  .distill-site-header {
-
-  }
-
-  .distill-site-footer {
-
-  }
-
-
-  /* Site Header */
-
-  .distill-site-header {
-    width: 100%;
-    box-sizing: border-box;
-    z-index: 3;
-  }
-
-  .distill-site-header .nav-left {
-    display: inline-block;
-    margin-left: 8px;
-  }
-
-  @media screen and (max-width: 768px) {
-    .distill-site-header .nav-left {
-      margin-left: 0;
-    }
-  }
-
-
-  .distill-site-header .nav-right {
-    float: right;
-    margin-right: 8px;
-  }
-
-  .distill-site-header a,
-  .distill-site-header .title {
-    display: inline-block;
-    text-align: center;
-    padding: 14px 10px 14px 10px;
-  }
-
-  .distill-site-header .title {
-    font-size: 18px;
-    min-width: 150px;
-  }
-
-  .distill-site-header .logo {
-    padding: 0;
-  }
-
-  .distill-site-header .logo img {
-    display: none;
-    max-height: 20px;
-    width: auto;
-    margin-bottom: -4px;
-  }
-
-  .distill-site-header .nav-image img {
-    max-height: 18px;
-    width: auto;
-    display: inline-block;
-    margin-bottom: -3px;
-  }
-
-
-
-  @media screen and (min-width: 1000px) {
-    .distill-site-header .logo img {
-      display: inline-block;
-    }
-    .distill-site-header .nav-left {
-      margin-left: 20px;
-    }
-    .distill-site-header .nav-right {
-      margin-right: 20px;
-    }
-    .distill-site-header .title {
-      padding-left: 12px;
-    }
-  }
-
-
-  .distill-site-header .nav-toggle {
-    display: none;
-  }
-
-  .nav-dropdown {
-    display: inline-block;
-    position: relative;
-  }
-
-  .nav-dropdown .nav-dropbtn {
-    border: none;
-    outline: none;
-    color: rgba(255, 255, 255, 0.8);
-    padding: 16px 10px;
-    background-color: transparent;
-    font-family: inherit;
-    font-size: inherit;
-    font-weight: inherit;
-    margin: 0;
-    margin-top: 1px;
-    z-index: 2;
-  }
-
-  .nav-dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: white;
-    min-width: 200px;
-    border: 1px solid rgba(0,0,0,0.15);
-    border-radius: 4px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.1);
-    z-index: 1;
-    margin-top: 2px;
-    white-space: nowrap;
-    padding-top: 4px;
-    padding-bottom: 4px;
-  }
-
-  .nav-dropdown-content hr {
-    margin-top: 4px;
-    margin-bottom: 4px;
-    border: none;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  }
-
-  .nav-dropdown-active {
-    display: block;
-  }
-
-  .nav-dropdown-content a, .nav-dropdown-content .nav-dropdown-header {
-    color: black;
-    padding: 6px 24px;
-    text-decoration: none;
-    display: block;
-    text-align: left;
-  }
-
-  .nav-dropdown-content .nav-dropdown-header {
-    display: block;
-    padding: 5px 24px;
-    padding-bottom: 0;
-    text-transform: uppercase;
-    font-size: 14px;
-    color: #999999;
-    white-space: nowrap;
-  }
-
-  .nav-dropdown:hover .nav-dropbtn {
-    color: white;
-  }
-
-  .nav-dropdown-content a:hover {
-    background-color: #ddd;
-    color: black;
-  }
-
-  .nav-right .nav-dropdown-content {
-    margin-left: -45%;
-    right: 0;
-  }
-
-  @media screen and (max-width: 768px) {
-    .distill-site-header a, .distill-site-header .nav-dropdown  {display: none;}
-    .distill-site-header a.nav-toggle {
-      float: right;
-      display: block;
-    }
-    .distill-site-header .title {
-      margin-left: 0;
-    }
-    .distill-site-header .nav-right {
-      margin-right: 0;
-    }
-    .distill-site-header {
-      overflow: hidden;
-    }
-    .nav-right .nav-dropdown-content {
-      margin-left: 0;
-    }
-  }
-
-
-  @media screen and (max-width: 768px) {
-    .distill-site-header.responsive {position: relative; min-height: 500px; }
-    .distill-site-header.responsive a.nav-toggle {
-      position: absolute;
-      right: 0;
-      top: 0;
-    }
-    .distill-site-header.responsive a,
-    .distill-site-header.responsive .nav-dropdown {
-      display: block;
-      text-align: left;
-    }
-    .distill-site-header.responsive .nav-left,
-    .distill-site-header.responsive .nav-right {
-      width: 100%;
-    }
-    .distill-site-header.responsive .nav-dropdown {float: none;}
-    .distill-site-header.responsive .nav-dropdown-content {position: relative;}
-    .distill-site-header.responsive .nav-dropdown .nav-dropbtn {
-      display: block;
-      width: 100%;
-      text-align: left;
-    }
-  }
-
-  /* Site Footer */
-
-  .distill-site-footer {
-    width: 100%;
-    overflow: hidden;
-    box-sizing: border-box;
-    z-index: 3;
-    margin-top: 30px;
-    padding-top: 30px;
-    padding-bottom: 30px;
-    text-align: center;
-  }
-
-  /* Headroom */
-
-  d-title {
-    padding-top: 6rem;
-  }
-
-  @media print {
-    d-title {
-      padding-top: 4rem;
-    }
-  }
-
-  .headroom {
-    z-index: 1000;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-  }
-
-  .headroom--transition {
-    transition: all .4s ease-in-out;
-  }
-
-  .headroom--unpinned {
-    top: -100px;
-  }
-
-  .headroom--pinned {
-    top: 0;
-  }
-
-  </style>
-
-  <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet"/>
-  <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet"/>
-  <script src="site_libs/headroom-0.9.4/headroom.min.js"></script>
-  <script src="site_libs/autocomplete-0.37.1/autocomplete.min.js"></script>
-  <script src="site_libs/fuse-6.4.1/fuse.min.js"></script>
-
-  <script type="application/javascript">
-
-  function getMeta(metaName) {
-    var metas = document.getElementsByTagName('meta');
-    for (let i = 0; i < metas.length; i++) {
-      if (metas[i].getAttribute('name') === metaName) {
-        return metas[i].getAttribute('content');
-      }
-    }
-    return '';
-  }
-
-  function offsetURL(url) {
-    var offset = getMeta('distill:offset');
-    return offset ? offset + '/' + url : url;
-  }
-
-  function createFuseIndex() {
-
-    // create fuse index
-    var options = {
-      keys: [
-        { name: 'title', weight: 20 },
-        { name: 'categories', weight: 15 },
-        { name: 'description', weight: 10 },
-        { name: 'contents', weight: 5 },
-      ],
-      ignoreLocation: true,
-      threshold: 0
-    };
-    var fuse = new window.Fuse([], options);
-
-    // fetch the main search.json
-    return fetch(offsetURL('search.json'))
-      .then(function(response) {
-        if (response.status == 200) {
-          return response.json().then(function(json) {
-            // index main articles
-            json.articles.forEach(function(article) {
-              fuse.add(article);
-            });
-            // download collections and index their articles
-            return Promise.all(json.collections.map(function(collection) {
-              return fetch(offsetURL(collection)).then(function(response) {
-                if (response.status === 200) {
-                  return response.json().then(function(articles) {
-                    articles.forEach(function(article) {
-                      fuse.add(article);
-                    });
-                  })
-                } else {
-                  return Promise.reject(
-                    new Error('Unexpected status from search index request: ' +
-                              response.status)
-                  );
-                }
-              });
-            })).then(function() {
-              return fuse;
-            });
-          });
-
-        } else {
-          return Promise.reject(
-            new Error('Unexpected status from search index request: ' +
-                        response.status)
-          );
-        }
-      });
-  }
-
-  window.document.addEventListener("DOMContentLoaded", function (event) {
-
-    // get search element (bail if we don't have one)
-    var searchEl = window.document.getElementById('distill-search');
-    if (!searchEl)
-      return;
-
-    createFuseIndex()
-      .then(function(fuse) {
-
-        // make search box visible
-        searchEl.classList.remove('hidden');
-
-        // initialize autocomplete
-        var options = {
-          autoselect: true,
-          hint: false,
-          minLength: 2,
-        };
-        window.autocomplete(searchEl, options, [{
-          source: function(query, callback) {
-            const searchOptions = {
-              isCaseSensitive: false,
-              shouldSort: true,
-              minMatchCharLength: 2,
-              limit: 10,
-            };
-            var results = fuse.search(query, searchOptions);
-            callback(results
-              .map(function(result) { return result.item; })
-              .filter(function(item) { return !!item.description; })
-            );
-          },
-          templates: {
-            suggestion: function(suggestion) {
-              var html = `
-                <div class="search-item">
-                  <h3>${suggestion.title}</h3>
-                  <div class="search-item-description">
-                    ${suggestion.description}
-                  </div>
-                  <div class="search-item-preview">
-                    <img src="${suggestion.preview ? offsetURL(suggestion.preview) : ''}"</img>
-                  </div>
-                </div>
-              `;
-              return html;
-            }
-          }
-        }]).on('autocomplete:selected', function(event, suggestion) {
-          window.location.href = offsetURL(suggestion.path);
-        });
-        // remove inline display style on autocompleter (we want to
-        // manage responsive display via css)
-        $('.algolia-autocomplete').css("display", "");
-      })
-      .catch(function(error) {
-        console.log(error);
-      });
-
-  });
-
-  </script>
-
-  <style type="text/css">
-
-  /* Algolioa Autocomplete */
-
-  .algolia-autocomplete {
-    display: inline-block;
-    margin-left: 10px;
-    vertical-align: sub;
-    background-color: white;
-    color: black;
-    padding: 6px;
-    padding-top: 8px;
-    padding-bottom: 0;
-    border-radius: 6px;
-    border: 1px #0F2E3D solid;
-    width: 180px;
-  }
-
-
-  @media screen and (max-width: 768px) {
-    .distill-site-nav .algolia-autocomplete {
-      display: none;
-      visibility: hidden;
-    }
-    .distill-site-nav.responsive .algolia-autocomplete {
-      display: inline-block;
-      visibility: visible;
-    }
-    .distill-site-nav.responsive .algolia-autocomplete .aa-dropdown-menu {
-      margin-left: 0;
-      width: 400px;
-      max-height: 400px;
-    }
-  }
-
-  .algolia-autocomplete .aa-input, .algolia-autocomplete .aa-hint {
-    width: 90%;
-    outline: none;
-    border: none;
-  }
-
-  .algolia-autocomplete .aa-hint {
-    color: #999;
-  }
-  .algolia-autocomplete .aa-dropdown-menu {
-    width: 550px;
-    max-height: 70vh;
-    overflow-x: visible;
-    overflow-y: scroll;
-    padding: 5px;
-    margin-top: 3px;
-    margin-left: -150px;
-    background-color: #fff;
-    border-radius: 5px;
-    border: 1px solid #999;
-    border-top: none;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion {
-    cursor: pointer;
-    padding: 5px 4px;
-    border-bottom: 1px solid #eee;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion:last-of-type {
-    border-bottom: none;
-    margin-bottom: 2px;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item {
-    overflow: hidden;
-    font-size: 0.8em;
-    line-height: 1.4em;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item h3 {
-    margin-block-start: 0;
-    margin-block-end: 5px;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item-description {
-    display: inline-block;
-    overflow: hidden;
-    height: 2.8em;
-    width: 80%;
-    margin-right: 4%;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item-preview {
-    display: inline-block;
-    width: 15%;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item-preview img {
-    height: 3em;
-    width: auto;
-    display: none;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item-preview img[src] {
-    display: initial;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion.aa-cursor {
-    background-color: #eee;
-  }
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion em {
-    font-weight: bold;
-    font-style: normal;
-  }
-
-  </style>
-
-
   <!--/radix_placeholder_navigation_in_header-->
   <!--radix_placeholder_distill-->
 
@@ -1985,233 +1403,518 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </script>
 
   <!--/radix_placeholder_distill-->
-  <script src="site_libs/header-attrs-2.6/header-attrs.js"></script>
-  <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
-  <script src="site_libs/anchor-4.2.2/anchor.min.js"></script>
-  <script src="site_libs/bowser-1.9.3/bowser.min.js"></script>
-  <script src="site_libs/webcomponents-2.0.0/webcomponents.js"></script>
-  <script src="site_libs/distill-2.2.21/template.v2.js"></script>
+  <script src="pivotagem-com-r-e-postgresql_files/header-attrs-2.6/header-attrs.js"></script>
+  <script src="pivotagem-com-r-e-postgresql_files/jquery-1.11.3/jquery.min.js"></script>
+  <script src="pivotagem-com-r-e-postgresql_files/anchor-4.2.2/anchor.min.js"></script>
+  <script src="pivotagem-com-r-e-postgresql_files/bowser-1.9.3/bowser.min.js"></script>
+  <script src="pivotagem-com-r-e-postgresql_files/webcomponents-2.0.0/webcomponents.js"></script>
+  <script src="pivotagem-com-r-e-postgresql_files/distill-2.2.21/template.v2.js"></script>
   <!--radix_placeholder_site_in_header-->
   <!--/radix_placeholder_site_in_header-->
 
 
 </head>
 
-<body class="layout-listing">
+<body>
 
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"Ciência de Dados com R e PostgreSQL","authors":[]}
+{"title":"Pivotagem com R e PostgreSQL","description":"Nesta postagem, eu mostro como converter dataframes e tabelas\nentre os formatos wide e long tanto no R quanto no PostgreSQL,\nalém de permitir realizar essas operações no banco do próprio R.","authors":[{"author":"José de Jesus Filho","authorURL":"https://rpg.consudata.com.br/pivotagem","affiliation":"&nbsp;","affiliationURL":"#","orcidID":""}],"publishedDate":"2021-01-03T00:00:00.000+00:00","citationText":"Filho, 2021"}
 </script>
 
 <!--/radix_placeholder_front_matter-->
 <!--radix_placeholder_navigation_before_body-->
-<header class="header header--fixed" role="banner">
-<nav class="distill-site-nav distill-site-header">
-<div class="nav-left">
-<a href="index.html" class="title">Ciência de Dados com R e PostgreSQL</a>
-<input id="distill-search" class="nav-search hidden" type="text" placeholder="Search..."/>
-</div>
-<div class="nav-right">
-<a href="index.html">Home</a>
-<a href="about.html">About</a>
-<a href="javascript:void(0);" class="nav-toggle">&#9776;</a>
-</div>
-</nav>
-</header>
 <!--/radix_placeholder_navigation_before_body-->
 <!--radix_placeholder_site_before_body-->
 <!--/radix_placeholder_site_before_body-->
-<!--radix_placeholder_article_listing-->
-
-
-<script type="application/javascript">
-
-function init_posts_list() {
-
-  function load_image(img) {
-    var src = $(img).attr('data-src');
-    if (src) {
-      $(img).attr('src', src);
-      $(img).load(function() {
-        img.removeAttribute('data-src');
-      });
-    }
-  }
-
-  function set_posts_visible(posts, visible) {
-    if (visible) {
-
-      // show bottom border by default
-      $(posts).removeClass('post-preview-last');
-
-      // apply limits if need be
-      var max_posts = 25;
-      var apply_limits = $('.posts-container').hasClass('posts-apply-limit');
-      if (apply_limits && posts.length > max_posts) {
-        posts = $(posts).slice(0, max_posts);
-      } else {
-        $('.posts-more a').addClass('hidden');
-      }
-
-      // apply last style
-      $(posts.slice(-1)[0]).addClass('post-preview-last');
-
-      $(posts).removeClass('hidden');
-      $(posts).find('img[data-src]').each(function(i, img) {
-        load_image(img);
-      });
-    } else {
-      $(posts).addClass('hidden');
-    }
-  }
-
-  function apply_hash_filter() {
-
-    // clear active state
-    $('.categories .active').removeClass('active');
-
-    // mark all posts invisible to start
-    set_posts_visible($('.posts-list').children('a'), false);
-
-    // if we have a hash filter
-    if (window.location.hash && window.location.hash.startsWith("#category:")) {
-
-      // mark posts that match the category visible
-      var page_category = window.location.hash.replace(/^#category:/, "");
-      var posts = $('.post-metadata').map(function(idx, script) {
-        var metadata = $.parseJSON($(script).html());
-        var post = null;
-        $.each(metadata.categories, function(idx, category) {
-          category = category.replace(/ /g,"_");
-          if ((page_category || '').toLowerCase() === "articles" || category === page_category) {
-            post = $(script).parent().get();
-            return false;
-          }
-        });
-        return post;
-      });
-      set_posts_visible(posts, true);
-
-      // mark the hash active
-      $('.categories li>a[href="' + window.location.hash + '"]').addClass('active');
-
-      // update the list_caption
-      var list_caption = $('.posts-list-caption');
-      var caption = (page_category || '').toLowerCase() === "articles"
-        ? list_caption.attr('data-caption')
-        : ('Category: ' + page_category.replace(/_/g," "));
-      list_caption.text(caption);
-
-    } else {
-
-      // no hash filter, make all posts visible (subject to max display)
-      set_posts_visible($('.posts-list').children(), true);
-
-      // reset list caption
-      var list_caption = $('.posts-list-caption');
-      list_caption.text(list_caption.attr('data-caption'));
-
-
-    }
-  }
-
-  // more articles
-  function apply_post_limits(apply) {
-    if (apply) {
-      $('.posts-container').addClass('posts-apply-limit');
-      $('.posts-more a').removeClass('hidden');
-    } else {
-      $('.posts-container').removeClass('posts-apply-limit');
-      $('.posts-more a').addClass('hidden');
-    }
-  }
-
-  // click handling for tags
-  $('.dt-tag').click(function(ev) {
-    window.location.hash = '#category:' + $(this).text().replace(/ /g, "_");
-    return false;
-  })
-
-  // hash filter handling
-  apply_hash_filter();
-  $(window).on('hashchange',function() {
-    apply_post_limits(true);
-    apply_hash_filter();
-  });
-
-  // more articles link
-  $('.posts-more a').click(function(e) {
-    e.preventDefault();
-    apply_post_limits(false);
-    apply_hash_filter();
-    return false;
-  });
-
-}
-
-</script>
-
-
-
-<div class="posts-container posts-apply-limit l-page">
-<div class="posts-list">
-<h1 class="posts-list-caption" data-caption="Ciência de Dados com R e PostgreSQL">Ciência de Dados com R e PostgreSQL</h1>
-<a href="posts/2021-01-03-pivotagem-com-r-e-postgresql/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Jan. 3, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">José de Jesus Filho</div>
-</div>
-</div>
-<div class="thumbnail">
-<img src="posts/2021-01-03-pivotagem-com-r-e-postgresql/pivotagem-com-r-e-postgresql_files/figure-html5/unnamed-chunk-7-1.png"/>
-</div>
-<div class="description">
-<h2>Pivotagem com R e PostgreSQL</h2>
-<div class="dt-tags"></div>
-<p>Nesta postagem, eu mostro como converter dataframes e tabelas
-entre os formatos wide e long tanto no R quanto no PostgreSQL,
-além de permitir realizar essas operações no banco do próprio R.</p>
-</div>
-</a>
-<a href="posts/welcome/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Jan. 3, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">Nora Jones</div>
-</div>
-</div>
-<div class="thumbnail">
-<img/>
-</div>
-<div class="description">
-<h2>Welcome to Ciência de Dados com R e PostgreSQL</h2>
-<div class="dt-tags"></div>
-<p>Welcome to our new blog, Ciência de Dados com R e PostgreSQL. We hope you enjoy 
-reading what we have to say!</p>
-</div>
-</a>
-</div>
-<div class="posts-more">
-<a href="#">More articles &raquo;</a>
-</div>
-</div>
-<!--/radix_placeholder_article_listing-->
 
 <div class="d-title">
-<h1>Ciência de Dados com R e PostgreSQL</h1>
+<h1>Pivotagem com R e PostgreSQL</h1>
 <!--radix_placeholder_categories-->
 <!--/radix_placeholder_categories-->
-
+<p><p>Nesta postagem, eu mostro como converter dataframes e tabelas entre os formatos wide e long tanto no R quanto no PostgreSQL, além de permitir realizar essas operações no banco do próprio R.</p></p>
 </div>
 
+<div class="d-byline">
+  José de Jesus Filho <a href="https://rpg.consudata.com.br/pivotagem" class="uri">https://rpg.consudata.com.br/pivotagem</a> 
+  
+<br/>01-03-2021
+</div>
 
 <div class="d-article">
-<div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<h2 id="pivotagem">Pivotagem</h2>
+<p>Neste tutorial, mostraremos como pivotar no R e no PostgreSQL. Pivotar, como o próprio nome sugere, significa rotacionar colunas ou linhas, de modo que, valores contidos em linhas, passam a ser colunas e vice-versa. Em ciência de dados, é mais comum falarmos em formatos wide e formato long. Em SQL, é mais comum falarmos em pivoting e unpivoting, respectivamente.</p>
+<p>Este tutorial cobre as situações mais simples de pivotagem. No dia a dia da cientista de dados ou da DBA, dataframes e tabelas apresentam-se como estruturas um tanto complexas, as quais exigem transformações prévias para não haver perda de dados ou mesmo resultados indesejados.</p>
+<p>Para começar, vamos importar um simples dataframe em formato wide com os ids dos clientes e pagamentos realizados em cada mês no ano. Se você já tem um banco PostgreSQL rodando, aproveite para escrever esse mesmo dataframe no banco.</p>
+<div class="layout-chunk" data-layout="l-body">
+
+</div>
+<div class="layout-chunk" data-layout="l-body">
+
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: right;">cliente</th>
+<th style="text-align: right;">jan</th>
+<th style="text-align: right;">fev</th>
+<th style="text-align: right;">mar</th>
+<th style="text-align: right;">abr</th>
+<th style="text-align: right;">mai</th>
+<th style="text-align: right;">jun</th>
+<th style="text-align: right;">jul</th>
+<th style="text-align: right;">ago</th>
+<th style="text-align: right;">set</th>
+<th style="text-align: right;">out</th>
+<th style="text-align: right;">nov</th>
+<th style="text-align: right;">dez</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">790</td>
+<td style="text-align: right;">205</td>
+<td style="text-align: right;">724</td>
+<td style="text-align: right;">724</td>
+<td style="text-align: right;">388</td>
+<td style="text-align: right;">490</td>
+<td style="text-align: right;">112</td>
+<td style="text-align: right;">483</td>
+<td style="text-align: right;">230</td>
+<td style="text-align: right;">385</td>
+<td style="text-align: right;">877</td>
+<td style="text-align: right;">317</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">612</td>
+<td style="text-align: right;">513</td>
+<td style="text-align: right;">281</td>
+<td style="text-align: right;">360</td>
+<td style="text-align: right;">839</td>
+<td style="text-align: right;">727</td>
+<td style="text-align: right;">953</td>
+<td style="text-align: right;">956</td>
+<td style="text-align: right;">133</td>
+<td style="text-align: right;">763</td>
+<td style="text-align: right;">192</td>
+<td style="text-align: right;">490</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">250</td>
+<td style="text-align: right;">414</td>
+<td style="text-align: right;">142</td>
+<td style="text-align: right;">460</td>
+<td style="text-align: right;">555</td>
+<td style="text-align: right;">223</td>
+<td style="text-align: right;">213</td>
+<td style="text-align: right;">240</td>
+<td style="text-align: right;">410</td>
+<td style="text-align: right;">502</td>
+<td style="text-align: right;">955</td>
+<td style="text-align: right;">543</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">741</td>
+<td style="text-align: right;">994</td>
+<td style="text-align: right;">365</td>
+<td style="text-align: right;">113</td>
+<td style="text-align: right;">974</td>
+<td style="text-align: right;">525</td>
+<td style="text-align: right;">875</td>
+<td style="text-align: right;">445</td>
+<td style="text-align: right;">908</td>
+<td style="text-align: right;">845</td>
+<td style="text-align: right;">444</td>
+<td style="text-align: right;">370</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">117</td>
+<td style="text-align: right;">101</td>
+<td style="text-align: right;">395</td>
+<td style="text-align: right;">335</td>
+<td style="text-align: right;">612</td>
+<td style="text-align: right;">765</td>
+<td style="text-align: right;">163</td>
+<td style="text-align: right;">839</td>
+<td style="text-align: right;">516</td>
+<td style="text-align: right;">234</td>
+<td style="text-align: right;">361</td>
+<td style="text-align: right;">614</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">828</td>
+<td style="text-align: right;">139</td>
+<td style="text-align: right;">137</td>
+<td style="text-align: right;">943</td>
+<td style="text-align: right;">552</td>
+<td style="text-align: right;">767</td>
+<td style="text-align: right;">654</td>
+<td style="text-align: right;">858</td>
+<td style="text-align: right;">379</td>
+<td style="text-align: right;">823</td>
+<td style="text-align: right;">489</td>
+<td style="text-align: right;">269</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">722</td>
+<td style="text-align: right;">281</td>
+<td style="text-align: right;">380</td>
+<td style="text-align: right;">594</td>
+<td style="text-align: right;">727</td>
+<td style="text-align: right;">617</td>
+<td style="text-align: right;">612</td>
+<td style="text-align: right;">344</td>
+<td style="text-align: right;">441</td>
+<td style="text-align: right;">731</td>
+<td style="text-align: right;">968</td>
+<td style="text-align: right;">201</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">606</td>
+<td style="text-align: right;">968</td>
+<td style="text-align: right;">749</td>
+<td style="text-align: right;">627</td>
+<td style="text-align: right;">336</td>
+<td style="text-align: right;">938</td>
+<td style="text-align: right;">159</td>
+<td style="text-align: right;">466</td>
+<td style="text-align: right;">319</td>
+<td style="text-align: right;">867</td>
+<td style="text-align: right;">733</td>
+<td style="text-align: right;">896</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">629</td>
+<td style="text-align: right;">338</td>
+<td style="text-align: right;">525</td>
+<td style="text-align: right;">978</td>
+<td style="text-align: right;">557</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">827</td>
+<td style="text-align: right;">871</td>
+<td style="text-align: right;">645</td>
+<td style="text-align: right;">356</td>
+<td style="text-align: right;">797</td>
+<td style="text-align: right;">953</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">955</td>
+<td style="text-align: right;">174</td>
+<td style="text-align: right;">644</td>
+<td style="text-align: right;">602</td>
+<td style="text-align: right;">749</td>
+<td style="text-align: right;">110</td>
+<td style="text-align: right;">171</td>
+<td style="text-align: right;">870</td>
+<td style="text-align: right;">692</td>
+<td style="text-align: right;">757</td>
+<td style="text-align: right;">882</td>
+<td style="text-align: right;">570</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Perceba que os dados estão em formato wide. Cada mês ocupa uma coluna.</p>
+<h2 id="motivação">Motivação</h2>
+<p>Pivotagem é ubiqua tanto em ciência de dados quanto em SQL. Nos grupos do Telegram R Brasil e PostgreSQL BR, questões sobre pivotagem são bastante frequentes.</p>
+<p>No R, há muitos pacotes e funções destinados à conversão de wide para long e vice-versa. No PostgreSQL, conheço apenas uma extensão, tablefunc, voltada à pivoting, ou seja, colocação da tabela na formato wide. Desconheço qualquer extensão ou função oficial para conversão de wide para long. Por outro lado, a comunidade tem oferecido várias soluções para esta operação. Este tutorial é tributário das sugestões oferecidas por Matheus Olivieira no grupo de PostgreSQL do Telegram e <a href="https://stackoverflow.com/a/6360077/5309223">desta solução</a> no SO.</p>
+<p>Pivotagem consiste numa ferramenta poderosa para solução de problemas concretos com dados e sua compreensão é uma exigência básica para quem quer manusear dados eficientemente. Alguns exemplos que me vieram à mente enquanto escrevia este tutorial são:</p>
+<ol type="1">
+<li><p>Formato wide é quase sempre mais apropriado para disponibilizar os dados para visualização. É muito mais fácil observar dados de pagamentos de clientes mês a mês, tendo cada cliente numa linha e cada um dos meses numa coluna.</p></li>
+<li><p>Formato wide é também a forma natural como os dados são preenchidos num formulário ou mesmo numa planilha.</p></li>
+<li><p>Formato long é, por sua vez, muito melhor para proceder a análises e plotar gráficos. Ao colocar todos os meses numa única coluna e seus respectivos valores em outra, mantendo um terceira com o id ou nome do cliente, você só tem de informar que no eixo x vão os meses e no eixo y vão os valores.</p></li>
+<li><p>Quando se realiza webscraping, frequentemente ocorre de não sabermos de antemão quais e quantas variáveis virão em cada página. A forma mais segura de realizar webscraping é manter todas a variáveis numa única coluna com seus respectivos valores em outra, para, num segundo momento, caso seja necessário, converter para formato wide. Esta opção é particularmente útil quando estamos realizando webscraping com R e enviando os dataframes já parseados para o PostgreSQL. Se convertermos para o formato wide de pronto, corremos o risco de tentar inserir uma coluna não existente na tabela contida no banco. Em formato long, esse risco não existe.</p></li>
+</ol>
+<h2 id="pivotagem-no-r">Pivotagem no R</h2>
+<h3 id="de-wide-para-long">De wide para long</h3>
+<p>Como o dataframe importado acima está em formato wide, vamos colocá-lo em formato long. Para tanto, utilizaremos o pacote tidyr, que já está carregado juntamente com os demais pacotes do tidyverse. Como queremos colocar todos os meses numa mesma coluna e seus respectivos valores numa segunda coluna, é suficiente chamar a função <code>pivot_longer</code>, informando que as colunas são o complemento da coluna cliente.</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre><code># A tibble: 120 x 3
+   cliente name  value
+     &lt;int&gt; &lt;chr&gt; &lt;int&gt;
+ 1       1 jan     790
+ 2       1 fev     205
+ 3       1 mar     724
+ 4       1 abr     724
+ 5       1 mai     388
+ 6       1 jun     490
+ 7       1 jul     112
+ 8       1 ago     483
+ 9       1 set     230
+10       1 out     385
+# … with 110 more rows</code></pre>
+</div>
+<p>Se você quiser informar os novos nomes das variáveis, melhor:</p>
+<div class="layout-chunk" data-layout="l-body">
+
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<pre><code># A tibble: 120 x 3
+   cliente mes   valor_pago
+     &lt;int&gt; &lt;chr&gt;      &lt;int&gt;
+ 1       1 jan          790
+ 2       1 fev          205
+ 3       1 mar          724
+ 4       1 abr          724
+ 5       1 mai          388
+ 6       1 jun          490
+ 7       1 jul          112
+ 8       1 ago          483
+ 9       1 set          230
+10       1 out          385
+# … with 110 more rows</code></pre>
+</div>
+<p>Veja como fica fácil plotar um gráfico deste novo dataframe:</p>
+<div class="layout-chunk" data-layout="l-body">
+<p><img src="pivotagem-com-r-e-postgresql_files/figure-html5/unnamed-chunk-7-1.png" width="624" /></p>
+</div>
+<h3 id="de-long-para-wide">De long para wide</h3>
+<p>Se quisermos converter pagamentos_long para pagamentos_wide, ou seja, retornar o formato inicial, basta usar a função <code>pivot_wider</code>. Para tanto, você deve informar quais a colunas ids, se não informar, o R irá usar todas as colunas, com exceção da coluna cujos valores se converterão em colunas, especificada no argumento names_from, e da coluna com valores que serão alocados para as respectivas novas colunas, respectivamente, arguemento values_from.</p>
+<div class="layout-chunk" data-layout="l-body">
+
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: right;">cliente</th>
+<th style="text-align: right;">jan</th>
+<th style="text-align: right;">fev</th>
+<th style="text-align: right;">mar</th>
+<th style="text-align: right;">abr</th>
+<th style="text-align: right;">mai</th>
+<th style="text-align: right;">jun</th>
+<th style="text-align: right;">jul</th>
+<th style="text-align: right;">ago</th>
+<th style="text-align: right;">set</th>
+<th style="text-align: right;">out</th>
+<th style="text-align: right;">nov</th>
+<th style="text-align: right;">dez</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">790</td>
+<td style="text-align: right;">205</td>
+<td style="text-align: right;">724</td>
+<td style="text-align: right;">724</td>
+<td style="text-align: right;">388</td>
+<td style="text-align: right;">490</td>
+<td style="text-align: right;">112</td>
+<td style="text-align: right;">483</td>
+<td style="text-align: right;">230</td>
+<td style="text-align: right;">385</td>
+<td style="text-align: right;">877</td>
+<td style="text-align: right;">317</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">612</td>
+<td style="text-align: right;">513</td>
+<td style="text-align: right;">281</td>
+<td style="text-align: right;">360</td>
+<td style="text-align: right;">839</td>
+<td style="text-align: right;">727</td>
+<td style="text-align: right;">953</td>
+<td style="text-align: right;">956</td>
+<td style="text-align: right;">133</td>
+<td style="text-align: right;">763</td>
+<td style="text-align: right;">192</td>
+<td style="text-align: right;">490</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">250</td>
+<td style="text-align: right;">414</td>
+<td style="text-align: right;">142</td>
+<td style="text-align: right;">460</td>
+<td style="text-align: right;">555</td>
+<td style="text-align: right;">223</td>
+<td style="text-align: right;">213</td>
+<td style="text-align: right;">240</td>
+<td style="text-align: right;">410</td>
+<td style="text-align: right;">502</td>
+<td style="text-align: right;">955</td>
+<td style="text-align: right;">543</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">741</td>
+<td style="text-align: right;">994</td>
+<td style="text-align: right;">365</td>
+<td style="text-align: right;">113</td>
+<td style="text-align: right;">974</td>
+<td style="text-align: right;">525</td>
+<td style="text-align: right;">875</td>
+<td style="text-align: right;">445</td>
+<td style="text-align: right;">908</td>
+<td style="text-align: right;">845</td>
+<td style="text-align: right;">444</td>
+<td style="text-align: right;">370</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">117</td>
+<td style="text-align: right;">101</td>
+<td style="text-align: right;">395</td>
+<td style="text-align: right;">335</td>
+<td style="text-align: right;">612</td>
+<td style="text-align: right;">765</td>
+<td style="text-align: right;">163</td>
+<td style="text-align: right;">839</td>
+<td style="text-align: right;">516</td>
+<td style="text-align: right;">234</td>
+<td style="text-align: right;">361</td>
+<td style="text-align: right;">614</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">828</td>
+<td style="text-align: right;">139</td>
+<td style="text-align: right;">137</td>
+<td style="text-align: right;">943</td>
+<td style="text-align: right;">552</td>
+<td style="text-align: right;">767</td>
+<td style="text-align: right;">654</td>
+<td style="text-align: right;">858</td>
+<td style="text-align: right;">379</td>
+<td style="text-align: right;">823</td>
+<td style="text-align: right;">489</td>
+<td style="text-align: right;">269</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">722</td>
+<td style="text-align: right;">281</td>
+<td style="text-align: right;">380</td>
+<td style="text-align: right;">594</td>
+<td style="text-align: right;">727</td>
+<td style="text-align: right;">617</td>
+<td style="text-align: right;">612</td>
+<td style="text-align: right;">344</td>
+<td style="text-align: right;">441</td>
+<td style="text-align: right;">731</td>
+<td style="text-align: right;">968</td>
+<td style="text-align: right;">201</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">606</td>
+<td style="text-align: right;">968</td>
+<td style="text-align: right;">749</td>
+<td style="text-align: right;">627</td>
+<td style="text-align: right;">336</td>
+<td style="text-align: right;">938</td>
+<td style="text-align: right;">159</td>
+<td style="text-align: right;">466</td>
+<td style="text-align: right;">319</td>
+<td style="text-align: right;">867</td>
+<td style="text-align: right;">733</td>
+<td style="text-align: right;">896</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">629</td>
+<td style="text-align: right;">338</td>
+<td style="text-align: right;">525</td>
+<td style="text-align: right;">978</td>
+<td style="text-align: right;">557</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">827</td>
+<td style="text-align: right;">871</td>
+<td style="text-align: right;">645</td>
+<td style="text-align: right;">356</td>
+<td style="text-align: right;">797</td>
+<td style="text-align: right;">953</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">955</td>
+<td style="text-align: right;">174</td>
+<td style="text-align: right;">644</td>
+<td style="text-align: right;">602</td>
+<td style="text-align: right;">749</td>
+<td style="text-align: right;">110</td>
+<td style="text-align: right;">171</td>
+<td style="text-align: right;">870</td>
+<td style="text-align: right;">692</td>
+<td style="text-align: right;">757</td>
+<td style="text-align: right;">882</td>
+<td style="text-align: right;">570</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="pivotagem-no-postgresql">Pivotagem no PostgreSQL</h2>
+<h3 id="de-wide-para-long-1">De wide para long</h3>
+<p>A conversão para formato long no PostgreSQL pode ser feita de várias formas. Eu particularmente gosto da solução apresentada à uma questão no StackOverflow, que basicamente converte as linhas em arrays e, em seguida, dá um unnest em cada um desses arrays. Veja abaixo:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb3-1"><a href="#cb3-1"></a></span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="kw">SELECT</span> cliente,</span>
+<span id="cb3-3"><a href="#cb3-3"></a>       unnest(<span class="dt">array</span>[<span class="st">&#39;jan&#39;</span>, <span class="st">&#39;fev&#39;</span>, <span class="st">&#39;mar&#39;</span>,<span class="st">&#39;abr&#39;</span>,<span class="st">&#39;mai&#39;</span>,<span class="st">&#39;jun&#39;</span>,<span class="st">&#39;jul&#39;</span>,<span class="st">&#39;ago&#39;</span>,<span class="st">&#39;set&#39;</span>,<span class="st">&#39;out&#39;</span>,<span class="st">&#39;nov&#39;</span>,<span class="st">&#39;dez&#39;</span>]) <span class="kw">AS</span> mes,</span>
+<span id="cb3-4"><a href="#cb3-4"></a>       unnest(<span class="dt">array</span>[jan, fev, mar,abr,mai,jun,jul,ago,<span class="kw">set</span>,<span class="kw">out</span>, nov, dez ]) <span class="kw">AS</span> valor_pago</span>
+<span id="cb3-5"><a href="#cb3-5"></a><span class="kw">FROM</span> pagamentos</span>
+<span id="cb3-6"><a href="#cb3-6"></a><span class="kw">ORDER</span> <span class="kw">BY</span> cliente;</span></code></pre></div>
+<p>A limitação deste query é que você tem de mencionar todas as variáveis duas vezes. Para facilitar sua vida, eu criei uma função que usa tidyselect": <a href="https://gist.github.com/jjesusfilho/66eaf17b0a772208b37f037fc48d0bd3">pg_pivot_longer</a>. Deste modo, é suficiente chamá-la:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>pagamento_long &lt;-<span class="st"> </span><span class="kw">pg_pivot_longer</span>(conn,</span>
+<span id="cb4-2"><a href="#cb4-2"></a>                                  <span class="dt">tbl =</span> <span class="st">&quot;pagamentos&quot;</span>,</span>
+<span id="cb4-3"><a href="#cb4-3"></a>                                  <span class="dt">cols =</span> <span class="op">!</span>cliente, </span>
+<span id="cb4-4"><a href="#cb4-4"></a>                                  <span class="dt">names_to =</span> <span class="st">&quot;mes&quot;</span>, </span>
+<span id="cb4-5"><a href="#cb4-5"></a>                                  <span class="dt">values_to =</span> <span class="st">&quot;valor_pago&quot;</span>)</span></code></pre></div>
+<p>Ou se quiser criar no próprio banco, sem importar para o R:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw">pg_pivot_longer</span>(conn, </span>
+<span id="cb5-2"><a href="#cb5-2"></a>               <span class="dt">tbl=</span><span class="st">&quot;pagamentos&quot;</span>, </span>
+<span id="cb5-3"><a href="#cb5-3"></a>               <span class="dt">new_tbl=</span> <span class="st">&quot;pagamentos_long&quot;</span>,</span>
+<span id="cb5-4"><a href="#cb5-4"></a>               <span class="dt">cols =</span> <span class="op">!</span>cliente, </span>
+<span id="cb5-5"><a href="#cb5-5"></a>               <span class="dt">names_to =</span> <span class="st">&quot;mes&quot;</span>, </span>
+<span id="cb5-6"><a href="#cb5-6"></a>               <span class="dt">values_to =</span> <span class="st">&quot;valor_pago&quot;</span>)</span></code></pre></div>
+<h3 id="de-long-para-wide-1">De long para wide</h3>
+<p>Para converter para formato wide, há muitas formas e você pode consultá-las nesse excelente <a href="https://postgresql.verite.pro/blog/2018/06/19/crosstab-pivot.html">blog post</a></p>
+<p>Neste tutorial, irei focar naquela que me parece ser a mais simples e popular, que é usar a cláusula <code>FILTER</code> do PostgreSQL. Vejamos como fica:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb6-1"><a href="#cb6-1"></a></span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="kw">SELECT</span> cliente,</span>
+<span id="cb6-3"><a href="#cb6-3"></a>       <span class="fu">sum</span>(valor_pago) <span class="kw">FILTER</span> (<span class="kw">WHERE</span> mes <span class="op">=</span> <span class="st">&#39;jan&#39;</span>) <span class="kw">as</span> jan,</span>
+<span id="cb6-4"><a href="#cb6-4"></a>       <span class="fu">sum</span>(valor_pago) <span class="kw">FILTER</span> (<span class="kw">WHERE</span> mes <span class="op">=</span> <span class="st">&#39;fev&#39;</span>) <span class="kw">as</span> fev,</span>
+<span id="cb6-5"><a href="#cb6-5"></a>       <span class="fu">sum</span>(valor_pago) <span class="kw">FILTER</span> (<span class="kw">WHERE</span> mes <span class="op">=</span> <span class="st">&#39;mar&#39;</span>) <span class="kw">as</span> mar,</span>
+<span id="cb6-6"><a href="#cb6-6"></a>       <span class="fu">sum</span>(valor_pago) <span class="kw">FILTER</span> (<span class="kw">WHERE</span> mes <span class="op">=</span> <span class="st">&#39;abr&#39;</span>) <span class="kw">as</span> abr,</span>
+<span id="cb6-7"><a href="#cb6-7"></a>       <span class="fu">sum</span>(valor_pago) <span class="kw">FILTER</span> (<span class="kw">WHERE</span> mes <span class="op">=</span> <span class="st">&#39;mai&#39;</span>) <span class="kw">as</span> mai,</span>
+<span id="cb6-8"><a href="#cb6-8"></a>       <span class="fu">sum</span>(valor_pago) <span class="kw">FILTER</span> (<span class="kw">WHERE</span> mes <span class="op">=</span> <span class="st">&#39;jun&#39;</span>) <span class="kw">as</span> jun,</span>
+<span id="cb6-9"><a href="#cb6-9"></a>       <span class="fu">sum</span>(valor_pago) <span class="kw">FILTER</span> (<span class="kw">WHERE</span> mes <span class="op">=</span> <span class="st">&#39;jul&#39;</span>) <span class="kw">as</span> jul,</span>
+<span id="cb6-10"><a href="#cb6-10"></a>       <span class="fu">sum</span>(valor_pago) <span class="kw">FILTER</span> (<span class="kw">WHERE</span> mes <span class="op">=</span> <span class="st">&#39;ago&#39;</span>) <span class="kw">as</span> ago,</span>
+<span id="cb6-11"><a href="#cb6-11"></a>       <span class="fu">sum</span>(valor_pago) <span class="kw">FILTER</span> (<span class="kw">WHERE</span> mes <span class="op">=</span> <span class="st">&#39;set&#39;</span>) <span class="kw">as</span> <span class="kw">set</span>,</span>
+<span id="cb6-12"><a href="#cb6-12"></a>       <span class="fu">sum</span>(valor_pago) <span class="kw">FILTER</span> (<span class="kw">WHERE</span> mes <span class="op">=</span> <span class="st">&#39;out&#39;</span>) <span class="kw">as</span> <span class="kw">out</span>,</span>
+<span id="cb6-13"><a href="#cb6-13"></a>       <span class="fu">sum</span>(valor_pago) <span class="kw">FILTER</span> (<span class="kw">WHERE</span> mes <span class="op">=</span> <span class="st">&#39;nov&#39;</span>) <span class="kw">as</span> nov,</span>
+<span id="cb6-14"><a href="#cb6-14"></a>       <span class="fu">sum</span>(valor_pago) <span class="kw">FILTER</span> (<span class="kw">WHERE</span> mes <span class="op">=</span> <span class="st">&#39;dez&#39;</span>) <span class="kw">as</span> dez</span>
+<span id="cb6-15"><a href="#cb6-15"></a><span class="kw">from</span> pagamentos_long</span>
+<span id="cb6-16"><a href="#cb6-16"></a><span class="kw">group</span> <span class="kw">by</span> cliente</span>
+<span id="cb6-17"><a href="#cb6-17"></a><span class="kw">order</span> <span class="kw">by</span> cliente;</span></code></pre></div>
+<p>Como na transformação para formato longo, aqui você tem de escrever uma linha para cada uma das novas variáveis. Para facilitar sua vida, eu criei uma função chamada <a href="https://gist.github.com/jjesusfilho/3d0fac6ef519d65dde86b823b18a76c9">pg_pivot_wider</a>, que permite simplesmente informar qual a coluna onde se encontram as variáveis e qual a coluna onde se encontram os valores, além de informar a as colunas com os ids.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>pagamentos_wide &lt;-<span class="st"> </span><span class="kw">pg_pivot_wider</span>(conn,</span>
+<span id="cb7-2"><a href="#cb7-2"></a>                                <span class="dt">tbl =</span> <span class="st">&quot;pagamentos_long&quot;</span>, </span>
+<span id="cb7-3"><a href="#cb7-3"></a>                                <span class="dt">id_cols=</span> <span class="st">&quot;cliente&quot;</span>, </span>
+<span id="cb7-4"><a href="#cb7-4"></a>                                <span class="dt">names_from =</span> <span class="st">&quot;mes&quot;</span>, </span>
+<span id="cb7-5"><a href="#cb7-5"></a>                                <span class="dt">values_from =</span> <span class="st">&quot;valor_pago&quot;</span>)</span></code></pre></div>
+<p>Como acima, se quiser criar uma nova tabela no banco, basta oferecer o novo nome ao argumento new_tbl</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="kw">pg_pivot_wider</span>(conn,</span>
+<span id="cb8-2"><a href="#cb8-2"></a>               <span class="dt">tbl =</span> <span class="st">&quot;pagamentos_long&quot;</span>,</span>
+<span id="cb8-3"><a href="#cb8-3"></a>               <span class="dt">new_tbl =</span> <span class="st">&quot;pagamentos_wide&quot;</span>, </span>
+<span id="cb8-4"><a href="#cb8-4"></a>               <span class="dt">id_cols=</span> <span class="st">&quot;cliente&quot;</span>,</span>
+<span id="cb8-5"><a href="#cb8-5"></a>               <span class="dt">names_from =</span> <span class="st">&quot;mes&quot;</span>, </span>
+<span id="cb8-6"><a href="#cb8-6"></a>               <span class="dt">values_from =</span> <span class="st">&quot;valor_pago&quot;</span>)</span></code></pre></div>
+<p>As funções pg_pivot_longer e pg_pivot_wider estão em fase experimental. Não se recomenda usá-las em produção.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>
