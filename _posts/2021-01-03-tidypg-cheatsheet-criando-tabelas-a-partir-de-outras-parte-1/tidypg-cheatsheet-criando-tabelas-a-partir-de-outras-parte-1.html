@@ -85,621 +85,39 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </style>
 
   <!--radix_placeholder_meta_tags-->
-  <title>Ciência de Dados com R e PostgreSQL</title>
+  <title>TidyPG cheatsheet: Criando tabelas a partir de outras - parte 1</title>
+
+  <meta property="description" itemprop="description" content="Neste cheatsheet mostramos como criar tabelas tanto no R &#10;quanto no PostgreSQL a partir da junção de outras ou de filtros."/>
 
 
-
+  <!--  https://schema.org/Article -->
+  <meta property="article:published" itemprop="datePublished" content="2021-01-03"/>
+  <meta property="article:created" itemprop="dateCreated" content="2021-01-03"/>
+  <meta name="article:author" content="José de Jesus Filho"/>
 
   <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
-  <meta property="og:title" content="Ciência de Dados com R e PostgreSQL"/>
+  <meta property="og:title" content="TidyPG cheatsheet: Criando tabelas a partir de outras - parte 1"/>
   <meta property="og:type" content="article"/>
+  <meta property="og:description" content="Neste cheatsheet mostramos como criar tabelas tanto no R &#10;quanto no PostgreSQL a partir da junção de outras ou de filtros."/>
   <meta property="og:locale" content="en_US"/>
-  <meta property="og:site_name" content="Ciência de Dados com R e PostgreSQL"/>
 
   <!--  https://dev.twitter.com/cards/types/summary -->
   <meta property="twitter:card" content="summary"/>
-  <meta property="twitter:title" content="Ciência de Dados com R e PostgreSQL"/>
+  <meta property="twitter:title" content="TidyPG cheatsheet: Criando tabelas a partir de outras - parte 1"/>
+  <meta property="twitter:description" content="Neste cheatsheet mostramos como criar tabelas tanto no R &#10;quanto no PostgreSQL a partir da junção de outras ou de filtros."/>
 
   <!--/radix_placeholder_meta_tags-->
   <!--radix_placeholder_rmarkdown_metadata-->
 
   <script type="text/json" id="radix-rmarkdown-metadata">
-  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","site","listing"]}},"value":[{"type":"character","attributes":{},"value":["Ciência de Dados com R e PostgreSQL"]},{"type":"character","attributes":{},"value":["distill::distill_website"]},{"type":"character","attributes":{},"value":["posts"]}]}
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","output"]}},"value":[{"type":"character","attributes":{},"value":["TidyPG cheatsheet: Criando tabelas a partir de outras - parte 1"]},{"type":"character","attributes":{},"value":["Neste cheatsheet mostramos como criar tabelas tanto no R \nquanto no PostgreSQL a partir da junção de outras ou de filtros.\n"]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","url"]}},"value":[{"type":"character","attributes":{},"value":["José de Jesus Filho"]},{"type":"character","attributes":{},"value":["https://rpg.consudata.com.br"]}]}]},{"type":"character","attributes":{},"value":["01-03-2021"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained"]}},"value":[{"type":"logical","attributes":{},"value":[false]}]}]}]}
   </script>
   <!--/radix_placeholder_rmarkdown_metadata-->
+  
+  <script type="text/json" id="radix-resource-manifest">
+  {"type":"character","attributes":{},"value":["tidypg-cheatsheet-criando-tabelas-a-partir-de-outras-parte-1_files/anchor-4.2.2/anchor.min.js","tidypg-cheatsheet-criando-tabelas-a-partir-de-outras-parte-1_files/bowser-1.9.3/bowser.min.js","tidypg-cheatsheet-criando-tabelas-a-partir-de-outras-parte-1_files/distill-2.2.21/template.v2.js","tidypg-cheatsheet-criando-tabelas-a-partir-de-outras-parte-1_files/header-attrs-2.6/header-attrs.js","tidypg-cheatsheet-criando-tabelas-a-partir-de-outras-parte-1_files/jquery-1.11.3/jquery.min.js","tidypg-cheatsheet-criando-tabelas-a-partir-de-outras-parte-1_files/webcomponents-2.0.0/webcomponents.js"]}
+  </script>
   <!--radix_placeholder_navigation_in_header-->
-  <meta name="distill:offset" content=""/>
-
-  <script type="application/javascript">
-
-    window.headroom_prevent_pin = false;
-
-    window.document.addEventListener("DOMContentLoaded", function (event) {
-
-      // initialize headroom for banner
-      var header = $('header').get(0);
-      var headerHeight = header.offsetHeight;
-      var headroom = new Headroom(header, {
-        tolerance: 5,
-        onPin : function() {
-          if (window.headroom_prevent_pin) {
-            window.headroom_prevent_pin = false;
-            headroom.unpin();
-          }
-        }
-      });
-      headroom.init();
-      if(window.location.hash)
-        headroom.unpin();
-      $(header).addClass('headroom--transition');
-
-      // offset scroll location for banner on hash change
-      // (see: https://github.com/WickyNilliams/headroom.js/issues/38)
-      window.addEventListener("hashchange", function(event) {
-        window.scrollTo(0, window.pageYOffset - (headerHeight + 25));
-      });
-
-      // responsive menu
-      $('.distill-site-header').each(function(i, val) {
-        var topnav = $(this);
-        var toggle = topnav.find('.nav-toggle');
-        toggle.on('click', function() {
-          topnav.toggleClass('responsive');
-        });
-      });
-
-      // nav dropdowns
-      $('.nav-dropbtn').click(function(e) {
-        $(this).next('.nav-dropdown-content').toggleClass('nav-dropdown-active');
-        $(this).parent().siblings('.nav-dropdown')
-           .children('.nav-dropdown-content').removeClass('nav-dropdown-active');
-      });
-      $("body").click(function(e){
-        $('.nav-dropdown-content').removeClass('nav-dropdown-active');
-      });
-      $(".nav-dropdown").click(function(e){
-        e.stopPropagation();
-      });
-    });
-  </script>
-
-  <style type="text/css">
-
-  /* Theme (user-documented overrideables for nav appearance) */
-
-  .distill-site-nav {
-    color: rgba(255, 255, 255, 0.8);
-    background-color: #0F2E3D;
-    font-size: 15px;
-    font-weight: 300;
-  }
-
-  .distill-site-nav a {
-    color: inherit;
-    text-decoration: none;
-  }
-
-  .distill-site-nav a:hover {
-    color: white;
-  }
-
-  @media print {
-    .distill-site-nav {
-      display: none;
-    }
-  }
-
-  .distill-site-header {
-
-  }
-
-  .distill-site-footer {
-
-  }
-
-
-  /* Site Header */
-
-  .distill-site-header {
-    width: 100%;
-    box-sizing: border-box;
-    z-index: 3;
-  }
-
-  .distill-site-header .nav-left {
-    display: inline-block;
-    margin-left: 8px;
-  }
-
-  @media screen and (max-width: 768px) {
-    .distill-site-header .nav-left {
-      margin-left: 0;
-    }
-  }
-
-
-  .distill-site-header .nav-right {
-    float: right;
-    margin-right: 8px;
-  }
-
-  .distill-site-header a,
-  .distill-site-header .title {
-    display: inline-block;
-    text-align: center;
-    padding: 14px 10px 14px 10px;
-  }
-
-  .distill-site-header .title {
-    font-size: 18px;
-    min-width: 150px;
-  }
-
-  .distill-site-header .logo {
-    padding: 0;
-  }
-
-  .distill-site-header .logo img {
-    display: none;
-    max-height: 20px;
-    width: auto;
-    margin-bottom: -4px;
-  }
-
-  .distill-site-header .nav-image img {
-    max-height: 18px;
-    width: auto;
-    display: inline-block;
-    margin-bottom: -3px;
-  }
-
-
-
-  @media screen and (min-width: 1000px) {
-    .distill-site-header .logo img {
-      display: inline-block;
-    }
-    .distill-site-header .nav-left {
-      margin-left: 20px;
-    }
-    .distill-site-header .nav-right {
-      margin-right: 20px;
-    }
-    .distill-site-header .title {
-      padding-left: 12px;
-    }
-  }
-
-
-  .distill-site-header .nav-toggle {
-    display: none;
-  }
-
-  .nav-dropdown {
-    display: inline-block;
-    position: relative;
-  }
-
-  .nav-dropdown .nav-dropbtn {
-    border: none;
-    outline: none;
-    color: rgba(255, 255, 255, 0.8);
-    padding: 16px 10px;
-    background-color: transparent;
-    font-family: inherit;
-    font-size: inherit;
-    font-weight: inherit;
-    margin: 0;
-    margin-top: 1px;
-    z-index: 2;
-  }
-
-  .nav-dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: white;
-    min-width: 200px;
-    border: 1px solid rgba(0,0,0,0.15);
-    border-radius: 4px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.1);
-    z-index: 1;
-    margin-top: 2px;
-    white-space: nowrap;
-    padding-top: 4px;
-    padding-bottom: 4px;
-  }
-
-  .nav-dropdown-content hr {
-    margin-top: 4px;
-    margin-bottom: 4px;
-    border: none;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  }
-
-  .nav-dropdown-active {
-    display: block;
-  }
-
-  .nav-dropdown-content a, .nav-dropdown-content .nav-dropdown-header {
-    color: black;
-    padding: 6px 24px;
-    text-decoration: none;
-    display: block;
-    text-align: left;
-  }
-
-  .nav-dropdown-content .nav-dropdown-header {
-    display: block;
-    padding: 5px 24px;
-    padding-bottom: 0;
-    text-transform: uppercase;
-    font-size: 14px;
-    color: #999999;
-    white-space: nowrap;
-  }
-
-  .nav-dropdown:hover .nav-dropbtn {
-    color: white;
-  }
-
-  .nav-dropdown-content a:hover {
-    background-color: #ddd;
-    color: black;
-  }
-
-  .nav-right .nav-dropdown-content {
-    margin-left: -45%;
-    right: 0;
-  }
-
-  @media screen and (max-width: 768px) {
-    .distill-site-header a, .distill-site-header .nav-dropdown  {display: none;}
-    .distill-site-header a.nav-toggle {
-      float: right;
-      display: block;
-    }
-    .distill-site-header .title {
-      margin-left: 0;
-    }
-    .distill-site-header .nav-right {
-      margin-right: 0;
-    }
-    .distill-site-header {
-      overflow: hidden;
-    }
-    .nav-right .nav-dropdown-content {
-      margin-left: 0;
-    }
-  }
-
-
-  @media screen and (max-width: 768px) {
-    .distill-site-header.responsive {position: relative; min-height: 500px; }
-    .distill-site-header.responsive a.nav-toggle {
-      position: absolute;
-      right: 0;
-      top: 0;
-    }
-    .distill-site-header.responsive a,
-    .distill-site-header.responsive .nav-dropdown {
-      display: block;
-      text-align: left;
-    }
-    .distill-site-header.responsive .nav-left,
-    .distill-site-header.responsive .nav-right {
-      width: 100%;
-    }
-    .distill-site-header.responsive .nav-dropdown {float: none;}
-    .distill-site-header.responsive .nav-dropdown-content {position: relative;}
-    .distill-site-header.responsive .nav-dropdown .nav-dropbtn {
-      display: block;
-      width: 100%;
-      text-align: left;
-    }
-  }
-
-  /* Site Footer */
-
-  .distill-site-footer {
-    width: 100%;
-    overflow: hidden;
-    box-sizing: border-box;
-    z-index: 3;
-    margin-top: 30px;
-    padding-top: 30px;
-    padding-bottom: 30px;
-    text-align: center;
-  }
-
-  /* Headroom */
-
-  d-title {
-    padding-top: 6rem;
-  }
-
-  @media print {
-    d-title {
-      padding-top: 4rem;
-    }
-  }
-
-  .headroom {
-    z-index: 1000;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-  }
-
-  .headroom--transition {
-    transition: all .4s ease-in-out;
-  }
-
-  .headroom--unpinned {
-    top: -100px;
-  }
-
-  .headroom--pinned {
-    top: 0;
-  }
-
-  </style>
-
-  <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet"/>
-  <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet"/>
-  <script src="site_libs/headroom-0.9.4/headroom.min.js"></script>
-  <script src="site_libs/autocomplete-0.37.1/autocomplete.min.js"></script>
-  <script src="site_libs/fuse-6.4.1/fuse.min.js"></script>
-
-  <script type="application/javascript">
-
-  function getMeta(metaName) {
-    var metas = document.getElementsByTagName('meta');
-    for (let i = 0; i < metas.length; i++) {
-      if (metas[i].getAttribute('name') === metaName) {
-        return metas[i].getAttribute('content');
-      }
-    }
-    return '';
-  }
-
-  function offsetURL(url) {
-    var offset = getMeta('distill:offset');
-    return offset ? offset + '/' + url : url;
-  }
-
-  function createFuseIndex() {
-
-    // create fuse index
-    var options = {
-      keys: [
-        { name: 'title', weight: 20 },
-        { name: 'categories', weight: 15 },
-        { name: 'description', weight: 10 },
-        { name: 'contents', weight: 5 },
-      ],
-      ignoreLocation: true,
-      threshold: 0
-    };
-    var fuse = new window.Fuse([], options);
-
-    // fetch the main search.json
-    return fetch(offsetURL('search.json'))
-      .then(function(response) {
-        if (response.status == 200) {
-          return response.json().then(function(json) {
-            // index main articles
-            json.articles.forEach(function(article) {
-              fuse.add(article);
-            });
-            // download collections and index their articles
-            return Promise.all(json.collections.map(function(collection) {
-              return fetch(offsetURL(collection)).then(function(response) {
-                if (response.status === 200) {
-                  return response.json().then(function(articles) {
-                    articles.forEach(function(article) {
-                      fuse.add(article);
-                    });
-                  })
-                } else {
-                  return Promise.reject(
-                    new Error('Unexpected status from search index request: ' +
-                              response.status)
-                  );
-                }
-              });
-            })).then(function() {
-              return fuse;
-            });
-          });
-
-        } else {
-          return Promise.reject(
-            new Error('Unexpected status from search index request: ' +
-                        response.status)
-          );
-        }
-      });
-  }
-
-  window.document.addEventListener("DOMContentLoaded", function (event) {
-
-    // get search element (bail if we don't have one)
-    var searchEl = window.document.getElementById('distill-search');
-    if (!searchEl)
-      return;
-
-    createFuseIndex()
-      .then(function(fuse) {
-
-        // make search box visible
-        searchEl.classList.remove('hidden');
-
-        // initialize autocomplete
-        var options = {
-          autoselect: true,
-          hint: false,
-          minLength: 2,
-        };
-        window.autocomplete(searchEl, options, [{
-          source: function(query, callback) {
-            const searchOptions = {
-              isCaseSensitive: false,
-              shouldSort: true,
-              minMatchCharLength: 2,
-              limit: 10,
-            };
-            var results = fuse.search(query, searchOptions);
-            callback(results
-              .map(function(result) { return result.item; })
-              .filter(function(item) { return !!item.description; })
-            );
-          },
-          templates: {
-            suggestion: function(suggestion) {
-              var html = `
-                <div class="search-item">
-                  <h3>${suggestion.title}</h3>
-                  <div class="search-item-description">
-                    ${suggestion.description}
-                  </div>
-                  <div class="search-item-preview">
-                    <img src="${suggestion.preview ? offsetURL(suggestion.preview) : ''}"</img>
-                  </div>
-                </div>
-              `;
-              return html;
-            }
-          }
-        }]).on('autocomplete:selected', function(event, suggestion) {
-          window.location.href = offsetURL(suggestion.path);
-        });
-        // remove inline display style on autocompleter (we want to
-        // manage responsive display via css)
-        $('.algolia-autocomplete').css("display", "");
-      })
-      .catch(function(error) {
-        console.log(error);
-      });
-
-  });
-
-  </script>
-
-  <style type="text/css">
-
-  /* Algolioa Autocomplete */
-
-  .algolia-autocomplete {
-    display: inline-block;
-    margin-left: 10px;
-    vertical-align: sub;
-    background-color: white;
-    color: black;
-    padding: 6px;
-    padding-top: 8px;
-    padding-bottom: 0;
-    border-radius: 6px;
-    border: 1px #0F2E3D solid;
-    width: 180px;
-  }
-
-
-  @media screen and (max-width: 768px) {
-    .distill-site-nav .algolia-autocomplete {
-      display: none;
-      visibility: hidden;
-    }
-    .distill-site-nav.responsive .algolia-autocomplete {
-      display: inline-block;
-      visibility: visible;
-    }
-    .distill-site-nav.responsive .algolia-autocomplete .aa-dropdown-menu {
-      margin-left: 0;
-      width: 400px;
-      max-height: 400px;
-    }
-  }
-
-  .algolia-autocomplete .aa-input, .algolia-autocomplete .aa-hint {
-    width: 90%;
-    outline: none;
-    border: none;
-  }
-
-  .algolia-autocomplete .aa-hint {
-    color: #999;
-  }
-  .algolia-autocomplete .aa-dropdown-menu {
-    width: 550px;
-    max-height: 70vh;
-    overflow-x: visible;
-    overflow-y: scroll;
-    padding: 5px;
-    margin-top: 3px;
-    margin-left: -150px;
-    background-color: #fff;
-    border-radius: 5px;
-    border: 1px solid #999;
-    border-top: none;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion {
-    cursor: pointer;
-    padding: 5px 4px;
-    border-bottom: 1px solid #eee;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion:last-of-type {
-    border-bottom: none;
-    margin-bottom: 2px;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item {
-    overflow: hidden;
-    font-size: 0.8em;
-    line-height: 1.4em;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item h3 {
-    margin-block-start: 0;
-    margin-block-end: 5px;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item-description {
-    display: inline-block;
-    overflow: hidden;
-    height: 2.8em;
-    width: 80%;
-    margin-right: 4%;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item-preview {
-    display: inline-block;
-    width: 15%;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item-preview img {
-    height: 3em;
-    width: auto;
-    display: none;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item-preview img[src] {
-    display: initial;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion.aa-cursor {
-    background-color: #eee;
-  }
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion em {
-    font-weight: bold;
-    font-style: normal;
-  }
-
-  </style>
-
-
   <!--/radix_placeholder_navigation_in_header-->
   <!--radix_placeholder_distill-->
 
@@ -1985,269 +1403,256 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </script>
 
   <!--/radix_placeholder_distill-->
-  <script src="site_libs/header-attrs-2.6/header-attrs.js"></script>
-  <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
-  <script src="site_libs/anchor-4.2.2/anchor.min.js"></script>
-  <script src="site_libs/bowser-1.9.3/bowser.min.js"></script>
-  <script src="site_libs/webcomponents-2.0.0/webcomponents.js"></script>
-  <script src="site_libs/distill-2.2.21/template.v2.js"></script>
+  <script src="tidypg-cheatsheet-criando-tabelas-a-partir-de-outras-parte-1_files/header-attrs-2.6/header-attrs.js"></script>
+  <script src="tidypg-cheatsheet-criando-tabelas-a-partir-de-outras-parte-1_files/jquery-1.11.3/jquery.min.js"></script>
+  <script src="tidypg-cheatsheet-criando-tabelas-a-partir-de-outras-parte-1_files/anchor-4.2.2/anchor.min.js"></script>
+  <script src="tidypg-cheatsheet-criando-tabelas-a-partir-de-outras-parte-1_files/bowser-1.9.3/bowser.min.js"></script>
+  <script src="tidypg-cheatsheet-criando-tabelas-a-partir-de-outras-parte-1_files/webcomponents-2.0.0/webcomponents.js"></script>
+  <script src="tidypg-cheatsheet-criando-tabelas-a-partir-de-outras-parte-1_files/distill-2.2.21/template.v2.js"></script>
   <!--radix_placeholder_site_in_header-->
   <!--/radix_placeholder_site_in_header-->
 
 
 </head>
 
-<body class="layout-listing">
+<body>
 
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"Ciência de Dados com R e PostgreSQL","authors":[]}
+{"title":"TidyPG cheatsheet: Criando tabelas a partir de outras - parte 1","description":"Neste cheatsheet mostramos como criar tabelas tanto no R \nquanto no PostgreSQL a partir da junção de outras ou de filtros.","authors":[{"author":"José de Jesus Filho","authorURL":"https://rpg.consudata.com.br","affiliation":"&nbsp;","affiliationURL":"#","orcidID":""}],"publishedDate":"2021-01-03T00:00:00.000+00:00","citationText":"Filho, 2021"}
 </script>
 
 <!--/radix_placeholder_front_matter-->
 <!--radix_placeholder_navigation_before_body-->
-<header class="header header--fixed" role="banner">
-<nav class="distill-site-nav distill-site-header">
-<div class="nav-left">
-<a href="index.html" class="title">Ciência de Dados com R e PostgreSQL</a>
-<input id="distill-search" class="nav-search hidden" type="text" placeholder="Search..."/>
-</div>
-<div class="nav-right">
-<a href="index.html">Home</a>
-<a href="about.html">Sobre</a>
-<a href="javascript:void(0);" class="nav-toggle">&#9776;</a>
-</div>
-</nav>
-</header>
 <!--/radix_placeholder_navigation_before_body-->
 <!--radix_placeholder_site_before_body-->
 <!--/radix_placeholder_site_before_body-->
-<!--radix_placeholder_article_listing-->
-
-
-<script type="application/javascript">
-
-function init_posts_list() {
-
-  function load_image(img) {
-    var src = $(img).attr('data-src');
-    if (src) {
-      $(img).attr('src', src);
-      $(img).load(function() {
-        img.removeAttribute('data-src');
-      });
-    }
-  }
-
-  function set_posts_visible(posts, visible) {
-    if (visible) {
-
-      // show bottom border by default
-      $(posts).removeClass('post-preview-last');
-
-      // apply limits if need be
-      var max_posts = 25;
-      var apply_limits = $('.posts-container').hasClass('posts-apply-limit');
-      if (apply_limits && posts.length > max_posts) {
-        posts = $(posts).slice(0, max_posts);
-      } else {
-        $('.posts-more a').addClass('hidden');
-      }
-
-      // apply last style
-      $(posts.slice(-1)[0]).addClass('post-preview-last');
-
-      $(posts).removeClass('hidden');
-      $(posts).find('img[data-src]').each(function(i, img) {
-        load_image(img);
-      });
-    } else {
-      $(posts).addClass('hidden');
-    }
-  }
-
-  function apply_hash_filter() {
-
-    // clear active state
-    $('.categories .active').removeClass('active');
-
-    // mark all posts invisible to start
-    set_posts_visible($('.posts-list').children('a'), false);
-
-    // if we have a hash filter
-    if (window.location.hash && window.location.hash.startsWith("#category:")) {
-
-      // mark posts that match the category visible
-      var page_category = window.location.hash.replace(/^#category:/, "");
-      var posts = $('.post-metadata').map(function(idx, script) {
-        var metadata = $.parseJSON($(script).html());
-        var post = null;
-        $.each(metadata.categories, function(idx, category) {
-          category = category.replace(/ /g,"_");
-          if ((page_category || '').toLowerCase() === "articles" || category === page_category) {
-            post = $(script).parent().get();
-            return false;
-          }
-        });
-        return post;
-      });
-      set_posts_visible(posts, true);
-
-      // mark the hash active
-      $('.categories li>a[href="' + window.location.hash + '"]').addClass('active');
-
-      // update the list_caption
-      var list_caption = $('.posts-list-caption');
-      var caption = (page_category || '').toLowerCase() === "articles"
-        ? list_caption.attr('data-caption')
-        : ('Category: ' + page_category.replace(/_/g," "));
-      list_caption.text(caption);
-
-    } else {
-
-      // no hash filter, make all posts visible (subject to max display)
-      set_posts_visible($('.posts-list').children(), true);
-
-      // reset list caption
-      var list_caption = $('.posts-list-caption');
-      list_caption.text(list_caption.attr('data-caption'));
-
-
-    }
-  }
-
-  // more articles
-  function apply_post_limits(apply) {
-    if (apply) {
-      $('.posts-container').addClass('posts-apply-limit');
-      $('.posts-more a').removeClass('hidden');
-    } else {
-      $('.posts-container').removeClass('posts-apply-limit');
-      $('.posts-more a').addClass('hidden');
-    }
-  }
-
-  // click handling for tags
-  $('.dt-tag').click(function(ev) {
-    window.location.hash = '#category:' + $(this).text().replace(/ /g, "_");
-    return false;
-  })
-
-  // hash filter handling
-  apply_hash_filter();
-  $(window).on('hashchange',function() {
-    apply_post_limits(true);
-    apply_hash_filter();
-  });
-
-  // more articles link
-  $('.posts-more a').click(function(e) {
-    e.preventDefault();
-    apply_post_limits(false);
-    apply_hash_filter();
-    return false;
-  });
-
-}
-
-</script>
-
-
-
-<div class="posts-container posts-apply-limit l-page">
-<div class="posts-list">
-<h1 class="posts-list-caption" data-caption="Ciência de Dados com R e PostgreSQL">Ciência de Dados com R e PostgreSQL</h1>
-<a href="posts/2021-01-03-joins-no-r-e-no-postgresql/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Jan. 3, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">José de Jesus Filho</div>
-</div>
-</div>
-<div class="thumbnail">
-<img src="posts/2021-01-03-joins-no-r-e-no-postgresql/inner_join.png"/>
-</div>
-<div class="description">
-<h2>Joins no R e no PostgreSQL</h2>
-<div class="dt-tags"></div>
-<p>Neste tutorial, mostro como as principais formas de joins tanto no R
-quanto no PostgreSQL.</p>
-</div>
-</a>
-<a href="posts/2021-01-03-pivotagem-com-r-e-postgresql/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Jan. 3, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">José de Jesus Filho</div>
-</div>
-</div>
-<div class="thumbnail">
-<img src="posts/2021-01-03-pivotagem-com-r-e-postgresql/pivotagem2.png"/>
-</div>
-<div class="description">
-<h2>Pivotagem com R e PostgreSQL</h2>
-<div class="dt-tags"></div>
-<p>Nesta postagem, eu mostro como converter dataframes e tabelas
-entre os formatos wide e long tanto no R quanto no PostgreSQL,
-além de permitir realizar essas operações no banco a partir do R.</p>
-</div>
-</a>
-<a href="posts/2021-01-03-tidypg-cheatsheet-criando-tabelas-a-partir-de-outras-parte-1/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Jan. 3, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">José de Jesus Filho</div>
-</div>
-</div>
-<div class="thumbnail">
-<img/>
-</div>
-<div class="description">
-<h2>TidyPG cheatsheet: Criando tabelas a partir de outras - parte 1</h2>
-<div class="dt-tags"></div>
-<p>Neste cheatsheet mostramos como criar tabelas tanto no R 
-quanto no PostgreSQL a partir da junção de outras ou de filtros.</p>
-</div>
-</a>
-<a href="posts/welcome/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Jan. 3, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">José de Jesus Filho</div>
-</div>
-</div>
-<div class="thumbnail">
-<img/>
-</div>
-<div class="description">
-<h2>Bem-vinda à  Ciência de Dados com R e PostgreSQL</h2>
-<div class="dt-tags"></div>
-<p>Bem-vindo a este blog sobre Ciência de Dados com R e PostgreSQL. Periodicamente, irei
-postar tutoriais sobre !</p>
-</div>
-</a>
-</div>
-<div class="posts-more">
-<a href="#">More articles &raquo;</a>
-</div>
-</div>
-<!--/radix_placeholder_article_listing-->
 
 <div class="d-title">
-<h1>Ciência de Dados com R e PostgreSQL</h1>
+<h1>TidyPG cheatsheet: Criando tabelas a partir de outras - parte 1</h1>
 <!--radix_placeholder_categories-->
 <!--/radix_placeholder_categories-->
-
+<p><p>Neste cheatsheet mostramos como criar tabelas tanto no R quanto no PostgreSQL a partir da junção de outras ou de filtros.</p></p>
 </div>
 
+<div class="d-byline">
+  José de Jesus Filho <a href="https://rpg.consudata.com.br" class="uri">https://rpg.consudata.com.br</a> 
+  
+<br/>01-03-2021
+</div>
 
 <div class="d-article">
-<div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<h2 id="selecionando-linhas-e-colunas">Selecionando linhas e colunas</h2>
+<h3 id="selecionando-colunas">Selecionando colunas</h3>
+<div style="display: flex;">
+<div class="column" style="width:40%;">
+<h4 id="tidyverse">Tidyverse</h4>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co">## Seleção simples</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a>df &lt;-<span class="st"> </span>df1 <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="st">      </span><span class="kw">select</span>(coluna1,coluna2,...)</span>
+<span id="cb1-4"><a href="#cb1-4"></a></span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="co">## Selecionar e renomear</span></span>
+<span id="cb1-6"><a href="#cb1-6"></a>df &lt;-<span class="st"> </span>df <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="st">      </span><span class="kw">select</span>(<span class="dt">col1 =</span> coluna1, </span>
+<span id="cb1-8"><a href="#cb1-8"></a>             <span class="dt">col2 =</span> coluna2,...)</span></code></pre></div>
+</div>
+<div class="column" style="width:5%;">
+<p><br />
+</p>
+</div>
+<div class="column" style="width:55%;">
+<h4 id="postgresql">PostgreSQL</h4>
+<div class="sourceCode" id="cb2"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1"></a><span class="co">-- Seleção simples</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> df <span class="kw">AS</span> </span>
+<span id="cb2-3"><a href="#cb2-3"></a>(<span class="kw">SELECT</span> coluna1, coluna2,<span class="op">..</span>. <span class="kw">FROM</span> df1); </span>
+<span id="cb2-4"><a href="#cb2-4"></a></span>
+<span id="cb2-5"><a href="#cb2-5"></a><span class="co">-- Selecionar e renomear </span></span>
+<span id="cb2-6"><a href="#cb2-6"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> df <span class="kw">AS</span></span>
+<span id="cb2-7"><a href="#cb2-7"></a>(<span class="kw">SELECT</span> coluna1 col1, coluna2 col2,<span class="op">..</span>. <span class="kw">FROM</span> df1);</span></code></pre></div>
+</div>
+</div>
+<h3 id="selecionando-linhas---slicedplyrlimit-offsetpostgresql">Selecionando linhas - slice(dplyr)/limit-offset(PostgreSQL)</h3>
+<div style="display: flex;">
+<div class="column" style="width:40%;">
+<h4 id="tidyverse-1">Tidyverse</h4>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co">## Filtrar as 10 primeiras linhas</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a>df &lt;-<span class="st"> </span>df1 <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb3-3"><a href="#cb3-3"></a><span class="st">      </span><span class="kw">slice</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>) </span>
+<span id="cb3-4"><a href="#cb3-4"></a><span class="co">## Filtrar as linhas de 3 a 6</span></span>
+<span id="cb3-5"><a href="#cb3-5"></a>df &lt;-<span class="st"> </span>df <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb3-6"><a href="#cb3-6"></a><span class="st">      </span><span class="kw">slice</span>(<span class="dv">3</span><span class="op">:</span><span class="dv">6</span>) </span></code></pre></div>
+</div>
+<div class="column" style="width:5%;">
+<p><br />
+</p>
+</div>
+<div class="column" style="width:55%;">
+<h4 id="postgresql-1">PostgreSQL</h4>
+<p>Bases relacionais não possuem uma noção intrínseca de ordem. Especifique uma coluna para ordenar, antes de filtrar.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb4-1"><a href="#cb4-1"></a></span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="kw">ALTER</span> <span class="kw">TABLE</span> df1 <span class="kw">ADD</span> <span class="kw">COLUMN</span> df1_id SERIAL;</span>
+<span id="cb4-3"><a href="#cb4-3"></a></span>
+<span id="cb4-4"><a href="#cb4-4"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> df <span class="kw">AS</span> </span>
+<span id="cb4-5"><a href="#cb4-5"></a>(<span class="kw">SELECT</span> <span class="op">*</span> </span>
+<span id="cb4-6"><a href="#cb4-6"></a> <span class="kw">FROM</span> df1</span>
+<span id="cb4-7"><a href="#cb4-7"></a> <span class="kw">ORDER</span> <span class="kw">BY</span>  df1_id</span>
+<span id="cb4-8"><a href="#cb4-8"></a> <span class="kw">LIMIT</span> <span class="dv">10</span>);</span>
+<span id="cb4-9"><a href="#cb4-9"></a></span>
+<span id="cb4-10"><a href="#cb4-10"></a><span class="co">-- Eventualmente apague esta coluna</span></span>
+<span id="cb4-11"><a href="#cb4-11"></a></span>
+<span id="cb4-12"><a href="#cb4-12"></a><span class="kw">ALTER</span> <span class="kw">TABLE</span> df <span class="kw">DROP</span> <span class="kw">COLUMN</span> df1_id;</span>
+<span id="cb4-13"><a href="#cb4-13"></a></span>
+<span id="cb4-14"><a href="#cb4-14"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> df <span class="kw">AS</span></span>
+<span id="cb4-15"><a href="#cb4-15"></a>(<span class="kw">SELECT</span> <span class="op">*</span></span>
+<span id="cb4-16"><a href="#cb4-16"></a><span class="kw">FROM</span> df1</span>
+<span id="cb4-17"><a href="#cb4-17"></a><span class="kw">ORDER</span> <span class="kw">BY</span> df1_id</span>
+<span id="cb4-18"><a href="#cb4-18"></a><span class="kw">LIMIT</span> <span class="dv">4</span></span>
+<span id="cb4-19"><a href="#cb4-19"></a>OFFSET <span class="dv">2</span>);</span>
+<span id="cb4-20"><a href="#cb4-20"></a></span>
+<span id="cb4-21"><a href="#cb4-21"></a><span class="co">-- Eventualmente apague esta coluna</span></span>
+<span id="cb4-22"><a href="#cb4-22"></a><span class="kw">ALTER</span> <span class="kw">TABLE</span> df <span class="kw">DROP</span> <span class="kw">COLUMN</span> df1_id; </span></code></pre></div>
+</div>
+</div>
+<h3 id="selecionando-linhas---filterdplyrwherepostgresql">Selecionando linhas - filter(dplyr)/where(PostgreSQL)</h3>
+<div style="display: flex;">
+<div class="column" style="width:40%;">
+<h4 id="tidyverse-2">Tidyverse</h4>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>df &lt;-<span class="st"> </span>df1 <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="st">      </span><span class="kw">filter</span>(col1 <span class="op">==</span><span class="st"> </span>valor)</span>
+<span id="cb5-3"><a href="#cb5-3"></a>      </span>
+<span id="cb5-4"><a href="#cb5-4"></a>df &lt;-<span class="st"> </span>df1 <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb5-5"><a href="#cb5-5"></a><span class="st">      </span><span class="kw">filter</span>(col1 <span class="op">!=</span><span class="st"> </span>valor)</span>
+<span id="cb5-6"><a href="#cb5-6"></a>      </span>
+<span id="cb5-7"><a href="#cb5-7"></a>df &lt;-<span class="st"> </span>df1 <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb5-8"><a href="#cb5-8"></a><span class="st">      </span><span class="kw">filter</span>(col1 <span class="op">&gt;</span><span class="st"> </span>valor)</span>
+<span id="cb5-9"><a href="#cb5-9"></a>      </span>
+<span id="cb5-10"><a href="#cb5-10"></a>df &lt;-<span class="st"> </span>df1 <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb5-11"><a href="#cb5-11"></a><span class="st">      </span><span class="kw">filter</span>(col1 <span class="op">&lt;</span><span class="st"> </span>valor)</span>
+<span id="cb5-12"><a href="#cb5-12"></a>      </span>
+<span id="cb5-13"><a href="#cb5-13"></a>df &lt;-<span class="st"> </span>df1 <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb5-14"><a href="#cb5-14"></a><span class="st">      </span><span class="kw">filter</span>(col1 <span class="op">&gt;=</span><span class="st"> </span>valor)</span>
+<span id="cb5-15"><a href="#cb5-15"></a>      </span>
+<span id="cb5-16"><a href="#cb5-16"></a>df &lt;-<span class="st"> </span>df1 <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb5-17"><a href="#cb5-17"></a><span class="st">      </span><span class="kw">filter</span>(col1 <span class="op">&lt;=</span><span class="st"> </span>valor)</span></code></pre></div>
+</div>
+<div class="column" style="width:5%;">
+<p><br />
+</p>
+</div>
+<div class="column" style="width:55%;">
+<h4 id="postgresql-2">PostgreSQL</h4>
+<div class="sourceCode" id="cb6"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb6-1"><a href="#cb6-1"></a></span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> df <span class="kw">AS</span> </span>
+<span id="cb6-3"><a href="#cb6-3"></a>(<span class="kw">SELECT</span> <span class="op">*</span> </span>
+<span id="cb6-4"><a href="#cb6-4"></a> <span class="kw">FROM</span> df1</span>
+<span id="cb6-5"><a href="#cb6-5"></a> <span class="kw">WHERE</span> col1 <span class="op">=</span> valor);</span>
+<span id="cb6-6"><a href="#cb6-6"></a></span>
+<span id="cb6-7"><a href="#cb6-7"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> df <span class="kw">AS</span> </span>
+<span id="cb6-8"><a href="#cb6-8"></a>(<span class="kw">SELECT</span> <span class="op">*</span> </span>
+<span id="cb6-9"><a href="#cb6-9"></a> <span class="kw">FROM</span> df1</span>
+<span id="cb6-10"><a href="#cb6-10"></a> <span class="kw">WHERE</span> col1 <span class="op">!=</span> valor);</span>
+<span id="cb6-11"><a href="#cb6-11"></a></span>
+<span id="cb6-12"><a href="#cb6-12"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> df <span class="kw">AS</span> </span>
+<span id="cb6-13"><a href="#cb6-13"></a>(<span class="kw">SELECT</span> <span class="op">*</span> </span>
+<span id="cb6-14"><a href="#cb6-14"></a> <span class="kw">FROM</span> df1</span>
+<span id="cb6-15"><a href="#cb6-15"></a> <span class="kw">WHERE</span> col1 <span class="op">&gt;</span> valor);</span>
+<span id="cb6-16"><a href="#cb6-16"></a></span>
+<span id="cb6-17"><a href="#cb6-17"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> df <span class="kw">AS</span> </span>
+<span id="cb6-18"><a href="#cb6-18"></a>(<span class="kw">SELECT</span> <span class="op">*</span> </span>
+<span id="cb6-19"><a href="#cb6-19"></a> <span class="kw">FROM</span> df1</span>
+<span id="cb6-20"><a href="#cb6-20"></a> <span class="kw">WHERE</span> col1 <span class="op">&lt;</span> valor);</span>
+<span id="cb6-21"><a href="#cb6-21"></a> </span>
+<span id="cb6-22"><a href="#cb6-22"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> df <span class="kw">AS</span> </span>
+<span id="cb6-23"><a href="#cb6-23"></a>(<span class="kw">SELECT</span> <span class="op">*</span> </span>
+<span id="cb6-24"><a href="#cb6-24"></a> <span class="kw">FROM</span> df1</span>
+<span id="cb6-25"><a href="#cb6-25"></a> <span class="kw">WHERE</span> col1 <span class="op">&gt;=</span> valor); </span>
+<span id="cb6-26"><a href="#cb6-26"></a> </span>
+<span id="cb6-27"><a href="#cb6-27"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> df <span class="kw">AS</span> </span>
+<span id="cb6-28"><a href="#cb6-28"></a>(<span class="kw">SELECT</span> <span class="op">*</span> </span>
+<span id="cb6-29"><a href="#cb6-29"></a> <span class="kw">FROM</span> df1</span>
+<span id="cb6-30"><a href="#cb6-30"></a> <span class="kw">WHERE</span> col1 <span class="op">&lt;=</span> valor);</span></code></pre></div>
+</div>
+</div>
+<h2 id="juntando-tabelasdataframes">Juntando tabelas/dataframes</h2>
+<h3 id="junção-vertical">Junção vertical</h3>
+<div style="display: flex;">
+<div class="column" style="width:40%;">
+<h4 id="tidyverse-3">Tidyverse</h4>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="co">## preserva linhas duplicadas</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a>df &lt;-<span class="st"> </span><span class="kw">bind_rows</span>(df1,df2) </span>
+<span id="cb7-3"><a href="#cb7-3"></a></span>
+<span id="cb7-4"><a href="#cb7-4"></a><span class="co">## elimina dupliações</span></span>
+<span id="cb7-5"><a href="#cb7-5"></a>df &lt;-<span class="st"> </span><span class="kw">bind_rows</span>(df1,df2) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb7-6"><a href="#cb7-6"></a><span class="st">      </span><span class="kw">distinct</span>()  </span></code></pre></div>
+</div>
+<div class="column" style="width:5%;">
+<p><br />
+</p>
+</div>
+<div class="column" style="width:55%;">
+<h4 id="postgresql-3">PostgreSQL</h4>
+<div class="sourceCode" id="cb8"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb8-1"><a href="#cb8-1"></a><span class="co">-- preserva duplicações</span></span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> df <span class="kw">AS</span> </span>
+<span id="cb8-3"><a href="#cb8-3"></a>(<span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> df1 </span>
+<span id="cb8-4"><a href="#cb8-4"></a><span class="kw">UNION</span> <span class="kw">ALL</span>          </span>
+<span id="cb8-5"><a href="#cb8-5"></a><span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> df2);</span>
+<span id="cb8-6"><a href="#cb8-6"></a></span>
+<span id="cb8-7"><a href="#cb8-7"></a><span class="co">-- elimina duplicações</span></span>
+<span id="cb8-8"><a href="#cb8-8"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> df <span class="kw">AS</span> </span>
+<span id="cb8-9"><a href="#cb8-9"></a>(<span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> df1 </span>
+<span id="cb8-10"><a href="#cb8-10"></a><span class="kw">UNION</span>           </span>
+<span id="cb8-11"><a href="#cb8-11"></a><span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> df2);</span></code></pre></div>
+</div>
+</div>
+<h3 id="junção-horizontal">Junção horizontal</h3>
+<div style="display: flex;">
+<div class="column" style="width:40%;">
+<h4 id="tidyverse-4">Tidyverse</h4>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>df &lt;-<span class="st"> </span><span class="kw">bind_cols</span>(df1,df2)</span></code></pre></div>
+</div>
+<div class="column" style="width:5%;">
+<p><br />
+</p>
+</div>
+<div class="column" style="width:55%;">
+<h4 id="postgresql-4">PostgreSQL</h4>
+<p>Há formas mais eficientes de realizar esta combinação, mas falaremos disso quando tratarmos de junções (joins)</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb10-1"><a href="#cb10-1"></a></span>
+<span id="cb10-2"><a href="#cb10-2"></a><span class="kw">ALTER</span> <span class="kw">TABLE</span> df1 <span class="kw">ADD</span> <span class="kw">COLUMN</span> df1_id serial;</span>
+<span id="cb10-3"><a href="#cb10-3"></a><span class="kw">ALTER</span> <span class="kw">TABLE</span> df2 <span class="kw">ADD</span> <span class="kw">COLUMN</span> df2_id serial;</span>
+<span id="cb10-4"><a href="#cb10-4"></a></span>
+<span id="cb10-5"><a href="#cb10-5"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> df <span class="kw">as</span> </span>
+<span id="cb10-6"><a href="#cb10-6"></a>(<span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> df1,df2</span>
+<span id="cb10-7"><a href="#cb10-7"></a><span class="kw">WHERE</span> df1.df1_id <span class="op">=</span> df2.df2_id);</span>
+<span id="cb10-8"><a href="#cb10-8"></a></span>
+<span id="cb10-9"><a href="#cb10-9"></a><span class="kw">ALTER</span> <span class="kw">TABLE</span> df <span class="kw">DROP</span> <span class="kw">COLUMN</span> df2_id;</span>
+<span id="cb10-10"><a href="#cb10-10"></a><span class="kw">ALTER</span> <span class="kw">TABLE</span> df <span class="kw">RENAME</span> <span class="kw">COLUMN</span> df1_id <span class="kw">to</span> df_id;</span></code></pre></div>
+</div>
+</div>
+<h3 id="produto-cartesiano-cross-expand.grid">Produto cartesiano ( cross, expand.grid)</h3>
+<div style="display: flex;">
+<div class="column" style="width:40%;">
+<h4 id="tidyverser">Tidyverse/R</h4>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="co">## R base</span></span>
+<span id="cb11-2"><a href="#cb11-2"></a>df &lt;-<span class="st"> </span><span class="kw">expand.grid</span>(<span class="kw">list</span>(<span class="dt">v1=</span><span class="dv">1</span><span class="op">:</span><span class="dv">2</span>,</span>
+<span id="cb11-3"><a href="#cb11-3"></a>              <span class="dt">v2=</span><span class="kw">c</span>(<span class="st">&quot;a&quot;</span>,<span class="st">&quot;b&quot;</span>,<span class="st">&quot;c&quot;</span>))) </span>
+<span id="cb11-4"><a href="#cb11-4"></a><span class="co">## purrr</span></span>
+<span id="cb11-5"><a href="#cb11-5"></a>df &lt;-<span class="st"> </span>purrr<span class="op">::</span><span class="kw">cross_df</span>(<span class="kw">list</span>(<span class="dt">v1=</span><span class="dv">1</span><span class="op">:</span><span class="dv">2</span>,</span>
+<span id="cb11-6"><a href="#cb11-6"></a>              <span class="dt">v2=</span><span class="kw">c</span>(<span class="st">&quot;a&quot;</span>,<span class="st">&quot;b&quot;</span>,<span class="st">&quot;c&quot;</span>)))</span></code></pre></div>
+</div>
+<div class="column" style="width:5%;">
+<p><br />
+</p>
+</div>
+<div class="column" style="width:55%;">
+<h4 id="postgresql-5">PostgreSQL</h4>
+<div class="sourceCode" id="cb12"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb12-1"><a href="#cb12-1"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span>  df</span>
+<span id="cb12-2"><a href="#cb12-2"></a><span class="kw">AS</span></span>
+<span id="cb12-3"><a href="#cb12-3"></a>(<span class="kw">SELECT</span> v1,v2 <span class="kw">FROM</span> df1, df2);</span></code></pre></div>
+</div>
+</div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>

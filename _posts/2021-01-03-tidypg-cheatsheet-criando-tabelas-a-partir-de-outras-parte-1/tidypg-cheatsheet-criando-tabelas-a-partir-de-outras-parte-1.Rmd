@@ -1,0 +1,330 @@
+---
+title: "TidyPG cheatsheet: Criando tabelas a partir de outras - parte 1"
+description: |
+  Neste cheatsheet mostramos como criar tabelas tanto no R 
+  quanto no PostgreSQL a partir da junção de outras ou de filtros.
+author:
+  - name: José de Jesus Filho
+    url: https://rpg.consudata.com.br
+date: 01-03-2021
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Selecionando linhas e colunas
+
+### Selecionando colunas
+
+:::::: {style="display: flex;"}
+::: {.column width="40%"}
+
+
+#### Tidyverse
+
+```r
+## Seleção simples
+df <- df1 %>% 
+      select(coluna1,coluna2,...)
+
+## Selecionar e renomear
+df <- df %>% 
+      select(col1 = coluna1, 
+             col2 = coluna2,...)
+```
+:::
+
+::: {.column width="5%"}
+\
+:::
+
+::: {.column width="55%"}
+
+
+#### PostgreSQL
+
+```sql
+-- Seleção simples
+CREATE TABLE df AS 
+(SELECT coluna1, coluna2,... FROM df1); 
+
+-- Selecionar e renomear 
+CREATE TABLE df AS
+(SELECT coluna1 col1, coluna2 col2,... FROM df1);
+```
+:::
+
+::::::
+
+### Selecionando linhas - slice(dplyr)/limit-offset(PostgreSQL)
+
+:::::: {style="display: flex;"}
+::: {.column width="40%"}
+
+
+#### Tidyverse
+
+```r
+## Filtrar as 10 primeiras linhas
+df <- df1 %>% 
+      slice(1:10) 
+## Filtrar as linhas de 3 a 6
+df <- df %>% 
+      slice(3:6) 
+```
+:::
+
+::: {.column width="5%"}
+\
+:::
+
+::: {.column width="55%"}
+
+
+#### PostgreSQL
+
+Bases relacionais não possuem uma noção intrínseca de ordem. Especifique uma coluna para ordenar, antes de filtrar.
+```sql
+
+ALTER TABLE df1 ADD COLUMN df1_id SERIAL;
+
+CREATE TABLE df AS 
+(SELECT * 
+ FROM df1
+ ORDER BY  df1_id
+ LIMIT 10);
+
+-- Eventualmente apague esta coluna
+
+ALTER TABLE df DROP COLUMN df1_id;
+
+CREATE TABLE df AS
+(SELECT *
+FROM df1
+ORDER BY df1_id
+LIMIT 4
+OFFSET 2);
+
+-- Eventualmente apague esta coluna
+ALTER TABLE df DROP COLUMN df1_id; 
+
+```
+:::
+
+::::::
+
+
+
+### Selecionando linhas - filter(dplyr)/where(PostgreSQL)
+
+:::::: {style="display: flex;"}
+::: {.column width="40%"}
+
+
+#### Tidyverse
+
+```r
+df <- df1 %>% 
+      filter(col1 == valor)
+      
+df <- df1 %>% 
+      filter(col1 != valor)
+      
+df <- df1 %>% 
+      filter(col1 > valor)
+      
+df <- df1 %>% 
+      filter(col1 < valor)
+      
+df <- df1 %>% 
+      filter(col1 >= valor)
+      
+df <- df1 %>% 
+      filter(col1 <= valor)
+```
+:::
+
+::: {.column width="5%"}
+\
+:::
+
+::: {.column width="55%"}
+
+
+#### PostgreSQL
+
+
+```sql
+
+CREATE TABLE df AS 
+(SELECT * 
+ FROM df1
+ WHERE col1 = valor);
+
+CREATE TABLE df AS 
+(SELECT * 
+ FROM df1
+ WHERE col1 != valor);
+
+CREATE TABLE df AS 
+(SELECT * 
+ FROM df1
+ WHERE col1 > valor);
+
+CREATE TABLE df AS 
+(SELECT * 
+ FROM df1
+ WHERE col1 < valor);
+ 
+CREATE TABLE df AS 
+(SELECT * 
+ FROM df1
+ WHERE col1 >= valor); 
+ 
+CREATE TABLE df AS 
+(SELECT * 
+ FROM df1
+ WHERE col1 <= valor);
+
+```
+:::
+
+::::::
+
+
+
+
+## Juntando tabelas/dataframes
+
+### Junção vertical
+
+:::::: {style="display: flex;"}
+::: {.column width="40%"}
+
+
+#### Tidyverse
+
+```r
+## preserva linhas duplicadas
+df <- bind_rows(df1,df2) 
+
+## elimina dupliações
+df <- bind_rows(df1,df2) %>% 
+      distinct()  
+
+```
+:::
+
+::: {.column width="5%"}
+\
+:::
+
+::: {.column width="55%"}
+
+
+#### PostgreSQL
+
+```sql
+-- preserva duplicações
+CREATE TABLE df AS 
+(SELECT * FROM df1 
+UNION ALL          
+SELECT * FROM df2);
+
+-- elimina duplicações
+CREATE TABLE df AS 
+(SELECT * FROM df1 
+UNION           
+SELECT * FROM df2);
+
+```
+
+:::
+
+::::::
+
+
+
+### Junção horizontal
+
+:::::: {style="display: flex;"}
+::: {.column width="40%"}
+
+
+#### Tidyverse
+
+```r
+df <- bind_cols(df1,df2)
+```
+:::
+
+::: {.column width="5%"}
+\
+:::
+
+::: {.column width="55%"}
+
+
+#### PostgreSQL
+
+Há formas mais eficientes de realizar esta combinação, mas falaremos disso quando tratarmos de junções (joins)
+```sql
+
+ALTER TABLE df1 ADD COLUMN df1_id serial;
+ALTER TABLE df2 ADD COLUMN df2_id serial;
+
+CREATE TABLE df as 
+(SELECT * FROM df1,df2
+WHERE df1.df1_id = df2.df2_id);
+
+ALTER TABLE df DROP COLUMN df2_id;
+ALTER TABLE df RENAME COLUMN df1_id to df_id;
+
+```
+:::
+
+::::::
+
+
+
+### Produto cartesiano ( cross, expand.grid)
+
+:::::: {style="display: flex;"}
+::: {.column width="40%"}
+
+
+#### Tidyverse/R
+
+```r
+## R base
+df <- expand.grid(list(v1=1:2,
+              v2=c("a","b","c"))) 
+## purrr
+df <- purrr::cross_df(list(v1=1:2,
+              v2=c("a","b","c")))
+```
+:::
+
+::: {.column width="5%"}
+\
+:::
+
+::: {.column width="55%"}
+
+
+#### PostgreSQL
+
+```sql
+CREATE TABLE  df
+AS
+(SELECT v1,v2 FROM df1, df2);
+```
+:::
+
+::::::
+
+

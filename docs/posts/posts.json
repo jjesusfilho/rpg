@@ -34,6 +34,23 @@
     "input_file": {}
   },
   {
+    "path": "posts/2021-01-03-tidypg-cheatsheet-criando-tabelas-a-partir-de-outras-parte-1/",
+    "title": "TidyPG cheatsheet: Criando tabelas a partir de outras - parte 1",
+    "description": "Neste cheatsheet mostramos como criar tabelas tanto no R \nquanto no PostgreSQL a partir da junção de outras ou de filtros.",
+    "author": [
+      {
+        "name": "José de Jesus Filho",
+        "url": "https://rpg.consudata.com.br"
+      }
+    ],
+    "date": "2021-01-03",
+    "categories": [],
+    "contents": "\nSelecionando linhas e colunas\nSelecionando colunas\n\n\nTidyverse\n## Seleção simples\ndf <- df1 %>% \n      select(coluna1,coluna2,...)\n\n## Selecionar e renomear\ndf <- df %>% \n      select(col1 = coluna1, \n             col2 = coluna2,...)\n\n\n\n\n\nPostgreSQL\n-- Seleção simples\nCREATE TABLE df AS \n(SELECT coluna1, coluna2,... FROM df1); \n\n-- Selecionar e renomear \nCREATE TABLE df AS\n(SELECT coluna1 col1, coluna2 col2,... FROM df1);\n\n\nSelecionando linhas - slice(dplyr)/limit-offset(PostgreSQL)\n\n\nTidyverse\n## Filtrar as 10 primeiras linhas\ndf <- df1 %>% \n      slice(1:10) \n## Filtrar as linhas de 3 a 6\ndf <- df %>% \n      slice(3:6) \n\n\n\n\n\nPostgreSQL\nBases relacionais não possuem uma noção intrínseca de ordem. Especifique uma coluna para ordenar, antes de filtrar.\n\nALTER TABLE df1 ADD COLUMN df1_id SERIAL;\n\nCREATE TABLE df AS \n(SELECT * \n FROM df1\n ORDER BY  df1_id\n LIMIT 10);\n\n-- Eventualmente apague esta coluna\n\nALTER TABLE df DROP COLUMN df1_id;\n\nCREATE TABLE df AS\n(SELECT *\nFROM df1\nORDER BY df1_id\nLIMIT 4\nOFFSET 2);\n\n-- Eventualmente apague esta coluna\nALTER TABLE df DROP COLUMN df1_id; \n\n\nSelecionando linhas - filter(dplyr)/where(PostgreSQL)\n\n\nTidyverse\ndf <- df1 %>% \n      filter(col1 == valor)\n      \ndf <- df1 %>% \n      filter(col1 != valor)\n      \ndf <- df1 %>% \n      filter(col1 > valor)\n      \ndf <- df1 %>% \n      filter(col1 < valor)\n      \ndf <- df1 %>% \n      filter(col1 >= valor)\n      \ndf <- df1 %>% \n      filter(col1 <= valor)\n\n\n\n\n\nPostgreSQL\n\nCREATE TABLE df AS \n(SELECT * \n FROM df1\n WHERE col1 = valor);\n\nCREATE TABLE df AS \n(SELECT * \n FROM df1\n WHERE col1 != valor);\n\nCREATE TABLE df AS \n(SELECT * \n FROM df1\n WHERE col1 > valor);\n\nCREATE TABLE df AS \n(SELECT * \n FROM df1\n WHERE col1 < valor);\n \nCREATE TABLE df AS \n(SELECT * \n FROM df1\n WHERE col1 >= valor); \n \nCREATE TABLE df AS \n(SELECT * \n FROM df1\n WHERE col1 <= valor);\n\n\nJuntando tabelas/dataframes\nJunção vertical\n\n\nTidyverse\n## preserva linhas duplicadas\ndf <- bind_rows(df1,df2) \n\n## elimina dupliações\ndf <- bind_rows(df1,df2) %>% \n      distinct()  \n\n\n\n\n\nPostgreSQL\n-- preserva duplicações\nCREATE TABLE df AS \n(SELECT * FROM df1 \nUNION ALL          \nSELECT * FROM df2);\n\n-- elimina duplicações\nCREATE TABLE df AS \n(SELECT * FROM df1 \nUNION           \nSELECT * FROM df2);\n\n\nJunção horizontal\n\n\nTidyverse\ndf <- bind_cols(df1,df2)\n\n\n\n\n\nPostgreSQL\nHá formas mais eficientes de realizar esta combinação, mas falaremos disso quando tratarmos de junções (joins)\n\nALTER TABLE df1 ADD COLUMN df1_id serial;\nALTER TABLE df2 ADD COLUMN df2_id serial;\n\nCREATE TABLE df as \n(SELECT * FROM df1,df2\nWHERE df1.df1_id = df2.df2_id);\n\nALTER TABLE df DROP COLUMN df2_id;\nALTER TABLE df RENAME COLUMN df1_id to df_id;\n\n\nProduto cartesiano ( cross, expand.grid)\n\n\nTidyverse/R\n## R base\ndf <- expand.grid(list(v1=1:2,\n              v2=c(\"a\",\"b\",\"c\"))) \n## purrr\ndf <- purrr::cross_df(list(v1=1:2,\n              v2=c(\"a\",\"b\",\"c\")))\n\n\n\n\n\nPostgreSQL\nCREATE TABLE  df\nAS\n(SELECT v1,v2 FROM df1, df2);\n\n\n\n\n\n",
+    "preview": {},
+    "last_modified": "2021-01-03T16:12:35-03:00",
+    "input_file": {}
+  },
+  {
     "path": "posts/welcome/",
     "title": "Bem-vinda à  Ciência de Dados com R e PostgreSQL",
     "description": "Bem-vindo a este blog sobre Ciência de Dados com R e PostgreSQL. Periodicamente, irei\npostar tutoriais sobre !",
