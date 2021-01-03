@@ -34,6 +34,23 @@
     "input_file": {}
   },
   {
+    "path": "posts/2021-01-03-similaridades-entre-na-no-r-e-null-no-postgresql/",
+    "title": "Similaridades entre NA no R e NULL no PostgreSQL",
+    "description": "Neste tuturial iremos mostrar como o comportamento de `NAs` no **R** \né consistente com o de `NULL` no PostgreSQL.",
+    "author": [
+      {
+        "name": "José de Jesus Filho",
+        "url": "https://rpg.consudata.com.br"
+      }
+    ],
+    "date": "2021-01-03",
+    "categories": [],
+    "contents": "\nIntrodução\nQuando você envia um dataframe do R para PostgreSQL, NAs, ou seja, valores faltantes, são convertidos para NULL. Acontece que o R diferencia NA de NULL. No R NULL é tipo de objeto e é por isso que você não consegue incluí-lo num vetor ou numa matriz, mas consegue adicioná-lo como elemento numa lista, inclusive em dataframes, já que estas também são listas. Porém, somente quando todas as colunas são NULL. NULL no R é um tanto ambíguo, pois ora se comporta como vazio, ora como elemento indefinido.\nPor sua vez, NA no R é um elemento lógico para indicar dado desconhecido. Isso é concebido dentro da lógica ternária, que admite três valores: VERDADEIRO, FALSO e DESCONHECIDO. O mesmo acontece com SQL para NULL.\nNeste tuturial iremos mostrar como o comportamento de NAs no R é consistente com o de NULL no PostgreSQL.\nCriando objetos com valores desconhecidos\nPara criar objetos com valores desconhecidos no R, você simplesmente coloca NA no vetor ou na coluna:\n\n\na <- c(1,2,3,NA)\n\na\n\n\n[1]  1  2  3 NA\n\n\n\ndf <- data.frame(a = a)\ndf\n\n\n   a\n1  1\n2  2\n3  3\n4 NA\n\nNo PostgreSQL, você pode fazer o mesmo, mas com NULL\n\nSELECT  UNNEST(ARRAY[1,2,3,NULL]) AS a;\na\n1\n2\n3\n(4 rows)\n\nCREATE TABLE df (a) AS VALUES (1),(2),(3), (NULL);\n\nSELECT * FROM df;\na\n1\n2\n3\n(4 rows)\nSimilaridades\nComo ambos são valores desconhecidos, espera-se que o comportamento seja similar num e noutro, e de fato é, em muitas situações.\nComparações no R\n\n\n2 == NA\n\n\n[1] NA\n\n\n\nNA == NA\n\n\n[1] NA\n\n\n\n2 < NA\n\n\n[1] NA\n\n\n\n2 + NA\n\n\n[1] NA\n\nEm todas essas situações, o R retorna o elemento lógico NA, ou seja, desconhecido, porque o resultado da comparação é de fato desconhecido, já que NA pode equivaler a uma infinidade de valores, inclusive o valor comparado a NA.\nComo NULL possui a mesma natureza, as respostas são consistentes:\nSELECT 2 = NULL;\n?column?\n(1 row)\n\nSELECT NULL = NULL;\n?column?\n(1 row)\nSELECT 2 < NULL;\n?column?\n(1 row)\nSELECT 2 + NULL;\n?column?\n(1 row)\nIgualmente, algo que surpreende no R é o filtro negativo em colunas que contêm NAs:\n\n\nsubset(df,a !=2)\n\n\n  a\n1 1\n3 3\n\nCom dplyr ocorre o mesmo:\n\n\ndplyr::filter(df,a != 2)\n\n\n  a\n1 1\n2 3\n\nEm ambos os casos, linhas com NAs também foram excluídas. Isso porque NA pode conter o 2 (Confesso que esse comportamento não me convence inteiramente).\nVejamos em SQL\nSELECT * FROM df\nWHERE  a != 2;\na\n1\n3\n(2 rows)\nPara evitar surpresas, não se esqueça de explicitamente filtrar para NAs no R e para NULLs no PostgreSQL.\n\n\ndplyr::filter(df, a != 2 | is.na(a))\n\n\n   a\n1  1\n2  3\n3 NA\n\nSELECT * \nFROM df\nWHERE a != 2\nOR a IS NULL;\na\n1\n3\n(3 rows)\nConclusão\nNão estou absolutamente seguro de que os comportamentos de NA no R e NULL em SQL são sempre os mesmos, mas para as operações mais comuns, você pode ficar tranquila que são.\n\n\n\n",
+    "preview": "posts/2021-01-03-similaridades-entre-na-no-r-e-null-no-postgresql/missing.jpg",
+    "last_modified": "2021-01-03T16:38:03-03:00",
+    "input_file": {}
+  },
+  {
     "path": "posts/2021-01-03-tidypg-cheatsheet-criando-tabelas-a-partir-de-outras-parte-1/",
     "title": "TidyPG cheatsheet: Criando tabelas a partir de outras - parte 1",
     "description": "Neste cheatsheet mostramos como criar tabelas tanto no R \nquanto no PostgreSQL a partir da junção de outras ou de filtros.",

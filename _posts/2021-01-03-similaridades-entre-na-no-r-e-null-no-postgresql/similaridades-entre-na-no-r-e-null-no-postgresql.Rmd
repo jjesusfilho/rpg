@@ -1,0 +1,191 @@
+---
+title: "Similaridades entre NA no R e NULL no PostgreSQL"
+description: |
+  Neste tuturial iremos mostrar como o comportamento de `NAs` no **R** 
+  é consistente com o de `NULL` no PostgreSQL.
+author:
+  - name: José de Jesus Filho
+    url: https://rpg.consudata.com.br
+date: 01-03-2021
+output:
+  distill::distill_article:
+    self_contained: false
+preview: "missing.jpg"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Introdução
+
+Quando você envia um dataframe do **R** para PostgreSQL, `NAs`, ou seja, valores faltantes, são convertidos para `NULL`. Acontece que o **R** diferencia `NA` de `NULL`. No **R** `NULL` é tipo de objeto e é por isso que você não consegue incluí-lo num vetor ou numa matriz, mas consegue adicioná-lo como elemento numa lista, inclusive em dataframes, já que estas também são listas. Porém, somente quando todas as colunas são `NULL`.  `NULL` no **R** é um tanto ambíguo, pois ora se comporta como vazio, ora como elemento indefinido.
+
+Por sua vez, `NA` no **R** é um elemento lógico para indicar dado desconhecido. Isso é concebido dentro da lógica ternária, que admite três valores: VERDADEIRO, FALSO e DESCONHECIDO. O mesmo acontece com SQL para `NULL`.
+
+Neste tuturial iremos mostrar como o comportamento de `NAs` no **R** é consistente com o de `NULL` no PostgreSQL.
+
+
+## Criando objetos com valores desconhecidos
+
+Para criar objetos com valores desconhecidos no **R**, você simplesmente coloca `NA` no vetor ou na coluna:
+
+```{r}
+a <- c(1,2,3,NA)
+
+a
+
+```
+
+
+```{r}
+df <- data.frame(a = a)
+df
+```
+
+No PostgreSQL, você pode fazer o mesmo, mas com `NULL`
+
+
+```sql
+
+SELECT  UNNEST(ARRAY[1,2,3,NULL]) AS a;
+```
+ a  
+ 
+ 1  
+ 2  
+ 3  
+
+(4 rows)
+
+```sql
+
+CREATE TABLE df (a) AS VALUES (1),(2),(3), (NULL);
+
+SELECT * FROM df;
+```
+
+ a  
+ 
+ 1  
+ 2  
+ 3  
+
+(4 rows)
+
+## Similaridades
+
+Como ambos são valores desconhecidos, espera-se que o comportamento seja similar num e noutro, e de fato é, em muitas situações.
+
+### Comparações no R
+
+
+```{r}
+2 == NA
+```
+
+```{r}
+NA == NA
+```
+
+```{r}
+2 < NA
+```
+
+```{r}
+2 + NA
+```
+
+
+Em todas essas situações, o **R** retorna o elemento lógico `NA`, ou seja, desconhecido,  porque o resultado da comparação é de fato desconhecido, já que `NA` pode equivaler a uma infinidade de valores, inclusive o valor comparado a `NA`.
+
+Como `NULL` possui a mesma natureza, as respostas são consistentes:
+
+```sql
+SELECT 2 = NULL;
+```
+?column?
+
+(1 row)
+
+```sql
+
+SELECT NULL = NULL;
+```
+?column?
+
+(1 row)
+
+```sql
+SELECT 2 < NULL;
+```
+?column?
+
+(1 row)
+
+```sql
+SELECT 2 + NULL;
+```
+
+?column?
+
+(1 row)
+
+
+Igualmente, algo que surpreende no **R** é o filtro negativo em colunas que contêm `NAs`:
+
+```{r}
+subset(df,a !=2)
+```
+
+Com dplyr ocorre o mesmo:
+
+```{r}
+dplyr::filter(df,a != 2)
+```
+
+Em ambos os casos, linhas com `NAs` também foram excluídas. Isso porque `NA` pode conter o 2 (Confesso que esse comportamento não me convence inteiramente).
+
+Vejamos em SQL
+
+```sql
+SELECT * FROM df
+WHERE  a != 2;
+
+```
+ a  
+
+ 1  
+ 3  
+(2 rows)
+
+Para evitar surpresas, não se esqueça de explicitamente filtrar para `NAs` no **R** e para `NULLs` no PostgreSQL.
+
+```{r}
+dplyr::filter(df, a != 2 | is.na(a))
+```
+
+
+
+```sql
+SELECT * 
+FROM df
+WHERE a != 2
+OR a IS NULL;
+```
+
+ a
+
+ 1  
+ 3  
+
+(3 rows)
+
+
+## Conclusão
+
+Não estou absolutamente seguro de que os comportamentos de `NA` no **R** e `NULL` em SQL são sempre os mesmos, mas para as operações mais comuns, você pode ficar tranquila que são.
+
+
