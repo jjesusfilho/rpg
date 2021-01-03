@@ -1,7 +1,8 @@
 ---
 title: "Joins no R e no PostgreSQL"
 description: |
-  A short description of the post.
+  Neste tutorial, mostro como as principais formas de joins tanto no R
+  quanto no PostgreSQL.
 author:
   - name: José de Jesus Filho
     url: https://rpg.consudata.com.br

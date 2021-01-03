@@ -6,14 +6,14 @@
       "description": "Este blog é uma uma coletânea de postagens sobre como\nfazer ciência de dados com R e PostgreSQL",
       "author": [],
       "contents": "\n\n\n\n",
-      "last_modified": "2021-01-03T11:01:57-03:00"
+      "last_modified": "2021-01-03T14:08:22-03:00"
     },
     {
       "path": "index.html",
       "title": "Ciência de Dados com R e PostgreSQL",
       "author": [],
       "contents": "\n\n\n\n",
-      "last_modified": "2021-01-03T13:46:44-03:00"
+      "last_modified": "2021-01-03T14:08:41-03:00"
     }
   ],
   "collections": ["posts/posts.json"]
