@@ -2,18 +2,18 @@
   "articles": [
     {
       "path": "about.html",
-      "title": "About this blog",
-      "description": "Some additional details about the blog",
+      "title": "Ciência de dados com R e PostgreSQL",
+      "description": "Este blog é uma uma coletânea de postagens sobre como\nfazer ciência de dados com R e PostgreSQL",
       "author": [],
       "contents": "\n\n\n\n",
-      "last_modified": "2021-01-03T09:27:05-03:00"
+      "last_modified": "2021-01-03T11:01:57-03:00"
     },
     {
       "path": "index.html",
       "title": "Ciência de Dados com R e PostgreSQL",
       "author": [],
       "contents": "\n\n\n\n",
-      "last_modified": "2021-01-03T09:27:06-03:00"
+      "last_modified": "2021-01-03T10:53:17-03:00"
     }
   ],
   "collections": ["posts/posts.json"]

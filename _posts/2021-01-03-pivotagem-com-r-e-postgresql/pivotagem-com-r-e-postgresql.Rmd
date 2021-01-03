@@ -3,7 +3,7 @@ title: "Pivotagem com R e PostgreSQL"
 description: |
   Nesta postagem, eu mostro como converter dataframes e tabelas
   entre os formatos wide e long tanto no R quanto no PostgreSQL,
-  além de permitir realizar essas operações no banco do próprio R.
+  além de permitir realizar essas operações no banco a partir do R.
 author:
   - name: José de Jesus Filho
     url: https://rpg.consudata.com.br/pivotagem
@@ -15,28 +15,34 @@ output:
 
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = TRUE,
+                      R.options = list(width = 60),
+                      message = FALSE,
+                      warning = FALSE)
+
+library(rmarkdown)
 ```
 
 
 ## Pivotagem
 
-Neste tutorial, mostraremos como pivotar no R e no PostgreSQL. Pivotar, como o próprio nome sugere, significa rotacionar colunas ou linhas, de modo que, valores contidos em linhas, passam a ser colunas e vice-versa. Em ciência de dados, é mais comum falarmos em formatos wide e formato long. Em SQL, é mais comum falarmos em pivoting e unpivoting, respectivamente.
+Neste tutorial, mostraremos como pivotar no R e no PostgreSQL. Pivotar, como o próprio nome sugere, significa rotacionar colunas ou linhas, de modo que, valores contidos em linhas, passam a ser colunas e vice-versa. Em ciência de dados, é mais comum falarmos em formatos wide e formato long. Em SQL, é mais comum falarmos em pivoting e unpivoting, respectivamente. A imagem abaixo ilustra o processo de pivotatem:
+
+```{r layout="l-body-outset", fig.width=4, echo = FALSE}
+knitr::include_graphics("pivotagem2.png")
+```
 
 Este tutorial cobre as situações mais simples de pivotagem. No dia a dia da cientista de dados ou da DBA, dataframes e tabelas apresentam-se como estruturas um tanto complexas, as quais exigem transformações prévias para não haver perda de dados ou mesmo resultados indesejados.
 
-Para começar, vamos importar um simples dataframe em formato wide com os ids dos clientes e pagamentos realizados em cada mês no ano. Se você já tem um banco PostgreSQL rodando, aproveite para escrever esse mesmo dataframe no banco. 
+Para começar, vamos importar um simples dataframe em formato wide com os ids dos clientes e pagamentos realizados em cada mês no ano. Se você já tem um banco PostgreSQL rodando, aproveite para escrever esse mesmo dataframe no banco. O dataframe encontra-se [aqui](https://gist.github.com/jjesusfilho/6f9aed145ac494aae5f22d54bfca42c7)
 
 ```{r message = FALSE}
 library(tidyverse)
 library(lubridate)
 ```
 
-```{r}
-source("https://gist.githubusercontent.com/jjesusfilho/6f9aed145ac494aae5f22d54bfca42c7/raw/ad6559c17433960d91d4f74df606ba4477353c2c/pagamentos.R")
-```
-
 ```{r, echo = FALSE}
+source("https://gist.githubusercontent.com/jjesusfilho/6f9aed145ac494aae5f22d54bfca42c7/raw/ad6559c17433960d91d4f74df606ba4477353c2c/pagamentos.R")
 knitr::kable(pagamentos)
 
 ```
@@ -73,7 +79,10 @@ pivot_longer(pagamentos,!cliente)
 Se você quiser informar os novos nomes das variáveis, melhor:
 
 ```{r}
-pagamentos_long <- pivot_longer(pagamentos, !cliente, names_to = "mes", values_to ="valor_pago")
+pagamentos_long <- pivot_longer(pagamentos, 
+                                !cliente, 
+                                names_to = "mes", 
+                                values_to ="valor_pago")
 ```
 
 ```{r echo= FALSE}
@@ -86,7 +95,7 @@ Veja como fica fácil plotar um gráfico deste novo dataframe:
 ```{r}
 pagamentos_long %>% 
   mutate(mes = factor(mes, levels = unique(mes))) %>% 
-ggplot(aes(x = mes, y = valor_pago, fill = mes))+
+  ggplot(aes(x = mes, y = valor_pago, fill = mes))+
   geom_bar(stat = "identity") +
   theme_classic()
 ```
@@ -97,7 +106,10 @@ ggplot(aes(x = mes, y = valor_pago, fill = mes))+
 Se quisermos converter pagamentos_long para pagamentos_wide, ou seja, retornar o formato inicial, basta usar a função ```pivot_wider```. Para tanto, você deve informar quais a colunas ids, se não informar, o R irá usar todas as colunas, com exceção da coluna cujos valores se converterão em colunas, especificada no argumento names_from, e da coluna com valores que serão alocados para as respectivas novas colunas, respectivamente, arguemento values_from.
 
 ```{r}
-pagamentos_wide <- pivot_wider(pagamentos_long, id_cols = cliente, names_from = mes, values_from = valor_pago)
+pagamentos_wide <- pivot_wider(pagamentos_long, 
+                               id_cols = cliente, 
+                               names_from = mes, 
+                               values_from = valor_pago)
 ```
 
 ```{r echo = FALSE}

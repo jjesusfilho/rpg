@@ -87,7 +87,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <!--radix_placeholder_meta_tags-->
   <title>Pivotagem com R e PostgreSQL</title>
 
-  <meta property="description" itemprop="description" content="Nesta postagem, eu mostro como converter dataframes e tabelas&#10;entre os formatos wide e long tanto no R quanto no PostgreSQL,&#10;além de permitir realizar essas operações no banco do próprio R."/>
+  <meta property="description" itemprop="description" content="Nesta postagem, eu mostro como converter dataframes e tabelas&#10;entre os formatos wide e long tanto no R quanto no PostgreSQL,&#10;além de permitir realizar essas operações no banco a partir do R."/>
 
 
   <!--  https://schema.org/Article -->
@@ -98,24 +98,24 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
   <meta property="og:title" content="Pivotagem com R e PostgreSQL"/>
   <meta property="og:type" content="article"/>
-  <meta property="og:description" content="Nesta postagem, eu mostro como converter dataframes e tabelas&#10;entre os formatos wide e long tanto no R quanto no PostgreSQL,&#10;além de permitir realizar essas operações no banco do próprio R."/>
+  <meta property="og:description" content="Nesta postagem, eu mostro como converter dataframes e tabelas&#10;entre os formatos wide e long tanto no R quanto no PostgreSQL,&#10;além de permitir realizar essas operações no banco a partir do R."/>
   <meta property="og:locale" content="en_US"/>
 
   <!--  https://dev.twitter.com/cards/types/summary -->
   <meta property="twitter:card" content="summary"/>
   <meta property="twitter:title" content="Pivotagem com R e PostgreSQL"/>
-  <meta property="twitter:description" content="Nesta postagem, eu mostro como converter dataframes e tabelas&#10;entre os formatos wide e long tanto no R quanto no PostgreSQL,&#10;além de permitir realizar essas operações no banco do próprio R."/>
+  <meta property="twitter:description" content="Nesta postagem, eu mostro como converter dataframes e tabelas&#10;entre os formatos wide e long tanto no R quanto no PostgreSQL,&#10;além de permitir realizar essas operações no banco a partir do R."/>
 
   <!--/radix_placeholder_meta_tags-->
   <!--radix_placeholder_rmarkdown_metadata-->
 
   <script type="text/json" id="radix-rmarkdown-metadata">
-  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","output"]}},"value":[{"type":"character","attributes":{},"value":["Pivotagem com R e PostgreSQL"]},{"type":"character","attributes":{},"value":["Nesta postagem, eu mostro como converter dataframes e tabelas\nentre os formatos wide e long tanto no R quanto no PostgreSQL,\nalém de permitir realizar essas operações no banco do próprio R.\n"]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","url"]}},"value":[{"type":"character","attributes":{},"value":["José de Jesus Filho"]},{"type":"character","attributes":{},"value":["https://rpg.consudata.com.br/pivotagem"]}]}]},{"type":"character","attributes":{},"value":["01-03-2021"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained"]}},"value":[{"type":"logical","attributes":{},"value":[false]}]}]}]}
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","output"]}},"value":[{"type":"character","attributes":{},"value":["Pivotagem com R e PostgreSQL"]},{"type":"character","attributes":{},"value":["Nesta postagem, eu mostro como converter dataframes e tabelas\nentre os formatos wide e long tanto no R quanto no PostgreSQL,\nalém de permitir realizar essas operações no banco a partir do R.\n"]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","url"]}},"value":[{"type":"character","attributes":{},"value":["José de Jesus Filho"]},{"type":"character","attributes":{},"value":["https://rpg.consudata.com.br/pivotagem"]}]}]},{"type":"character","attributes":{},"value":["01-03-2021"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained"]}},"value":[{"type":"logical","attributes":{},"value":[false]}]}]}]}
   </script>
   <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"character","attributes":{},"value":["pivotagem-com-r-e-postgresql_files/anchor-4.2.2/anchor.min.js","pivotagem-com-r-e-postgresql_files/bowser-1.9.3/bowser.min.js","pivotagem-com-r-e-postgresql_files/distill-2.2.21/template.v2.js","pivotagem-com-r-e-postgresql_files/figure-html5/d.png","pivotagem-com-r-e-postgresql_files/figure-html5/unnamed-chunk-7-1.png","pivotagem-com-r-e-postgresql_files/header-attrs-2.6/header-attrs.js","pivotagem-com-r-e-postgresql_files/jquery-1.11.3/jquery.min.js","pivotagem-com-r-e-postgresql_files/webcomponents-2.0.0/webcomponents.js"]}
+  {"type":"character","attributes":{},"value":["pivotagem-com-r-e-postgresql_files/anchor-4.2.2/anchor.min.js","pivotagem-com-r-e-postgresql_files/bowser-1.9.3/bowser.min.js","pivotagem-com-r-e-postgresql_files/distill-2.2.21/template.v2.js","pivotagem-com-r-e-postgresql_files/figure-html5/unnamed-chunk-7-1.png","pivotagem-com-r-e-postgresql_files/figure-html5/unnamed-chunk-8-1.png","pivotagem-com-r-e-postgresql_files/header-attrs-2.6/header-attrs.js","pivotagem-com-r-e-postgresql_files/jquery-1.11.3/jquery.min.js","pivotagem-com-r-e-postgresql_files/pagedtable-1.1/css/pagedtable.css","pivotagem-com-r-e-postgresql_files/pagedtable-1.1/js/pagedtable.js","pivotagem-com-r-e-postgresql_files/webcomponents-2.0.0/webcomponents.js","pivotagem.png","pivotagem2.png"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
   <!--/radix_placeholder_navigation_in_header-->
@@ -1420,7 +1420,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"Pivotagem com R e PostgreSQL","description":"Nesta postagem, eu mostro como converter dataframes e tabelas\nentre os formatos wide e long tanto no R quanto no PostgreSQL,\nalém de permitir realizar essas operações no banco do próprio R.","authors":[{"author":"José de Jesus Filho","authorURL":"https://rpg.consudata.com.br/pivotagem","affiliation":"&nbsp;","affiliationURL":"#","orcidID":""}],"publishedDate":"2021-01-03T00:00:00.000+00:00","citationText":"Filho, 2021"}
+{"title":"Pivotagem com R e PostgreSQL","description":"Nesta postagem, eu mostro como converter dataframes e tabelas\nentre os formatos wide e long tanto no R quanto no PostgreSQL,\nalém de permitir realizar essas operações no banco a partir do R.","authors":[{"author":"José de Jesus Filho","authorURL":"https://rpg.consudata.com.br/pivotagem","affiliation":"&nbsp;","affiliationURL":"#","orcidID":""}],"publishedDate":"2021-01-03T00:00:00.000+00:00","citationText":"Filho, 2021"}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -1433,7 +1433,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <h1>Pivotagem com R e PostgreSQL</h1>
 <!--radix_placeholder_categories-->
 <!--/radix_placeholder_categories-->
-<p><p>Nesta postagem, eu mostro como converter dataframes e tabelas entre os formatos wide e long tanto no R quanto no PostgreSQL, além de permitir realizar essas operações no banco do próprio R.</p></p>
+<p><p>Nesta postagem, eu mostro como converter dataframes e tabelas entre os formatos wide e long tanto no R quanto no PostgreSQL, além de permitir realizar essas operações no banco a partir do R.</p></p>
 </div>
 
 <div class="d-byline">
@@ -1444,14 +1444,18 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
 <div class="d-article">
 <h2 id="pivotagem">Pivotagem</h2>
-<p>Neste tutorial, mostraremos como pivotar no R e no PostgreSQL. Pivotar, como o próprio nome sugere, significa rotacionar colunas ou linhas, de modo que, valores contidos em linhas, passam a ser colunas e vice-versa. Em ciência de dados, é mais comum falarmos em formatos wide e formato long. Em SQL, é mais comum falarmos em pivoting e unpivoting, respectivamente.</p>
-<p>Este tutorial cobre as situações mais simples de pivotagem. No dia a dia da cientista de dados ou da DBA, dataframes e tabelas apresentam-se como estruturas um tanto complexas, as quais exigem transformações prévias para não haver perda de dados ou mesmo resultados indesejados.</p>
-<p>Para começar, vamos importar um simples dataframe em formato wide com os ids dos clientes e pagamentos realizados em cada mês no ano. Se você já tem um banco PostgreSQL rodando, aproveite para escrever esse mesmo dataframe no banco.</p>
-<div class="layout-chunk" data-layout="l-body">
-
+<p>Neste tutorial, mostraremos como pivotar no R e no PostgreSQL. Pivotar, como o próprio nome sugere, significa rotacionar colunas ou linhas, de modo que, valores contidos em linhas, passam a ser colunas e vice-versa. Em ciência de dados, é mais comum falarmos em formatos wide e formato long. Em SQL, é mais comum falarmos em pivoting e unpivoting, respectivamente. A imagem abaixo ilustra o processo de pivotatem:</p>
+<div class="layout-chunk" data-layout="l-body-outset">
+<p><img src="pivotagem2.png" width="284" /></p>
 </div>
+<p>Este tutorial cobre as situações mais simples de pivotagem. No dia a dia da cientista de dados ou da DBA, dataframes e tabelas apresentam-se como estruturas um tanto complexas, as quais exigem transformações prévias para não haver perda de dados ou mesmo resultados indesejados.</p>
+<p>Para começar, vamos importar um simples dataframe em formato wide com os ids dos clientes e pagamentos realizados em cada mês no ano. Se você já tem um banco PostgreSQL rodando, aproveite para escrever esse mesmo dataframe no banco. O dataframe encontra-se <a href="https://gist.github.com/jjesusfilho/6f9aed145ac494aae5f22d54bfca42c7">aqui</a></p>
 <div class="layout-chunk" data-layout="l-body">
-
+<div class="sourceCode">
+<pre><code><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://tidyverse.tidyverse.org'>tidyverse</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://lubridate.tidyverse.org'>lubridate</a></span><span class='op'>)</span>
+</code></pre>
+</div>
 </div>
 <div class="layout-chunk" data-layout="l-body">
 <table>
@@ -1641,6 +1645,10 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <h3 id="de-wide-para-long">De wide para long</h3>
 <p>Como o dataframe importado acima está em formato wide, vamos colocá-lo em formato long. Para tanto, utilizaremos o pacote tidyr, que já está carregado juntamente com os demais pacotes do tidyverse. Como queremos colocar todos os meses numa mesma coluna e seus respectivos valores numa segunda coluna, é suficiente chamar a função <code>pivot_longer</code>, informando que as colunas são o complemento da coluna cliente.</p>
 <div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre><code><span class='fu'>pivot_longer</span><span class='op'>(</span><span class='va'>pagamentos</span>,<span class='op'>!</span><span class='va'>cliente</span><span class='op'>)</span>
+</code></pre>
+</div>
 <pre><code># A tibble: 120 x 3
    cliente name  value
      &lt;int&gt; &lt;chr&gt; &lt;int&gt;
@@ -1658,7 +1666,13 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </div>
 <p>Se você quiser informar os novos nomes das variáveis, melhor:</p>
 <div class="layout-chunk" data-layout="l-body">
-
+<div class="sourceCode">
+<pre><code><span class='va'>pagamentos_long</span> <span class='op'>&lt;-</span> <span class='fu'>pivot_longer</span><span class='op'>(</span><span class='va'>pagamentos</span>, 
+                                <span class='op'>!</span><span class='va'>cliente</span>, 
+                                names_to <span class='op'>=</span> <span class='st'>"mes"</span>, 
+                                values_to <span class='op'>=</span><span class='st'>"valor_pago"</span><span class='op'>)</span>
+</code></pre>
+</div>
 </div>
 <div class="layout-chunk" data-layout="l-body">
 <pre><code># A tibble: 120 x 3
@@ -1678,12 +1692,26 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </div>
 <p>Veja como fica fácil plotar um gráfico deste novo dataframe:</p>
 <div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre><code><span class='va'>pagamentos_long</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>mutate</span><span class='op'>(</span>mes <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span><span class='op'>(</span><span class='va'>mes</span>, levels <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/unique.html'>unique</a></span><span class='op'>(</span><span class='va'>mes</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>ggplot</span><span class='op'>(</span><span class='fu'>aes</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>mes</span>, y <span class='op'>=</span> <span class='va'>valor_pago</span>, fill <span class='op'>=</span> <span class='va'>mes</span><span class='op'>)</span><span class='op'>)</span><span class='op'>+</span>
+  <span class='fu'>geom_bar</span><span class='op'>(</span>stat <span class='op'>=</span> <span class='st'>"identity"</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'>theme_classic</span><span class='op'>(</span><span class='op'>)</span>
+</code></pre>
+</div>
 <p><img src="pivotagem-com-r-e-postgresql_files/figure-html5/unnamed-chunk-7-1.png" width="624" /></p>
 </div>
 <h3 id="de-long-para-wide">De long para wide</h3>
 <p>Se quisermos converter pagamentos_long para pagamentos_wide, ou seja, retornar o formato inicial, basta usar a função <code>pivot_wider</code>. Para tanto, você deve informar quais a colunas ids, se não informar, o R irá usar todas as colunas, com exceção da coluna cujos valores se converterão em colunas, especificada no argumento names_from, e da coluna com valores que serão alocados para as respectivas novas colunas, respectivamente, arguemento values_from.</p>
 <div class="layout-chunk" data-layout="l-body">
-
+<div class="sourceCode">
+<pre><code><span class='va'>pagamentos_wide</span> <span class='op'>&lt;-</span> <span class='fu'>pivot_wider</span><span class='op'>(</span><span class='va'>pagamentos_long</span>, 
+                               id_cols <span class='op'>=</span> <span class='va'>cliente</span>, 
+                               names_from <span class='op'>=</span> <span class='va'>mes</span>, 
+                               values_from <span class='op'>=</span> <span class='va'>valor_pago</span><span class='op'>)</span>
+</code></pre>
+</div>
 </div>
 <div class="layout-chunk" data-layout="l-body">
 <table>

@@ -1,7 +1,8 @@
 ---
-title: "About this blog"
+title: "Ciência de dados com R e PostgreSQL"
 description: |
-  Some additional details about the blog
+  Este blog é uma uma coletânea de postagens sobre como
+  fazer ciência de dados com R e PostgreSQL
 ---
 
 ```{r setup, include=FALSE}
