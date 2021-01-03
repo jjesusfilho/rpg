@@ -18,19 +18,19 @@
   },
   {
     "path": "posts/welcome/",
-    "title": "Welcome to Ciência de Dados com R e PostgreSQL",
-    "description": "Welcome to our new blog, Ciência de Dados com R e PostgreSQL. We hope you enjoy \nreading what we have to say!",
+    "title": "Bem-vinda à  Ciência de Dados com R e PostgreSQL",
+    "description": "Bem-vindo a este blog sobre Ciência de Dados com R e PostgreSQL. Periodicamente, irei\npostar tutoriais sobre !",
     "author": [
       {
-        "name": "Nora Jones",
-        "url": "https://example.com/norajones"
+        "name": "José de Jesus Filho",
+        "url": "https://rpg.consudata.com.br"
       }
     ],
     "date": "2021-01-03",
     "categories": [],
     "contents": "\n\n\n\n",
     "preview": {},
-    "last_modified": "2021-01-03T09:27:04-03:00",
-    "input_file": {}
+    "last_modified": "2021-01-03T09:50:44-03:00",
+    "input_file": "welcome.utf8.md"
   }
 ]
