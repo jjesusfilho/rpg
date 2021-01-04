@@ -1,0 +1,160 @@
+---
+title: "R + PostgreSQL - distinct cheatsheet"
+description: |
+  Este cheatsheet mostra como filtrar tanto no R
+  quanto no PostgreSQL linhas distintas com base
+  em uma ou mais colunas.
+author:
+  - name: José de Jesus Filho
+    url: https://rpg.consudata.com.br
+date: 01-04-2021
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message=F, warning=F)
+```
+
+
+```{r}
+
+library(dplyr)
+set.seed(6723)
+df <- data.frame(col1 = sample(letters[1:5],10, replace = TRUE),
+                 col2 = sample(letters[1:5],10, replace = TRUE),
+                 col3 = sample(letters[1:5],10, replace = TRUE),stringsAsFactors = FALSE)
+```
+
+
+
+
+
+```sql
+DBI::dbWriteTable(conn,"df",df)
+
+```
+
+### Apenas colunas selecionadas
+:::::: {style="display: flex;"}
+::: {.column width="40%"}
+
+#### Tidyverse
+```r
+## distinct de uma coluna, 
+## retornando uma coluna
+
+df %>% 
+    distinct(col1)
+      
+##  O mesmo para mais de uma coluna  
+
+df %>% 
+  distinct(col1,col2)
+```
+:::
+
+::: {.column width="5%"}
+\
+:::
+
+::: {.column width="55%"}
+
+
+#### PostgreSQL
+
+```sql
+SELECT DISTINCT col1
+FROM df;
+ou
+SELECT col1
+FROM df,
+GROUP BY col1;
+
+SELECT DISTINCT col1,col2
+FROM df;
+ou 
+SELECT col1,col2
+FROM df,
+GROUP BY col2,col2;
+
+```
+:::
+
+::::::
+
+
+### Inclusão das demais colunas
+:::::: {style="display: flex;"}
+::: {.column width="40%"}
+
+#### Tidyverse
+```r
+## distinct de uma coluna, 
+## retornando todas colunas  
+
+df %>% 
+  distinct(col1,.keep_all = TRUE)  
+  
+## Distinct de mais de uma coluna,
+## retornando todas colunas  
+
+df %>% 
+   distinct(col1,col2,.keep_all =TRUE )
+
+```
+:::
+
+::: {.column width="5%"}
+\
+:::
+
+::: {.column width="55%"}
+
+
+#### PostgreSQL
+
+```sql
+SELECT DISTINCT ON (col1) *
+FROM df
+ORDER BY col1.
+```
+:::
+
+::::::
+
+
+### Distinct numa coluna, retornando outras colunas.
+:::::: {style="display: flex;"}
+::: {.column width="40%"}
+
+#### Tidyverse
+```r
+df %>% 
+  distinct(col1,.keep_all = TRUE) %>% 
+  select(col1,col2)
+
+```
+:::
+
+::: {.column width="5%"}
+\
+:::
+
+::: {.column width="55%"}
+
+
+#### PostgreSQL
+
+```sql
+SELECT DISTINCT ON (col1) col1,col2
+FROM df
+ORDER BY col1, col2.
+```
+:::
+
+::::::
+
+

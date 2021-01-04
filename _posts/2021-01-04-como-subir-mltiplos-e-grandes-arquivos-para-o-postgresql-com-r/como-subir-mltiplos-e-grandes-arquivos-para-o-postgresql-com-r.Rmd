@@ -1,0 +1,157 @@
+---
+title: "Como subir múltiplos e grandes arquivos para o PostgreSQL com R"
+description: |
+  Neste tutorial, irei mostrar como copiar para uma base de dados
+  do PostgreSQL múltiplos arquivos com que não cabem na memória RAM,
+  a partir do R, já tradados, sem sobrecarregar a memória. 
+author:
+  - name: José de Jesus Filho
+    url: https://rpg.consudata.com.br
+date: 01-04-2021
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Neste tutorial, irei mostrar como copiar para uma base de dados do PostgreSQL múltiplos arquivos com que não cabem na memória RAM, a partir do R, sem sobrecarregar a memória. Além disso, você poderá realizar todas as transformações necessárias nos dados, antes de inseri-los. 
+
+Eu diria que há algumas vantagens nesta solução. A primeira delas é a possibilidade de inspecionar os arquivos antes de inseri-los na base de dados SQL. A segunda é  inserir os arquivos em parcelas, sem ter de carregar na memória todas as linhas, principalmente quando esta é formada por milhões de linhas. A terceira é a possibilidade de realizar ajustes prévios, tais como selecionar apenas algumas colunas, manter unicamente linhas de interesse, ajustar encoding e  realizar todo tipo de transformação nos dados antes de inseri-los.
+
+A título de exemplo, iremos utilizar os arquivos da RAIS (relação anual de informações sociais) do Ministério do Trabalho do ano de 2018.
+
+Você pode baixar esses dados [deste endereço](ftp://ftp.mtps.gov.br/pdet/microdados/RAIS/2018/). Eles estão compactados em formato 7z. Para baixá-los, basta usar a função `download.file()` em conjunção com a função `walk` do pacote purrr.
+
+Antes, porém, vamos carregar os pacotes tidyverse, vez que usaremos vários deles. Além disso, para extrair os arquivos compactados, usaremos o pacote archive. Para inspecionar o arquivo, usaremos a função fread do pacote data.table. Para ajustar os nomes das colunas, usaremos o pacote janitor. Os pacotes DBI e dbx serão usados paa criar a tabela no PostgreSQL e inseri-los, respectivamente.
+
+```r
+devtools::install_github("jimhester/archive")
+library(archive)
+library(tidyverse)
+library(data.table)
+library(janitor)
+library(DBI)
+library(dbx)
+```
+```{r echo = FALSE, message = FALSE, warning = FALSE}
+library(tidyverse)
+library(janitor)
+```
+
+## Baixando os dados
+
+Baixaremos apenas os arquivos correspondentes aos trabalhadores, excluindo o relativo aos estabelecimentos. Estou supondo que você irá baixá-lo no diretório atual e que este está vazio.
+
+```r
+arquivos <- readlines("ftp://ftp.mtps.gov.br/pdet/microdados/RAIS/2018/") %>% 
+            str_extract("RAIS.+") %>% 
+            str_subset("ESTAB",negate = TRUE) %>% 
+            str_c("ftp://ftp.mtps.gov.br/pdet/microdados/RAIS/2018/",.)
+
+walk(arquivos, download.file)
+```
+Uma vez descompactados, esses arquivos ocuparão vários gigas de memória. Somente o arquivo de São Paulo, o maior deles, ocupa 8,9 Gb. Vamos descompactá-los:
+
+```r
+arquivos1 <- list.files()
+
+walk(arquivos,archive_extract)
+
+```
+
+## Inspecionando os dados
+
+Antes de proceder à transferência dos dados, iremos inspecioná-los. Vamos ler as primeiras dez linhas de um dos arquivos e verificar como elas se apresentam. Note que eu coloquei o enconding "Latin-1". Fiz isso porque havia tentado ler com o default que é "UTF-8" e não foi possível.
+
+```r
+df <- fread("RAIS_VINC_PUB_SP.txt",nrows=10,encoding="Latin-1")
+```
+
+
+```{r echo = FALSE}
+df <- jsonlite::fromJSON("https://gist.githubusercontent.com/jjesusfilho/a6aa173df6fa497ec0471ea3bd38c8da/raw/06639d0d4aaf325e983a644422c97cbc9be65473/rais.json")
+```
+
+```{r}
+glimpse(df)
+```
+
+Verificamos alguns problemas com este dataframe. O primeiro deles está nos nomes, que não estão num formato amigável. Outro problema é que as colunas referentes à remuneração estão como caractere. Uma breve inspeção permite verificar que são justamente aquelas colunas que começam com "Vl". Assim, nossa tarefa ajustar os nomes das colunas e alterar para número as colunas que começam com "Vl". 
+
+## Transformando os dados
+Para ajustar os nomes das colunas, usaremos a função clean_names do pacote janitor:
+
+```{r}
+df <- clean_names(df)
+glimpse(df)
+```
+
+Com isso, podemos converter as colunas iniciadas por "vl" para numéricas:
+
+```{r}
+df <- df %>% 
+  mutate(across(starts_with("vl"),~{
+    .x %>% 
+    str_replace_all("\\.","") %>% ## Remove os pontos
+    str_replace(",",".") %>%  ## Substitui a vírgula por ponto
+    as.numeric() ## Converte para número
+}))
+
+glimpse(df)
+```
+
+## Transferindo para a base de dados SQL
+
+Realizar essas transformações num pequeno dataframe foi fácil. O desafio é programar para que o R leia o arquivo em parcelas, realize as transformações e envie para a base de dados. Assumindo que você já sabe se conectar a uma base SQL, vamos dar os passos seguintes.
+
+A mágica ficará por conta da função walk do pacote purrr e da função read_delim_chunk do pacote readr. Esta última permite que você leia o arquivo em parcelas (chunks) e aplique uma função callback sobre cada um dos chunks. Nesta função callback, você pode incluir todas as transformações que quiser e um comando para inserir os dados na base SQL.
+
+Inicialmente, vamos criar uma tabela na base de dados com o dataframe transformado:
+
+```r
+DBI::dbCreateTable(conn,"df",df)
+```
+
+Vamos criar a função callback. Ela irá ajustar os nomes das colunas, converter aquelas iniciadas por "vl" para numéricas e, por fim, inserir os dados na tabela.
+
+```r
+f <- function(x, pos){
+
+`%>%` <- magrittr::`%>%`  
+
+x %>% 
+janitor::clean_names() %>% 
+dplyr::mutate(dplyr::across(dplyr::starts_with("vl"),~{
+    .x %>% 
+    stringr::str_replace_all("\\.","") %>% ## Remove os pontos
+    stringr::str_replace(",",".") %>%  ## Substitui a vírgula por ponto
+    as.numeric() %>% ## Converte para número
+    dbx::dbxInsert(conn,"df",.) ## Insere os dados na tabela já criada
+}))
+
+}
+
+```
+
+Vamos agora criar um vetor com os nomes dos arquivos a serem lidos, chamar a função read_delim_chunk dentro do walk do purrr para ler 50 mil linhas por vez, realizar as transformações e inserir na tabela previamente criada na base de dados.
+
+
+```r
+a <- list.files(pattern="txt$")
+
+walk(a,~{
+
+.x %>% 
+readr::read_delim_chunked(callback = readr::DataFrameCallback$new(f),
+                         locale = readr::locale(encoding="latin1"),
+                         delim = "\t",
+                         chunk_size = 50000)
+
+})
+
+```
+
+Pronto, basta rodar o comando acima para deixar o R trabalhando na leitura, tranformação dos dados e inserção na base de forma segura  e eficiente.

@@ -85,621 +85,39 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </style>
 
   <!--radix_placeholder_meta_tags-->
-  <title>Ciência de Dados com R e PostgreSQL</title>
+  <title>Como subir múltiplos e grandes arquivos para o PostgreSQL com R</title>
+
+  <meta property="description" itemprop="description" content="Neste tutorial, irei mostrar como copiar para uma base de dados&#10;do PostgreSQL múltiplos arquivos com que não cabem na memória RAM,&#10;a partir do R, já tradados, sem sobrecarregar a memória."/>
 
 
-
+  <!--  https://schema.org/Article -->
+  <meta property="article:published" itemprop="datePublished" content="2021-01-04"/>
+  <meta property="article:created" itemprop="dateCreated" content="2021-01-04"/>
+  <meta name="article:author" content="José de Jesus Filho"/>
 
   <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
-  <meta property="og:title" content="Ciência de Dados com R e PostgreSQL"/>
+  <meta property="og:title" content="Como subir múltiplos e grandes arquivos para o PostgreSQL com R"/>
   <meta property="og:type" content="article"/>
+  <meta property="og:description" content="Neste tutorial, irei mostrar como copiar para uma base de dados&#10;do PostgreSQL múltiplos arquivos com que não cabem na memória RAM,&#10;a partir do R, já tradados, sem sobrecarregar a memória."/>
   <meta property="og:locale" content="en_US"/>
-  <meta property="og:site_name" content="Ciência de Dados com R e PostgreSQL"/>
 
   <!--  https://dev.twitter.com/cards/types/summary -->
   <meta property="twitter:card" content="summary"/>
-  <meta property="twitter:title" content="Ciência de Dados com R e PostgreSQL"/>
+  <meta property="twitter:title" content="Como subir múltiplos e grandes arquivos para o PostgreSQL com R"/>
+  <meta property="twitter:description" content="Neste tutorial, irei mostrar como copiar para uma base de dados&#10;do PostgreSQL múltiplos arquivos com que não cabem na memória RAM,&#10;a partir do R, já tradados, sem sobrecarregar a memória."/>
 
   <!--/radix_placeholder_meta_tags-->
   <!--radix_placeholder_rmarkdown_metadata-->
 
   <script type="text/json" id="radix-rmarkdown-metadata">
-  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","site","listing"]}},"value":[{"type":"character","attributes":{},"value":["Ciência de Dados com R e PostgreSQL"]},{"type":"character","attributes":{},"value":["distill::distill_website"]},{"type":"character","attributes":{},"value":["posts"]}]}
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","output"]}},"value":[{"type":"character","attributes":{},"value":["Como subir múltiplos e grandes arquivos para o PostgreSQL com R"]},{"type":"character","attributes":{},"value":["Neste tutorial, irei mostrar como copiar para uma base de dados\ndo PostgreSQL múltiplos arquivos com que não cabem na memória RAM,\na partir do R, já tradados, sem sobrecarregar a memória. \n"]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","url"]}},"value":[{"type":"character","attributes":{},"value":["José de Jesus Filho"]},{"type":"character","attributes":{},"value":["https://rpg.consudata.com.br"]}]}]},{"type":"character","attributes":{},"value":["01-04-2021"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained"]}},"value":[{"type":"logical","attributes":{},"value":[false]}]}]}]}
   </script>
   <!--/radix_placeholder_rmarkdown_metadata-->
+  
+  <script type="text/json" id="radix-resource-manifest">
+  {"type":"character","attributes":{},"value":["como-subir-mltiplos-e-grandes-arquivos-para-o-postgresql-com-r_files/anchor-4.2.2/anchor.min.js","como-subir-mltiplos-e-grandes-arquivos-para-o-postgresql-com-r_files/bowser-1.9.3/bowser.min.js","como-subir-mltiplos-e-grandes-arquivos-para-o-postgresql-com-r_files/distill-2.2.21/template.v2.js","como-subir-mltiplos-e-grandes-arquivos-para-o-postgresql-com-r_files/header-attrs-2.6/header-attrs.js","como-subir-mltiplos-e-grandes-arquivos-para-o-postgresql-com-r_files/jquery-1.11.3/jquery.min.js","como-subir-mltiplos-e-grandes-arquivos-para-o-postgresql-com-r_files/webcomponents-2.0.0/webcomponents.js"]}
+  </script>
   <!--radix_placeholder_navigation_in_header-->
-  <meta name="distill:offset" content=""/>
-
-  <script type="application/javascript">
-
-    window.headroom_prevent_pin = false;
-
-    window.document.addEventListener("DOMContentLoaded", function (event) {
-
-      // initialize headroom for banner
-      var header = $('header').get(0);
-      var headerHeight = header.offsetHeight;
-      var headroom = new Headroom(header, {
-        tolerance: 5,
-        onPin : function() {
-          if (window.headroom_prevent_pin) {
-            window.headroom_prevent_pin = false;
-            headroom.unpin();
-          }
-        }
-      });
-      headroom.init();
-      if(window.location.hash)
-        headroom.unpin();
-      $(header).addClass('headroom--transition');
-
-      // offset scroll location for banner on hash change
-      // (see: https://github.com/WickyNilliams/headroom.js/issues/38)
-      window.addEventListener("hashchange", function(event) {
-        window.scrollTo(0, window.pageYOffset - (headerHeight + 25));
-      });
-
-      // responsive menu
-      $('.distill-site-header').each(function(i, val) {
-        var topnav = $(this);
-        var toggle = topnav.find('.nav-toggle');
-        toggle.on('click', function() {
-          topnav.toggleClass('responsive');
-        });
-      });
-
-      // nav dropdowns
-      $('.nav-dropbtn').click(function(e) {
-        $(this).next('.nav-dropdown-content').toggleClass('nav-dropdown-active');
-        $(this).parent().siblings('.nav-dropdown')
-           .children('.nav-dropdown-content').removeClass('nav-dropdown-active');
-      });
-      $("body").click(function(e){
-        $('.nav-dropdown-content').removeClass('nav-dropdown-active');
-      });
-      $(".nav-dropdown").click(function(e){
-        e.stopPropagation();
-      });
-    });
-  </script>
-
-  <style type="text/css">
-
-  /* Theme (user-documented overrideables for nav appearance) */
-
-  .distill-site-nav {
-    color: rgba(255, 255, 255, 0.8);
-    background-color: #0F2E3D;
-    font-size: 15px;
-    font-weight: 300;
-  }
-
-  .distill-site-nav a {
-    color: inherit;
-    text-decoration: none;
-  }
-
-  .distill-site-nav a:hover {
-    color: white;
-  }
-
-  @media print {
-    .distill-site-nav {
-      display: none;
-    }
-  }
-
-  .distill-site-header {
-
-  }
-
-  .distill-site-footer {
-
-  }
-
-
-  /* Site Header */
-
-  .distill-site-header {
-    width: 100%;
-    box-sizing: border-box;
-    z-index: 3;
-  }
-
-  .distill-site-header .nav-left {
-    display: inline-block;
-    margin-left: 8px;
-  }
-
-  @media screen and (max-width: 768px) {
-    .distill-site-header .nav-left {
-      margin-left: 0;
-    }
-  }
-
-
-  .distill-site-header .nav-right {
-    float: right;
-    margin-right: 8px;
-  }
-
-  .distill-site-header a,
-  .distill-site-header .title {
-    display: inline-block;
-    text-align: center;
-    padding: 14px 10px 14px 10px;
-  }
-
-  .distill-site-header .title {
-    font-size: 18px;
-    min-width: 150px;
-  }
-
-  .distill-site-header .logo {
-    padding: 0;
-  }
-
-  .distill-site-header .logo img {
-    display: none;
-    max-height: 20px;
-    width: auto;
-    margin-bottom: -4px;
-  }
-
-  .distill-site-header .nav-image img {
-    max-height: 18px;
-    width: auto;
-    display: inline-block;
-    margin-bottom: -3px;
-  }
-
-
-
-  @media screen and (min-width: 1000px) {
-    .distill-site-header .logo img {
-      display: inline-block;
-    }
-    .distill-site-header .nav-left {
-      margin-left: 20px;
-    }
-    .distill-site-header .nav-right {
-      margin-right: 20px;
-    }
-    .distill-site-header .title {
-      padding-left: 12px;
-    }
-  }
-
-
-  .distill-site-header .nav-toggle {
-    display: none;
-  }
-
-  .nav-dropdown {
-    display: inline-block;
-    position: relative;
-  }
-
-  .nav-dropdown .nav-dropbtn {
-    border: none;
-    outline: none;
-    color: rgba(255, 255, 255, 0.8);
-    padding: 16px 10px;
-    background-color: transparent;
-    font-family: inherit;
-    font-size: inherit;
-    font-weight: inherit;
-    margin: 0;
-    margin-top: 1px;
-    z-index: 2;
-  }
-
-  .nav-dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: white;
-    min-width: 200px;
-    border: 1px solid rgba(0,0,0,0.15);
-    border-radius: 4px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.1);
-    z-index: 1;
-    margin-top: 2px;
-    white-space: nowrap;
-    padding-top: 4px;
-    padding-bottom: 4px;
-  }
-
-  .nav-dropdown-content hr {
-    margin-top: 4px;
-    margin-bottom: 4px;
-    border: none;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  }
-
-  .nav-dropdown-active {
-    display: block;
-  }
-
-  .nav-dropdown-content a, .nav-dropdown-content .nav-dropdown-header {
-    color: black;
-    padding: 6px 24px;
-    text-decoration: none;
-    display: block;
-    text-align: left;
-  }
-
-  .nav-dropdown-content .nav-dropdown-header {
-    display: block;
-    padding: 5px 24px;
-    padding-bottom: 0;
-    text-transform: uppercase;
-    font-size: 14px;
-    color: #999999;
-    white-space: nowrap;
-  }
-
-  .nav-dropdown:hover .nav-dropbtn {
-    color: white;
-  }
-
-  .nav-dropdown-content a:hover {
-    background-color: #ddd;
-    color: black;
-  }
-
-  .nav-right .nav-dropdown-content {
-    margin-left: -45%;
-    right: 0;
-  }
-
-  @media screen and (max-width: 768px) {
-    .distill-site-header a, .distill-site-header .nav-dropdown  {display: none;}
-    .distill-site-header a.nav-toggle {
-      float: right;
-      display: block;
-    }
-    .distill-site-header .title {
-      margin-left: 0;
-    }
-    .distill-site-header .nav-right {
-      margin-right: 0;
-    }
-    .distill-site-header {
-      overflow: hidden;
-    }
-    .nav-right .nav-dropdown-content {
-      margin-left: 0;
-    }
-  }
-
-
-  @media screen and (max-width: 768px) {
-    .distill-site-header.responsive {position: relative; min-height: 500px; }
-    .distill-site-header.responsive a.nav-toggle {
-      position: absolute;
-      right: 0;
-      top: 0;
-    }
-    .distill-site-header.responsive a,
-    .distill-site-header.responsive .nav-dropdown {
-      display: block;
-      text-align: left;
-    }
-    .distill-site-header.responsive .nav-left,
-    .distill-site-header.responsive .nav-right {
-      width: 100%;
-    }
-    .distill-site-header.responsive .nav-dropdown {float: none;}
-    .distill-site-header.responsive .nav-dropdown-content {position: relative;}
-    .distill-site-header.responsive .nav-dropdown .nav-dropbtn {
-      display: block;
-      width: 100%;
-      text-align: left;
-    }
-  }
-
-  /* Site Footer */
-
-  .distill-site-footer {
-    width: 100%;
-    overflow: hidden;
-    box-sizing: border-box;
-    z-index: 3;
-    margin-top: 30px;
-    padding-top: 30px;
-    padding-bottom: 30px;
-    text-align: center;
-  }
-
-  /* Headroom */
-
-  d-title {
-    padding-top: 6rem;
-  }
-
-  @media print {
-    d-title {
-      padding-top: 4rem;
-    }
-  }
-
-  .headroom {
-    z-index: 1000;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-  }
-
-  .headroom--transition {
-    transition: all .4s ease-in-out;
-  }
-
-  .headroom--unpinned {
-    top: -100px;
-  }
-
-  .headroom--pinned {
-    top: 0;
-  }
-
-  </style>
-
-  <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet"/>
-  <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet"/>
-  <script src="site_libs/headroom-0.9.4/headroom.min.js"></script>
-  <script src="site_libs/autocomplete-0.37.1/autocomplete.min.js"></script>
-  <script src="site_libs/fuse-6.4.1/fuse.min.js"></script>
-
-  <script type="application/javascript">
-
-  function getMeta(metaName) {
-    var metas = document.getElementsByTagName('meta');
-    for (let i = 0; i < metas.length; i++) {
-      if (metas[i].getAttribute('name') === metaName) {
-        return metas[i].getAttribute('content');
-      }
-    }
-    return '';
-  }
-
-  function offsetURL(url) {
-    var offset = getMeta('distill:offset');
-    return offset ? offset + '/' + url : url;
-  }
-
-  function createFuseIndex() {
-
-    // create fuse index
-    var options = {
-      keys: [
-        { name: 'title', weight: 20 },
-        { name: 'categories', weight: 15 },
-        { name: 'description', weight: 10 },
-        { name: 'contents', weight: 5 },
-      ],
-      ignoreLocation: true,
-      threshold: 0
-    };
-    var fuse = new window.Fuse([], options);
-
-    // fetch the main search.json
-    return fetch(offsetURL('search.json'))
-      .then(function(response) {
-        if (response.status == 200) {
-          return response.json().then(function(json) {
-            // index main articles
-            json.articles.forEach(function(article) {
-              fuse.add(article);
-            });
-            // download collections and index their articles
-            return Promise.all(json.collections.map(function(collection) {
-              return fetch(offsetURL(collection)).then(function(response) {
-                if (response.status === 200) {
-                  return response.json().then(function(articles) {
-                    articles.forEach(function(article) {
-                      fuse.add(article);
-                    });
-                  })
-                } else {
-                  return Promise.reject(
-                    new Error('Unexpected status from search index request: ' +
-                              response.status)
-                  );
-                }
-              });
-            })).then(function() {
-              return fuse;
-            });
-          });
-
-        } else {
-          return Promise.reject(
-            new Error('Unexpected status from search index request: ' +
-                        response.status)
-          );
-        }
-      });
-  }
-
-  window.document.addEventListener("DOMContentLoaded", function (event) {
-
-    // get search element (bail if we don't have one)
-    var searchEl = window.document.getElementById('distill-search');
-    if (!searchEl)
-      return;
-
-    createFuseIndex()
-      .then(function(fuse) {
-
-        // make search box visible
-        searchEl.classList.remove('hidden');
-
-        // initialize autocomplete
-        var options = {
-          autoselect: true,
-          hint: false,
-          minLength: 2,
-        };
-        window.autocomplete(searchEl, options, [{
-          source: function(query, callback) {
-            const searchOptions = {
-              isCaseSensitive: false,
-              shouldSort: true,
-              minMatchCharLength: 2,
-              limit: 10,
-            };
-            var results = fuse.search(query, searchOptions);
-            callback(results
-              .map(function(result) { return result.item; })
-              .filter(function(item) { return !!item.description; })
-            );
-          },
-          templates: {
-            suggestion: function(suggestion) {
-              var html = `
-                <div class="search-item">
-                  <h3>${suggestion.title}</h3>
-                  <div class="search-item-description">
-                    ${suggestion.description}
-                  </div>
-                  <div class="search-item-preview">
-                    <img src="${suggestion.preview ? offsetURL(suggestion.preview) : ''}"</img>
-                  </div>
-                </div>
-              `;
-              return html;
-            }
-          }
-        }]).on('autocomplete:selected', function(event, suggestion) {
-          window.location.href = offsetURL(suggestion.path);
-        });
-        // remove inline display style on autocompleter (we want to
-        // manage responsive display via css)
-        $('.algolia-autocomplete').css("display", "");
-      })
-      .catch(function(error) {
-        console.log(error);
-      });
-
-  });
-
-  </script>
-
-  <style type="text/css">
-
-  /* Algolioa Autocomplete */
-
-  .algolia-autocomplete {
-    display: inline-block;
-    margin-left: 10px;
-    vertical-align: sub;
-    background-color: white;
-    color: black;
-    padding: 6px;
-    padding-top: 8px;
-    padding-bottom: 0;
-    border-radius: 6px;
-    border: 1px #0F2E3D solid;
-    width: 180px;
-  }
-
-
-  @media screen and (max-width: 768px) {
-    .distill-site-nav .algolia-autocomplete {
-      display: none;
-      visibility: hidden;
-    }
-    .distill-site-nav.responsive .algolia-autocomplete {
-      display: inline-block;
-      visibility: visible;
-    }
-    .distill-site-nav.responsive .algolia-autocomplete .aa-dropdown-menu {
-      margin-left: 0;
-      width: 400px;
-      max-height: 400px;
-    }
-  }
-
-  .algolia-autocomplete .aa-input, .algolia-autocomplete .aa-hint {
-    width: 90%;
-    outline: none;
-    border: none;
-  }
-
-  .algolia-autocomplete .aa-hint {
-    color: #999;
-  }
-  .algolia-autocomplete .aa-dropdown-menu {
-    width: 550px;
-    max-height: 70vh;
-    overflow-x: visible;
-    overflow-y: scroll;
-    padding: 5px;
-    margin-top: 3px;
-    margin-left: -150px;
-    background-color: #fff;
-    border-radius: 5px;
-    border: 1px solid #999;
-    border-top: none;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion {
-    cursor: pointer;
-    padding: 5px 4px;
-    border-bottom: 1px solid #eee;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion:last-of-type {
-    border-bottom: none;
-    margin-bottom: 2px;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item {
-    overflow: hidden;
-    font-size: 0.8em;
-    line-height: 1.4em;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item h3 {
-    margin-block-start: 0;
-    margin-block-end: 5px;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item-description {
-    display: inline-block;
-    overflow: hidden;
-    height: 2.8em;
-    width: 80%;
-    margin-right: 4%;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item-preview {
-    display: inline-block;
-    width: 15%;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item-preview img {
-    height: 3em;
-    width: auto;
-    display: none;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item-preview img[src] {
-    display: initial;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion.aa-cursor {
-    background-color: #eee;
-  }
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion em {
-    font-weight: bold;
-    font-style: normal;
-  }
-
-  </style>
-
-
   <!--/radix_placeholder_navigation_in_header-->
   <!--radix_placeholder_distill-->
 
@@ -1985,378 +1403,337 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </script>
 
   <!--/radix_placeholder_distill-->
-  <script src="site_libs/header-attrs-2.6/header-attrs.js"></script>
-  <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
-  <script src="site_libs/anchor-4.2.2/anchor.min.js"></script>
-  <script src="site_libs/bowser-1.9.3/bowser.min.js"></script>
-  <script src="site_libs/webcomponents-2.0.0/webcomponents.js"></script>
-  <script src="site_libs/distill-2.2.21/template.v2.js"></script>
+  <script src="como-subir-mltiplos-e-grandes-arquivos-para-o-postgresql-com-r_files/header-attrs-2.6/header-attrs.js"></script>
+  <script src="como-subir-mltiplos-e-grandes-arquivos-para-o-postgresql-com-r_files/jquery-1.11.3/jquery.min.js"></script>
+  <script src="como-subir-mltiplos-e-grandes-arquivos-para-o-postgresql-com-r_files/anchor-4.2.2/anchor.min.js"></script>
+  <script src="como-subir-mltiplos-e-grandes-arquivos-para-o-postgresql-com-r_files/bowser-1.9.3/bowser.min.js"></script>
+  <script src="como-subir-mltiplos-e-grandes-arquivos-para-o-postgresql-com-r_files/webcomponents-2.0.0/webcomponents.js"></script>
+  <script src="como-subir-mltiplos-e-grandes-arquivos-para-o-postgresql-com-r_files/distill-2.2.21/template.v2.js"></script>
   <!--radix_placeholder_site_in_header-->
   <!--/radix_placeholder_site_in_header-->
 
 
 </head>
 
-<body class="layout-listing">
+<body>
 
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"Ciência de Dados com R e PostgreSQL","authors":[]}
+{"title":"Como subir múltiplos e grandes arquivos para o PostgreSQL com R","description":"Neste tutorial, irei mostrar como copiar para uma base de dados\ndo PostgreSQL múltiplos arquivos com que não cabem na memória RAM,\na partir do R, já tradados, sem sobrecarregar a memória.","authors":[{"author":"José de Jesus Filho","authorURL":"https://rpg.consudata.com.br","affiliation":"&nbsp;","affiliationURL":"#","orcidID":""}],"publishedDate":"2021-01-04T00:00:00.000+00:00","citationText":"Filho, 2021"}
 </script>
 
 <!--/radix_placeholder_front_matter-->
 <!--radix_placeholder_navigation_before_body-->
-<header class="header header--fixed" role="banner">
-<nav class="distill-site-nav distill-site-header">
-<div class="nav-left">
-<a href="index.html" class="title">Ciência de Dados com R e PostgreSQL</a>
-<input id="distill-search" class="nav-search hidden" type="text" placeholder="Search..."/>
-</div>
-<div class="nav-right">
-<a href="index.html">Home</a>
-<a href="about.html">Sobre</a>
-<a href="javascript:void(0);" class="nav-toggle">&#9776;</a>
-</div>
-</nav>
-</header>
 <!--/radix_placeholder_navigation_before_body-->
 <!--radix_placeholder_site_before_body-->
 <!--/radix_placeholder_site_before_body-->
-<!--radix_placeholder_article_listing-->
-
-
-<script type="application/javascript">
-
-function init_posts_list() {
-
-  function load_image(img) {
-    var src = $(img).attr('data-src');
-    if (src) {
-      $(img).attr('src', src);
-      $(img).load(function() {
-        img.removeAttribute('data-src');
-      });
-    }
-  }
-
-  function set_posts_visible(posts, visible) {
-    if (visible) {
-
-      // show bottom border by default
-      $(posts).removeClass('post-preview-last');
-
-      // apply limits if need be
-      var max_posts = 25;
-      var apply_limits = $('.posts-container').hasClass('posts-apply-limit');
-      if (apply_limits && posts.length > max_posts) {
-        posts = $(posts).slice(0, max_posts);
-      } else {
-        $('.posts-more a').addClass('hidden');
-      }
-
-      // apply last style
-      $(posts.slice(-1)[0]).addClass('post-preview-last');
-
-      $(posts).removeClass('hidden');
-      $(posts).find('img[data-src]').each(function(i, img) {
-        load_image(img);
-      });
-    } else {
-      $(posts).addClass('hidden');
-    }
-  }
-
-  function apply_hash_filter() {
-
-    // clear active state
-    $('.categories .active').removeClass('active');
-
-    // mark all posts invisible to start
-    set_posts_visible($('.posts-list').children('a'), false);
-
-    // if we have a hash filter
-    if (window.location.hash && window.location.hash.startsWith("#category:")) {
-
-      // mark posts that match the category visible
-      var page_category = window.location.hash.replace(/^#category:/, "");
-      var posts = $('.post-metadata').map(function(idx, script) {
-        var metadata = $.parseJSON($(script).html());
-        var post = null;
-        $.each(metadata.categories, function(idx, category) {
-          category = category.replace(/ /g,"_");
-          if ((page_category || '').toLowerCase() === "articles" || category === page_category) {
-            post = $(script).parent().get();
-            return false;
-          }
-        });
-        return post;
-      });
-      set_posts_visible(posts, true);
-
-      // mark the hash active
-      $('.categories li>a[href="' + window.location.hash + '"]').addClass('active');
-
-      // update the list_caption
-      var list_caption = $('.posts-list-caption');
-      var caption = (page_category || '').toLowerCase() === "articles"
-        ? list_caption.attr('data-caption')
-        : ('Category: ' + page_category.replace(/_/g," "));
-      list_caption.text(caption);
-
-    } else {
-
-      // no hash filter, make all posts visible (subject to max display)
-      set_posts_visible($('.posts-list').children(), true);
-
-      // reset list caption
-      var list_caption = $('.posts-list-caption');
-      list_caption.text(list_caption.attr('data-caption'));
-
-
-    }
-  }
-
-  // more articles
-  function apply_post_limits(apply) {
-    if (apply) {
-      $('.posts-container').addClass('posts-apply-limit');
-      $('.posts-more a').removeClass('hidden');
-    } else {
-      $('.posts-container').removeClass('posts-apply-limit');
-      $('.posts-more a').addClass('hidden');
-    }
-  }
-
-  // click handling for tags
-  $('.dt-tag').click(function(ev) {
-    window.location.hash = '#category:' + $(this).text().replace(/ /g, "_");
-    return false;
-  })
-
-  // hash filter handling
-  apply_hash_filter();
-  $(window).on('hashchange',function() {
-    apply_post_limits(true);
-    apply_hash_filter();
-  });
-
-  // more articles link
-  $('.posts-more a').click(function(e) {
-    e.preventDefault();
-    apply_post_limits(false);
-    apply_hash_filter();
-    return false;
-  });
-
-}
-
-</script>
-
-
-
-<div class="posts-container posts-apply-limit l-page">
-<div class="posts-list">
-<h1 class="posts-list-caption" data-caption="Ciência de Dados com R e PostgreSQL">Ciência de Dados com R e PostgreSQL</h1>
-<a href="posts/2021-01-04-busca-textual-com-r-shiny-e-postgresql/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Jan. 4, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">José de Jesus Filho</div>
-</div>
-</div>
-<div class="thumbnail">
-<img/>
-</div>
-<div class="description">
-<h2>Busca textual com R, Shiny e PostgreSQL</h2>
-<div class="dt-tags"></div>
-<p>Este tutorial mostra como configurar busca textual num esquema do
-PostgreSQL e montar um aplicativo shiny para realizar buscas eficientes</p>
-</div>
-</a>
-<a href="posts/2021-01-04-como-subir-mltiplos-e-grandes-arquivos-para-o-postgresql-com-r/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Jan. 4, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">José de Jesus Filho</div>
-</div>
-</div>
-<div class="thumbnail">
-<img/>
-</div>
-<div class="description">
-<h2>Como subir múltiplos e grandes arquivos para o PostgreSQL com R</h2>
-<div class="dt-tags"></div>
-<p>Neste tutorial, irei mostrar como copiar para uma base de dados
-do PostgreSQL múltiplos arquivos com que não cabem na memória RAM,
-a partir do R, já tradados, sem sobrecarregar a memória.</p>
-</div>
-</a>
-<a href="posts/2021-01-04-r-postgresql-distinct-cheatsheet/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Jan. 4, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">José de Jesus Filho</div>
-</div>
-</div>
-<div class="thumbnail">
-<img/>
-</div>
-<div class="description">
-<h2>R + PostgreSQL - distinct cheatsheet</h2>
-<div class="dt-tags"></div>
-<p>Este cheatsheet mostra como filtrar tanto no R
-quanto no PostgreSQL linhas distintas com base
-em uma ou mais colunas.</p>
-</div>
-</a>
-<a href="posts/2021-01-04-tidypg-cheatsheet-sumarizando-tabelas-com-r-e-postgresql/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Jan. 4, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">José de Jesus Filho</div>
-</div>
-</div>
-<div class="thumbnail">
-<img src="posts/2021-01-04-tidypg-cheatsheet-sumarizando-tabelas-com-r-e-postgresql/summary.png"/>
-</div>
-<div class="description">
-<h2>TidyPG cheatsheet: sumarizando tabelas com R e PostgreSQL</h2>
-<div class="dt-tags"></div>
-<p>Neste cheatsheet mostro como criar sumários no R e no PostgreSQL.</p>
-</div>
-</a>
-<a href="posts/2021-01-04-window-functions-no-r-e-no-postgresql-parte-1-aspectos-estticos/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Jan. 4, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">José de Jesus Filho</div>
-</div>
-</div>
-<div class="thumbnail">
-<img/>
-</div>
-<div class="description">
-<h2>Window functions no R e no PostgreSQL - Parte 1: aspectos estáticos</h2>
-<div class="dt-tags"></div>
-<p>Neste tutorial mostro como operar com funções janela ou
-window functions tanto no R quanto no PostgreSQL.</p>
-</div>
-</a>
-<a href="posts/2021-01-03-joins-no-r-e-no-postgresql/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Jan. 3, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">José de Jesus Filho</div>
-</div>
-</div>
-<div class="thumbnail">
-<img data-src="posts/2021-01-03-joins-no-r-e-no-postgresql/inner_join.png"/>
-</div>
-<div class="description">
-<h2>Joins no R e no PostgreSQL</h2>
-<div class="dt-tags"></div>
-<p>Neste tutorial, mostro como as principais formas de joins tanto no R
-quanto no PostgreSQL.</p>
-</div>
-</a>
-<a href="posts/2021-01-03-pivotagem-com-r-e-postgresql/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Jan. 3, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">José de Jesus Filho</div>
-</div>
-</div>
-<div class="thumbnail">
-<img data-src="posts/2021-01-03-pivotagem-com-r-e-postgresql/pivotagem2.png"/>
-</div>
-<div class="description">
-<h2>Pivotagem com R e PostgreSQL</h2>
-<div class="dt-tags"></div>
-<p>Nesta postagem, eu mostro como converter dataframes e tabelas
-entre os formatos wide e long tanto no R quanto no PostgreSQL,
-além de permitir realizar essas operações no banco a partir do R.</p>
-</div>
-</a>
-<a href="posts/2021-01-03-similaridades-entre-na-no-r-e-null-no-postgresql/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Jan. 3, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">José de Jesus Filho</div>
-</div>
-</div>
-<div class="thumbnail">
-<img data-src="posts/2021-01-03-similaridades-entre-na-no-r-e-null-no-postgresql/missing.jpg"/>
-</div>
-<div class="description">
-<h2>Similaridades entre NA no R e NULL no PostgreSQL</h2>
-<div class="dt-tags"></div>
-<p>Neste tuturial iremos mostrar como o comportamento de `NAs` no **R** 
-é consistente com o de `NULL` no PostgreSQL.</p>
-</div>
-</a>
-<a href="posts/2021-01-03-tidypg-cheatsheet-criando-tabelas-a-partir-de-outras-parte-1/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Jan. 3, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">José de Jesus Filho</div>
-</div>
-</div>
-<div class="thumbnail">
-<img data-src="posts/2021-01-03-tidypg-cheatsheet-criando-tabelas-a-partir-de-outras-parte-1/bind_rows.png"/>
-</div>
-<div class="description">
-<h2>TidyPG cheatsheet: Criando tabelas a partir de outras - parte 1</h2>
-<div class="dt-tags"></div>
-<p>Neste cheatsheet mostramos como criar tabelas tanto no R 
-quanto no PostgreSQL a partir da junção de outras ou de filtros.</p>
-</div>
-</a>
-<a href="posts/welcome/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Jan. 3, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">José de Jesus Filho</div>
-</div>
-</div>
-<div class="thumbnail">
-<img/>
-</div>
-<div class="description">
-<h2>Bem-vinda à  Ciência de Dados com R e PostgreSQL</h2>
-<div class="dt-tags"></div>
-<p>Bem-vindo a este blog sobre Ciência de Dados com R e PostgreSQL. Periodicamente, irei
-postar tutoriais sobre !</p>
-</div>
-</a>
-</div>
-<div class="posts-more">
-<a href="#">More articles &raquo;</a>
-</div>
-</div>
-<!--/radix_placeholder_article_listing-->
 
 <div class="d-title">
-<h1>Ciência de Dados com R e PostgreSQL</h1>
+<h1>Como subir múltiplos e grandes arquivos para o PostgreSQL com R</h1>
 <!--radix_placeholder_categories-->
 <!--/radix_placeholder_categories-->
-
+<p><p>Neste tutorial, irei mostrar como copiar para uma base de dados do PostgreSQL múltiplos arquivos com que não cabem na memória RAM, a partir do R, já tradados, sem sobrecarregar a memória.</p></p>
 </div>
 
+<div class="d-byline">
+  José de Jesus Filho <a href="https://rpg.consudata.com.br" class="uri">https://rpg.consudata.com.br</a> 
+  
+<br/>01-04-2021
+</div>
 
 <div class="d-article">
-<div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<p>Neste tutorial, irei mostrar como copiar para uma base de dados do PostgreSQL múltiplos arquivos com que não cabem na memória RAM, a partir do R, sem sobrecarregar a memória. Além disso, você poderá realizar todas as transformações necessárias nos dados, antes de inseri-los.</p>
+<p>Eu diria que há algumas vantagens nesta solução. A primeira delas é a possibilidade de inspecionar os arquivos antes de inseri-los na base de dados SQL. A segunda é inserir os arquivos em parcelas, sem ter de carregar na memória todas as linhas, principalmente quando esta é formada por milhões de linhas. A terceira é a possibilidade de realizar ajustes prévios, tais como selecionar apenas algumas colunas, manter unicamente linhas de interesse, ajustar encoding e realizar todo tipo de transformação nos dados antes de inseri-los.</p>
+<p>A título de exemplo, iremos utilizar os arquivos da RAIS (relação anual de informações sociais) do Ministério do Trabalho do ano de 2018.</p>
+<p>Você pode baixar esses dados <a href="ftp://ftp.mtps.gov.br/pdet/microdados/RAIS/2018/">deste endereço</a>. Eles estão compactados em formato 7z. Para baixá-los, basta usar a função <code>download.file()</code> em conjunção com a função <code>walk</code> do pacote purrr.</p>
+<p>Antes, porém, vamos carregar os pacotes tidyverse, vez que usaremos vários deles. Além disso, para extrair os arquivos compactados, usaremos o pacote archive. Para inspecionar o arquivo, usaremos a função fread do pacote data.table. Para ajustar os nomes das colunas, usaremos o pacote janitor. Os pacotes DBI e dbx serão usados paa criar a tabela no PostgreSQL e inseri-los, respectivamente.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&quot;jimhester/archive&quot;</span>)</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="kw">library</span>(archive)</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="kw">library</span>(tidyverse)</span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="kw">library</span>(data.table)</span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="kw">library</span>(janitor)</span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="kw">library</span>(DBI)</span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="kw">library</span>(dbx)</span></code></pre></div>
+<div class="layout-chunk" data-layout="l-body">
+
+</div>
+<h2 id="baixando-os-dados">Baixando os dados</h2>
+<p>Baixaremos apenas os arquivos correspondentes aos trabalhadores, excluindo o relativo aos estabelecimentos. Estou supondo que você irá baixá-lo no diretório atual e que este está vazio.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>arquivos &lt;-<span class="st"> </span><span class="kw">readlines</span>(<span class="st">&quot;ftp://ftp.mtps.gov.br/pdet/microdados/RAIS/2018/&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="st">            </span><span class="kw">str_extract</span>(<span class="st">&quot;RAIS.+&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="st">            </span><span class="kw">str_subset</span>(<span class="st">&quot;ESTAB&quot;</span>,<span class="dt">negate =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="st">            </span><span class="kw">str_c</span>(<span class="st">&quot;ftp://ftp.mtps.gov.br/pdet/microdados/RAIS/2018/&quot;</span>,.)</span>
+<span id="cb2-5"><a href="#cb2-5"></a></span>
+<span id="cb2-6"><a href="#cb2-6"></a><span class="kw">walk</span>(arquivos, download.file)</span></code></pre></div>
+<p>Uma vez descompactados, esses arquivos ocuparão vários gigas de memória. Somente o arquivo de São Paulo, o maior deles, ocupa 8,9 Gb. Vamos descompactá-los:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>arquivos1 &lt;-<span class="st"> </span><span class="kw">list.files</span>()</span>
+<span id="cb3-2"><a href="#cb3-2"></a></span>
+<span id="cb3-3"><a href="#cb3-3"></a><span class="kw">walk</span>(arquivos,archive_extract)</span></code></pre></div>
+<h2 id="inspecionando-os-dados">Inspecionando os dados</h2>
+<p>Antes de proceder à transferência dos dados, iremos inspecioná-los. Vamos ler as primeiras dez linhas de um dos arquivos e verificar como elas se apresentam. Note que eu coloquei o enconding “Latin-1”. Fiz isso porque havia tentado ler com o default que é “UTF-8” e não foi possível.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>df &lt;-<span class="st"> </span><span class="kw">fread</span>(<span class="st">&quot;RAIS_VINC_PUB_SP.txt&quot;</span>,<span class="dt">nrows=</span><span class="dv">10</span>,<span class="dt">encoding=</span><span class="st">&quot;Latin-1&quot;</span>)</span></code></pre></div>
+<div class="layout-chunk" data-layout="l-body">
+
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre><code><span class='fu'>glimpse</span><span class='op'>(</span><span class='va'>df</span><span class='op'>)</span>
+</code></pre>
+</div>
+<pre><code>Rows: 10
+Columns: 62
+$ `Bairros SP`              &lt;int&gt; 9999, 9999, 9999, 9999, 654, 9999…
+$ `Bairros Fortaleza`       &lt;chr&gt; &quot;{ñ class}&quot;, &quot;{ñ class}&quot;, &quot;{ñ cla…
+$ `Bairros RJ`              &lt;chr&gt; &quot;{ñ class}&quot;, &quot;{ñ class}&quot;, &quot;{ñ cla…
+$ `Causa Afastamento 1`     &lt;int&gt; 99, 99, 99, 99, 99, 99, 99, 99, 9…
+$ `Causa Afastamento 2`     &lt;int&gt; 99, 99, 99, 99, 99, 99, 99, 99, 9…
+$ `Causa Afastamento 3`     &lt;int&gt; 99, 99, 99, 99, 99, 99, 99, 99, 9…
+$ `Motivo Desligamento`     &lt;int&gt; 11, 11, 12, 21, 11, 11, 11, 11, 1…
+$ `CBO Ocupação 2002`       &lt;int&gt; 717020, 514320, 784205, 622010, 6…
+$ `CNAE 2.0 Classe`         &lt;int&gt; 41204, 46869, 78205, 1610, 91031,…
+$ `CNAE 95 Classe`          &lt;int&gt; 45217, 51594, 74500, 1619, 92533,…
+$ `Distritos SP`            &lt;int&gt; 9999, 9999, 9999, 9999, 67, 9999,…
+$ `Vínculo Ativo 31/12`     &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+$ `Faixa Etária`            &lt;int&gt; 4, 6, 5, 5, 6, 7, 4, 5, 6, 5
+$ `Faixa Hora Contrat`      &lt;int&gt; 6, 6, 6, 6, 6, 6, 6, 6, 6, 6
+$ `Faixa Remun Dezem (SM)`  &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+$ `Faixa Remun Média (SM)`  &lt;int&gt; 2, 2, 3, 2, 4, 3, 4, 2, 5, 3
+$ `Faixa Tempo Emprego`     &lt;int&gt; 3, 4, 1, 1, 6, 4, 4, 1, 7, 1
+$ `Escolaridade após 2005`  &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+$ `Qtd Hora Contr`          &lt;int&gt; 44, 44, 44, 44, 44, 44, 44, 44, 4…
+$ Idade                     &lt;int&gt; 27, 44, 30, 35, 43, 59, 29, 30, 4…
+$ `Ind CEI Vinculado`       &lt;int&gt; 0, 0, 0, 0, 0, 1, 1, 0, 0, 0
+$ `Ind Simples`             &lt;int&gt; 0, 1, 0, 0, 1, 0, 0, 1, 1, 0
+$ `Mês Admissão`            &lt;int&gt; 0, 0, 6, 9, 0, 0, 0, 9, 0, 7
+$ `Mês Desligamento`        &lt;int&gt; 1, 5, 7, 10, 6, 5, 5, 10, 3, 10
+$ `Mun Trab`                &lt;int&gt; 0, 0, 354870, 0, 355030, 350950, …
+$ Município                 &lt;int&gt; 350550, 352440, 354780, 350320, 3…
+$ Nacionalidade             &lt;int&gt; 10, 10, 10, 10, 10, 10, 10, 10, 1…
+$ `Natureza Jurídica`       &lt;int&gt; 2062, 2062, 2305, 2305, 2135, 206…
+$ `Ind Portador Defic`      &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+$ `Qtd Dias Afastamento`    &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 10
+$ `Raça Cor`                &lt;int&gt; 2, 2, 2, 4, 2, 2, 6, 2, 2, 8
+$ `Regiões Adm DF`          &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+$ `Vl Remun Dezembro Nom`   &lt;chr&gt; &quot;0000000000,00&quot;, &quot;0000000000,00&quot;,…
+$ `Vl Remun Dezembro (SM)`  &lt;chr&gt; &quot;000000,00&quot;, &quot;000000,00&quot;, &quot;000000…
+$ `Vl Remun Média Nom`      &lt;chr&gt; &quot;0000001174,62&quot;, &quot;0000001405,21&quot;,…
+$ `Vl Remun Média (SM)`     &lt;chr&gt; &quot;000001,23&quot;, &quot;000001,47&quot;, &quot;000001…
+$ `CNAE 2.0 Subclasse`      &lt;int&gt; 4120400, 4686902, 7820500, 161099…
+$ `Sexo Trabalhador`        &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+$ `Tamanho Estabelecimento` &lt;int&gt; 4, 2, 10, 7, 1, 1, 1, 4, 2, 8
+$ `Tempo Emprego`           &lt;chr&gt; &quot;11,9&quot;, &quot;17,1&quot;, &quot;0,4&quot;, &quot;1,2&quot;, &quot;51…
+$ `Tipo Admissão`           &lt;int&gt; 0, 0, 2, 2, 0, 0, 0, 2, 0, 1
+$ `Tipo Estab`              &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+$ `Tipo Estab.1`            &lt;chr&gt; &quot;CNPJ&quot;, &quot;CNPJ&quot;, &quot;CNPJ&quot;, &quot;CNPJ&quot;, &quot;…
+$ `Tipo Defic`              &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+$ `Tipo Vínculo`            &lt;int&gt; 10, 10, 50, 10, 10, 10, 10, 10, 1…
+$ `IBGE Subsetor`           &lt;int&gt; 15, 17, 19, 25, 21, 15, 15, 19, 3…
+$ `Vl Rem Janeiro CC`       &lt;chr&gt; &quot;000001174,62&quot;, &quot;000001272,42&quot;, &quot;…
+$ `Vl Rem Fevereiro CC`     &lt;chr&gt; &quot;000000000,00&quot;, &quot;000001299,48&quot;, &quot;…
+$ `Vl Rem Março CC`         &lt;chr&gt; &quot;000000000,00&quot;, &quot;000001643,73&quot;, &quot;…
+$ `Vl Rem Abril CC`         &lt;chr&gt; &quot;000000000,00&quot;, &quot;000000000,00&quot;, &quot;…
+$ `Vl Rem Maio CC`          &lt;chr&gt; &quot;000000000,00&quot;, &quot;000000000,00&quot;, &quot;…
+$ `Vl Rem Junho CC`         &lt;chr&gt; &quot;000000000,00&quot;, &quot;000000000,00&quot;, &quot;…
+$ `Vl Rem Julho CC`         &lt;chr&gt; &quot;000000000,00&quot;, &quot;000000000,00&quot;, &quot;…
+$ `Vl Rem Agosto CC`        &lt;chr&gt; &quot;000000000,00&quot;, &quot;000000000,00&quot;, &quot;…
+$ `Vl Rem Setembro CC`      &lt;chr&gt; &quot;000000000,00&quot;, &quot;000000000,00&quot;, &quot;…
+$ `Vl Rem Outubro CC`       &lt;chr&gt; &quot;000000000,00&quot;, &quot;000000000,00&quot;, &quot;…
+$ `Vl Rem Novembro CC`      &lt;chr&gt; &quot;000000000,00&quot;, &quot;000000000,00&quot;, &quot;…
+$ `Ano Chegada Brasil`      &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+$ `Ind Trab Intermitente`   &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+$ `Ind Trab Parcial`        &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+$ `Tipo Salário`            &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+$ `Vl Salário Contratual`   &lt;chr&gt; &quot;1.438,31&quot;, &quot;1.344,87&quot;, &quot;1.473,61…</code></pre>
+</div>
+<p>Verificamos alguns problemas com este dataframe. O primeiro deles está nos nomes, que não estão num formato amigável. Outro problema é que as colunas referentes à remuneração estão como caractere. Uma breve inspeção permite verificar que são justamente aquelas colunas que começam com “Vl”. Assim, nossa tarefa ajustar os nomes das colunas e alterar para número as colunas que começam com “Vl”.</p>
+<h2 id="transformando-os-dados">Transformando os dados</h2>
+<p>Para ajustar os nomes das colunas, usaremos a função clean_names do pacote janitor:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre><code><span class='va'>df</span> <span class='op'>&lt;-</span> <span class='fu'>clean_names</span><span class='op'>(</span><span class='va'>df</span><span class='op'>)</span>
+<span class='fu'>glimpse</span><span class='op'>(</span><span class='va'>df</span><span class='op'>)</span>
+</code></pre>
+</div>
+<pre><code>Rows: 10
+Columns: 62
+$ bairros_sp              &lt;int&gt; 9999, 9999, 9999, 9999, 654, 9999, …
+$ bairros_fortaleza       &lt;chr&gt; &quot;{ñ class}&quot;, &quot;{ñ class}&quot;, &quot;{ñ class…
+$ bairros_rj              &lt;chr&gt; &quot;{ñ class}&quot;, &quot;{ñ class}&quot;, &quot;{ñ class…
+$ causa_afastamento_1     &lt;int&gt; 99, 99, 99, 99, 99, 99, 99, 99, 99,…
+$ causa_afastamento_2     &lt;int&gt; 99, 99, 99, 99, 99, 99, 99, 99, 99,…
+$ causa_afastamento_3     &lt;int&gt; 99, 99, 99, 99, 99, 99, 99, 99, 99,…
+$ motivo_desligamento     &lt;int&gt; 11, 11, 12, 21, 11, 11, 11, 11, 11,…
+$ cbo_ocupacao_2002       &lt;int&gt; 717020, 514320, 784205, 622010, 622…
+$ cnae_2_0_classe         &lt;int&gt; 41204, 46869, 78205, 1610, 91031, 4…
+$ cnae_95_classe          &lt;int&gt; 45217, 51594, 74500, 1619, 92533, 4…
+$ distritos_sp            &lt;int&gt; 9999, 9999, 9999, 9999, 67, 9999, 9…
+$ vinculo_ativo_31_12     &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+$ faixa_etaria            &lt;int&gt; 4, 6, 5, 5, 6, 7, 4, 5, 6, 5
+$ faixa_hora_contrat      &lt;int&gt; 6, 6, 6, 6, 6, 6, 6, 6, 6, 6
+$ faixa_remun_dezem_sm    &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+$ faixa_remun_media_sm    &lt;int&gt; 2, 2, 3, 2, 4, 3, 4, 2, 5, 3
+$ faixa_tempo_emprego     &lt;int&gt; 3, 4, 1, 1, 6, 4, 4, 1, 7, 1
+$ escolaridade_apos_2005  &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+$ qtd_hora_contr          &lt;int&gt; 44, 44, 44, 44, 44, 44, 44, 44, 44,…
+$ idade                   &lt;int&gt; 27, 44, 30, 35, 43, 59, 29, 30, 44,…
+$ ind_cei_vinculado       &lt;int&gt; 0, 0, 0, 0, 0, 1, 1, 0, 0, 0
+$ ind_simples             &lt;int&gt; 0, 1, 0, 0, 1, 0, 0, 1, 1, 0
+$ mes_admissao            &lt;int&gt; 0, 0, 6, 9, 0, 0, 0, 9, 0, 7
+$ mes_desligamento        &lt;int&gt; 1, 5, 7, 10, 6, 5, 5, 10, 3, 10
+$ mun_trab                &lt;int&gt; 0, 0, 354870, 0, 355030, 350950, 35…
+$ municipio               &lt;int&gt; 350550, 352440, 354780, 350320, 355…
+$ nacionalidade           &lt;int&gt; 10, 10, 10, 10, 10, 10, 10, 10, 10,…
+$ natureza_juridica       &lt;int&gt; 2062, 2062, 2305, 2305, 2135, 2062,…
+$ ind_portador_defic      &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+$ qtd_dias_afastamento    &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 10
+$ raca_cor                &lt;int&gt; 2, 2, 2, 4, 2, 2, 6, 2, 2, 8
+$ regioes_adm_df          &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+$ vl_remun_dezembro_nom   &lt;chr&gt; &quot;0000000000,00&quot;, &quot;0000000000,00&quot;, &quot;…
+$ vl_remun_dezembro_sm    &lt;chr&gt; &quot;000000,00&quot;, &quot;000000,00&quot;, &quot;000000,0…
+$ vl_remun_media_nom      &lt;chr&gt; &quot;0000001174,62&quot;, &quot;0000001405,21&quot;, &quot;…
+$ vl_remun_media_sm       &lt;chr&gt; &quot;000001,23&quot;, &quot;000001,47&quot;, &quot;000001,5…
+$ cnae_2_0_subclasse      &lt;int&gt; 4120400, 4686902, 7820500, 161099, …
+$ sexo_trabalhador        &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+$ tamanho_estabelecimento &lt;int&gt; 4, 2, 10, 7, 1, 1, 1, 4, 2, 8
+$ tempo_emprego           &lt;chr&gt; &quot;11,9&quot;, &quot;17,1&quot;, &quot;0,4&quot;, &quot;1,2&quot;, &quot;51,9…
+$ tipo_admissao           &lt;int&gt; 0, 0, 2, 2, 0, 0, 0, 2, 0, 1
+$ tipo_estab              &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+$ tipo_estab_1            &lt;chr&gt; &quot;CNPJ&quot;, &quot;CNPJ&quot;, &quot;CNPJ&quot;, &quot;CNPJ&quot;, &quot;CN…
+$ tipo_defic              &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+$ tipo_vinculo            &lt;int&gt; 10, 10, 50, 10, 10, 10, 10, 10, 10,…
+$ ibge_subsetor           &lt;int&gt; 15, 17, 19, 25, 21, 15, 15, 19, 3, …
+$ vl_rem_janeiro_cc       &lt;chr&gt; &quot;000001174,62&quot;, &quot;000001272,42&quot;, &quot;00…
+$ vl_rem_fevereiro_cc     &lt;chr&gt; &quot;000000000,00&quot;, &quot;000001299,48&quot;, &quot;00…
+$ vl_rem_marco_cc         &lt;chr&gt; &quot;000000000,00&quot;, &quot;000001643,73&quot;, &quot;00…
+$ vl_rem_abril_cc         &lt;chr&gt; &quot;000000000,00&quot;, &quot;000000000,00&quot;, &quot;00…
+$ vl_rem_maio_cc          &lt;chr&gt; &quot;000000000,00&quot;, &quot;000000000,00&quot;, &quot;00…
+$ vl_rem_junho_cc         &lt;chr&gt; &quot;000000000,00&quot;, &quot;000000000,00&quot;, &quot;00…
+$ vl_rem_julho_cc         &lt;chr&gt; &quot;000000000,00&quot;, &quot;000000000,00&quot;, &quot;00…
+$ vl_rem_agosto_cc        &lt;chr&gt; &quot;000000000,00&quot;, &quot;000000000,00&quot;, &quot;00…
+$ vl_rem_setembro_cc      &lt;chr&gt; &quot;000000000,00&quot;, &quot;000000000,00&quot;, &quot;00…
+$ vl_rem_outubro_cc       &lt;chr&gt; &quot;000000000,00&quot;, &quot;000000000,00&quot;, &quot;00…
+$ vl_rem_novembro_cc      &lt;chr&gt; &quot;000000000,00&quot;, &quot;000000000,00&quot;, &quot;00…
+$ ano_chegada_brasil      &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+$ ind_trab_intermitente   &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+$ ind_trab_parcial        &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+$ tipo_salario            &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+$ vl_salario_contratual   &lt;chr&gt; &quot;1.438,31&quot;, &quot;1.344,87&quot;, &quot;1.473,61&quot;,…</code></pre>
+</div>
+<p>Com isso, podemos converter as colunas iniciadas por “vl” para numéricas:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre><code><span class='va'>df</span> <span class='op'>&lt;-</span> <span class='va'>df</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>mutate</span><span class='op'>(</span><span class='fu'>across</span><span class='op'>(</span><span class='fu'>starts_with</span><span class='op'>(</span><span class='st'>"vl"</span><span class='op'>)</span>,<span class='op'>~</span><span class='op'>{</span>
+    <span class='va'>.x</span> <span class='op'>%&gt;%</span> 
+    <span class='fu'>str_replace_all</span><span class='op'>(</span><span class='st'>"\\."</span>,<span class='st'>""</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='co'>## Remove os pontos</span>
+    <span class='fu'>str_replace</span><span class='op'>(</span><span class='st'>","</span>,<span class='st'>"."</span><span class='op'>)</span> <span class='op'>%&gt;%</span>  <span class='co'>## Substitui a vírgula por ponto</span>
+    <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span><span class='op'>(</span><span class='op'>)</span> <span class='co'>## Converte para número</span>
+<span class='op'>}</span><span class='op'>)</span><span class='op'>)</span>
+
+<span class='fu'>glimpse</span><span class='op'>(</span><span class='va'>df</span><span class='op'>)</span>
+</code></pre>
+</div>
+<pre><code>Rows: 10
+Columns: 62
+$ bairros_sp              &lt;int&gt; 9999, 9999, 9999, 9999, 654, 9999, …
+$ bairros_fortaleza       &lt;chr&gt; &quot;{ñ class}&quot;, &quot;{ñ class}&quot;, &quot;{ñ class…
+$ bairros_rj              &lt;chr&gt; &quot;{ñ class}&quot;, &quot;{ñ class}&quot;, &quot;{ñ class…
+$ causa_afastamento_1     &lt;int&gt; 99, 99, 99, 99, 99, 99, 99, 99, 99,…
+$ causa_afastamento_2     &lt;int&gt; 99, 99, 99, 99, 99, 99, 99, 99, 99,…
+$ causa_afastamento_3     &lt;int&gt; 99, 99, 99, 99, 99, 99, 99, 99, 99,…
+$ motivo_desligamento     &lt;int&gt; 11, 11, 12, 21, 11, 11, 11, 11, 11,…
+$ cbo_ocupacao_2002       &lt;int&gt; 717020, 514320, 784205, 622010, 622…
+$ cnae_2_0_classe         &lt;int&gt; 41204, 46869, 78205, 1610, 91031, 4…
+$ cnae_95_classe          &lt;int&gt; 45217, 51594, 74500, 1619, 92533, 4…
+$ distritos_sp            &lt;int&gt; 9999, 9999, 9999, 9999, 67, 9999, 9…
+$ vinculo_ativo_31_12     &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+$ faixa_etaria            &lt;int&gt; 4, 6, 5, 5, 6, 7, 4, 5, 6, 5
+$ faixa_hora_contrat      &lt;int&gt; 6, 6, 6, 6, 6, 6, 6, 6, 6, 6
+$ faixa_remun_dezem_sm    &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+$ faixa_remun_media_sm    &lt;int&gt; 2, 2, 3, 2, 4, 3, 4, 2, 5, 3
+$ faixa_tempo_emprego     &lt;int&gt; 3, 4, 1, 1, 6, 4, 4, 1, 7, 1
+$ escolaridade_apos_2005  &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+$ qtd_hora_contr          &lt;int&gt; 44, 44, 44, 44, 44, 44, 44, 44, 44,…
+$ idade                   &lt;int&gt; 27, 44, 30, 35, 43, 59, 29, 30, 44,…
+$ ind_cei_vinculado       &lt;int&gt; 0, 0, 0, 0, 0, 1, 1, 0, 0, 0
+$ ind_simples             &lt;int&gt; 0, 1, 0, 0, 1, 0, 0, 1, 1, 0
+$ mes_admissao            &lt;int&gt; 0, 0, 6, 9, 0, 0, 0, 9, 0, 7
+$ mes_desligamento        &lt;int&gt; 1, 5, 7, 10, 6, 5, 5, 10, 3, 10
+$ mun_trab                &lt;int&gt; 0, 0, 354870, 0, 355030, 350950, 35…
+$ municipio               &lt;int&gt; 350550, 352440, 354780, 350320, 355…
+$ nacionalidade           &lt;int&gt; 10, 10, 10, 10, 10, 10, 10, 10, 10,…
+$ natureza_juridica       &lt;int&gt; 2062, 2062, 2305, 2305, 2135, 2062,…
+$ ind_portador_defic      &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+$ qtd_dias_afastamento    &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 10
+$ raca_cor                &lt;int&gt; 2, 2, 2, 4, 2, 2, 6, 2, 2, 8
+$ regioes_adm_df          &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+$ vl_remun_dezembro_nom   &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+$ vl_remun_dezembro_sm    &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+$ vl_remun_media_nom      &lt;dbl&gt; 1174.62, 1405.21, 1473.60, 968.94, …
+$ vl_remun_media_sm       &lt;dbl&gt; 1.23, 1.47, 1.54, 1.01, 2.14, 1.89,…
+$ cnae_2_0_subclasse      &lt;int&gt; 4120400, 4686902, 7820500, 161099, …
+$ sexo_trabalhador        &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+$ tamanho_estabelecimento &lt;int&gt; 4, 2, 10, 7, 1, 1, 1, 4, 2, 8
+$ tempo_emprego           &lt;chr&gt; &quot;11,9&quot;, &quot;17,1&quot;, &quot;0,4&quot;, &quot;1,2&quot;, &quot;51,9…
+$ tipo_admissao           &lt;int&gt; 0, 0, 2, 2, 0, 0, 0, 2, 0, 1
+$ tipo_estab              &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+$ tipo_estab_1            &lt;chr&gt; &quot;CNPJ&quot;, &quot;CNPJ&quot;, &quot;CNPJ&quot;, &quot;CNPJ&quot;, &quot;CN…
+$ tipo_defic              &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+$ tipo_vinculo            &lt;int&gt; 10, 10, 50, 10, 10, 10, 10, 10, 10,…
+$ ibge_subsetor           &lt;int&gt; 15, 17, 19, 25, 21, 15, 15, 19, 3, …
+$ vl_rem_janeiro_cc       &lt;dbl&gt; 1174.62, 1272.42, 0.00, 0.00, 20.50…
+$ vl_rem_fevereiro_cc     &lt;dbl&gt; 0.00, 1299.48, 0.00, 0.00, 20.50, 1…
+$ vl_rem_marco_cc         &lt;dbl&gt; 0.00, 1643.73, 0.00, 0.00, 20.50, 1…
+$ vl_rem_abril_cc         &lt;dbl&gt; 0.0, 0.0, 0.0, 0.0, 20.5, 0.0, 0.0,…
+$ vl_rem_maio_cc          &lt;dbl&gt; 0.0, 0.0, 0.0, 0.0, 20.5, 0.0, 0.0,…
+$ vl_rem_junho_cc         &lt;dbl&gt; 0.0, 0.0, 1473.6, 0.0, 20.5, 0.0, 0…
+$ vl_rem_julho_cc         &lt;dbl&gt; 0.00, 0.00, 1473.60, 0.00, 0.00, 0.…
+$ vl_rem_agosto_cc        &lt;dbl&gt; 0.00, 0.00, 0.00, 0.00, 0.00, 0.00,…
+$ vl_rem_setembro_cc      &lt;dbl&gt; 0.00, 0.00, 0.00, 1118.01, 0.00, 0.…
+$ vl_rem_outubro_cc       &lt;dbl&gt; 0.00, 0.00, 0.00, 819.87, 0.00, 0.0…
+$ vl_rem_novembro_cc      &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+$ ano_chegada_brasil      &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+$ ind_trab_intermitente   &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+$ ind_trab_parcial        &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+$ tipo_salario            &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+$ vl_salario_contratual   &lt;dbl&gt; 1438.31, 1344.87, 1473.61, 11.18, 2…</code></pre>
+</div>
+<h2 id="transferindo-para-a-base-de-dados-sql">Transferindo para a base de dados SQL</h2>
+<p>Realizar essas transformações num pequeno dataframe foi fácil. O desafio é programar para que o R leia o arquivo em parcelas, realize as transformações e envie para a base de dados. Assumindo que você já sabe se conectar a uma base SQL, vamos dar os passos seguintes.</p>
+<p>A mágica ficará por conta da função walk do pacote purrr e da função read_delim_chunk do pacote readr. Esta última permite que você leia o arquivo em parcelas (chunks) e aplique uma função callback sobre cada um dos chunks. Nesta função callback, você pode incluir todas as transformações que quiser e um comando para inserir os dados na base SQL.</p>
+<p>Inicialmente, vamos criar uma tabela na base de dados com o dataframe transformado:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>DBI<span class="op">::</span><span class="kw">dbCreateTable</span>(conn,<span class="st">&quot;df&quot;</span>,df)</span></code></pre></div>
+<p>Vamos criar a função callback. Ela irá ajustar os nomes das colunas, converter aquelas iniciadas por “vl” para numéricas e, por fim, inserir os dados na tabela.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>f &lt;-<span class="st"> </span><span class="cf">function</span>(x, pos){</span>
+<span id="cb9-2"><a href="#cb9-2"></a></span>
+<span id="cb9-3"><a href="#cb9-3"></a><span class="st">`</span><span class="dt">%&gt;%</span><span class="st">`</span> &lt;-<span class="st"> </span>magrittr<span class="op">::</span><span class="st">`</span><span class="dt">%&gt;%</span><span class="st">`</span>  </span>
+<span id="cb9-4"><a href="#cb9-4"></a></span>
+<span id="cb9-5"><a href="#cb9-5"></a>x <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb9-6"><a href="#cb9-6"></a>janitor<span class="op">::</span><span class="kw">clean_names</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb9-7"><a href="#cb9-7"></a>dplyr<span class="op">::</span><span class="kw">mutate</span>(dplyr<span class="op">::</span><span class="kw">across</span>(dplyr<span class="op">::</span><span class="kw">starts_with</span>(<span class="st">&quot;vl&quot;</span>),<span class="op">~</span>{</span>
+<span id="cb9-8"><a href="#cb9-8"></a>    .x <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb9-9"><a href="#cb9-9"></a><span class="st">    </span>stringr<span class="op">::</span><span class="kw">str_replace_all</span>(<span class="st">&quot;</span><span class="ch">\\</span><span class="st">.&quot;</span>,<span class="st">&quot;&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co">## Remove os pontos</span></span>
+<span id="cb9-10"><a href="#cb9-10"></a><span class="st">    </span>stringr<span class="op">::</span><span class="kw">str_replace</span>(<span class="st">&quot;,&quot;</span>,<span class="st">&quot;.&quot;</span>) <span class="op">%&gt;%</span><span class="st">  </span><span class="co">## Substitui a vírgula por ponto</span></span>
+<span id="cb9-11"><a href="#cb9-11"></a><span class="st">    </span><span class="kw">as.numeric</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="co">## Converte para número</span></span>
+<span id="cb9-12"><a href="#cb9-12"></a><span class="st">    </span>dbx<span class="op">::</span><span class="kw">dbxInsert</span>(conn,<span class="st">&quot;df&quot;</span>,.) <span class="co">## Insere os dados na tabela já criada</span></span>
+<span id="cb9-13"><a href="#cb9-13"></a>}))</span>
+<span id="cb9-14"><a href="#cb9-14"></a></span>
+<span id="cb9-15"><a href="#cb9-15"></a>}</span></code></pre></div>
+<p>Vamos agora criar um vetor com os nomes dos arquivos a serem lidos, chamar a função read_delim_chunk dentro do walk do purrr para ler 50 mil linhas por vez, realizar as transformações e inserir na tabela previamente criada na base de dados.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>a &lt;-<span class="st"> </span><span class="kw">list.files</span>(<span class="dt">pattern=</span><span class="st">&quot;txt$&quot;</span>)</span>
+<span id="cb10-2"><a href="#cb10-2"></a></span>
+<span id="cb10-3"><a href="#cb10-3"></a><span class="kw">walk</span>(a,<span class="op">~</span>{</span>
+<span id="cb10-4"><a href="#cb10-4"></a></span>
+<span id="cb10-5"><a href="#cb10-5"></a>.x <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb10-6"><a href="#cb10-6"></a>readr<span class="op">::</span><span class="kw">read_delim_chunked</span>(<span class="dt">callback =</span> readr<span class="op">::</span>DataFrameCallback<span class="op">$</span><span class="kw">new</span>(f),</span>
+<span id="cb10-7"><a href="#cb10-7"></a>                         <span class="dt">locale =</span> readr<span class="op">::</span><span class="kw">locale</span>(<span class="dt">encoding=</span><span class="st">&quot;latin1&quot;</span>),</span>
+<span id="cb10-8"><a href="#cb10-8"></a>                         <span class="dt">delim =</span> <span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>,</span>
+<span id="cb10-9"><a href="#cb10-9"></a>                         <span class="dt">chunk_size =</span> <span class="dv">50000</span>)</span>
+<span id="cb10-10"><a href="#cb10-10"></a></span>
+<span id="cb10-11"><a href="#cb10-11"></a>})</span></code></pre></div>
+<p>Pronto, basta rodar o comando acima para deixar o R trabalhando na leitura, tranformação dos dados e inserção na base de forma segura e eficiente.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>

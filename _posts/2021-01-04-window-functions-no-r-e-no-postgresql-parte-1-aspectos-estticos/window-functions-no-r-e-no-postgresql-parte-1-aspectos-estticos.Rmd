@@ -1,0 +1,341 @@
+---
+title: "Window functions no R e no PostgreSQL - Parte 1: aspectos estáticos"
+description: |
+  Neste tutorial mostro como operar com funções janela ou
+  window functions tanto no R quanto no PostgreSQL.
+author:
+  - name: José de Jesus Filho
+    url: https://rpg.consudata.com.br
+date: 01-04-2021
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+Funções janela aplicam uma função agregadora em uma partição de linhas selecionadas numa query. Elas retornam a mesma tabela, ou a seleção de colunas, adicionada de uma ou mais colunas com o resultado da aplicação da função agregadora, especialmente quando opera como agregado de rolagem, tal como soma cumulativa ou média móvel.
+
+Neste primeiro tutorial, irei mostrar como operam as principais funções. No próximo, irei explorar window frames e aplicações concretas, especialmente para séries temporais, tais como soma cumulativas e média móvel.
+
+## Sumários
+Quando você quer criar sumários dos dados  no R e no PostgreSQL,  a maneira mais comumumente utilizada é por meio da funções `group_by` e `summarize` no R `GROUP BY` e das funções de agregação no PostgreSQL.
+
+Vamos usar o clássico dataframe mtcars para dar alguns exemplos. No R, eu faria assim para gerar as estatísticas descritivas da coluna mpg agrupadas pela coluna cyl.
+
+```{r}
+library(tidyverse)
+mtcars %>% 
+   group_by(cyl) %>% 
+   summarize(
+   n = n(),
+   min = min(mpg),
+   max = max(mpg),
+   media = mean(mpg),
+   mediana = median(mpg),
+   desvio_padrao = sd(mpg)
+   )
+```
+
+O mesmo resultado você obtêm com a query abaixo. Cuidado apenas para ordenar a coluna mpg por grupos ao calcular a mediana, pois vale sempre relembrar que SQL não possui noção intrínseca de ordem.
+
+```sql
+SELECT cyl, COUNT(*) AS n,  
+      MIN(mpg) AS min,  
+      MAX(mpg) AS max,  
+      AVG(mpg) AS media,  
+      PERCENTILE_CONT(0.50) WITHIN GROUP (ORDER BY mpg ASC) AS mediana,  
+      STDDEV(mpg) AS desvio_padrao  
+      FROM mtcars  
+      GROUP BY cyl; 
+```
+
+Summarize no R e as funções de agregação no PostgreSQL retornam apenas os agregados. No entanto, por vezes, queremos também as colunas originais, mesmo que os agregados se repitam. Para isso, no R utilizamos `group_by` com `mutate`:
+
+```{r}
+mtcars %>% 
+   select(cyl, mpg) %>% 
+   group_by(cyl) %>% 
+   mutate(
+     media = mean(mpg)
+   )
+```
+
+No PostgreSQL, este mesmo resultado pode ser obtido por meio da cláusula OVER, adicionada depois da função janela, no caso AVG, com o argumento PARTITION BY seguido da coluna agrupadora.
+
+```sql
+ SELECT mpg, cyl, AVG(mpg)
+ OVER (PARTITION BY cyl) FROM mtcars;
+
+```
+Você deve ter notado que eu criei apenas um sumário. Para criar vários sumários, com o mutate é simples:
+
+```{r}
+mtcars %>% 
+   select(cyl,mpg) %>% 
+   group_by(cyl) %>% 
+   mutate(
+   n = n(),
+   min = min(mpg),
+   max = max(mpg),
+   media = mean(mpg),
+   mediana = median(mpg),
+   desvio_padrao = sd(mpg)
+   )
+```
+
+Com funções janela, é um pouquinho mais complicado.
+
+```sql
+select mpg,cyl, 
+COUNT(*)  over w as n,
+MIN(mpg)  over w as min,
+MAX(mpg)  over w as max,
+AVG(mpg) over w as media,
+STDDEV(mpg) over w as desvio_padrao
+from mtcars
+window w as  (partition by cyl);
+```
+Ou seja, para criar vários sumários, é necessário criar uma cláusula WINDOW e referenciá-la com OVER em cada um dos agregados.
+
+## Window functions
+
+Além das funções de agregação, tais como mean, median, sd, outras funções operam como funções janela. Abaixo segue a lista delas:
+
+```{r echo = FALSE}
+wf <- tibble::tibble(nome_sql = c("CUME_DIST", "DENSE_RANK", "FIRST_VALUE", 
+"LAG", "LAST_VALUE", "LEAD", "NTILE", "NTH_VALUE", "PERCENT_RANK", 
+"RANK", "ROW_NUMBER"), 
+nome_dplyr = c("cume_dist","dense_rank","first","lag","last","lead","ntile","nth","percent_rank","min_rank","row_number"),
+descricao = c("Retorna a classificação relativa da linha atual", 
+"Classifica a linha atual dentro da partição sem intervalos", 
+"Retorna o valor avaliado em relação à  primeira linha dentro da partição", 
+"Retorna o valor avaliado na linha que está em uma distância física especificada antes da linha atual dentro da partição", 
+"Retorna o valor avaliado em ralação à última linha dentro da partição", 
+"Retorna o valor avaliado na linha que está a certa distância depois da linha atual dentro da partição", 
+"Divide linhas em uma partição, tanto quanto possível, em iguais quantidades, e atribui a cada linha um inteiro começando por um até o valor do argumento", 
+"Retorna o valor avaliado em relação à linha nth em partição ordenada", 
+"Retona a classificação relativa da linha atual (rank-1) / (total de linhas -1)", 
+"Retorna a linha atual dentro da partição com intervalos", 
+"Número da linha atual dentro da partição começando por 1"
+))
+```
+
+
+```{r, echo = FALSE}
+pander::pander(wf)
+```
+
+Essas funções regulamente supõem a existência de linhas ordenadas, que no SQL não existe. Se para você, classificar as linhas conforme uma ordem é importante, será necessário adicionar a cláusula ORDER BY dentro do OVER, a fim de assegurar a classificação segundo uma ordem. No R, a ordem é fixa, de modo que, se você já está satisfeita com ordem das linhas, não é necessário argumento adicional.
+
+Vamos dar uma olhada nessas funções conforme o uso.
+
+## Row Number
+
+Esta função retorna uma sequência numérica, começando por um, dos valores agrupados.
+
+```{r}
+  mtcars %>% 
+  select(cyl,mpg) %>% 
+  group_by(cyl) %>% 
+  mutate(classificacao = row_number(mpg)) %>% 
+  arrange(cyl,classificacao)
+```
+
+Eu coloquei o mpg dentro do row_number. Você pode retirar, mas aí a classificação respeitará a ordem original. Outra opção, é colocar o arrange antes do mutate. Dessa forma, você não precisa incluir a coluna dentro do row_number.
+
+Vejamos como realizar a mesma operação no PostgreSQL.
+
+```sql
+SELECT cyl, mpg, 
+ROW_NUMBER() OVER (PARTITION BY cyl ORDER BY mpg) FROM mtcars;
+```
+## min_rank e rank
+
+Com rank, cria-se uma sequência também começando por um, com a diferença de que, ele retorna a mesma classificação para valores idênticos no mesmo grupo. Além disso, ele realiza saltos.
+
+Eu não sei porque razão, mas rank no PostgreSQL não corresponde a exatamente rank no dplyr, mas a min_rank, ou rank com o argumento ties.method = "min". Se você usar rank sem argumento, dplyr irá dividir um pelo número de valores identicos repetidos e adicionar ao inteiro da classificação. Veja no exemplo abaixo.
+
+```{r}
+mtcars %>% 
+  select(mpg,cyl) %>% 
+  group_by(cyl) %>% 
+    arrange(cyl,mpg) %>% 
+  mutate(classificacao = rank(mpg))
+```
+
+Note que 22.8 com cyl 4 se repetem. Como eles aparecem pela primeira vez na terceira posição e só há uma repetição, o número 3 é adicionado de 0,5. Provavelmente, o que, na verdade, você quer é usar min_rank:
+
+```{r}
+mtcars %>% 
+  select(mpg,cyl) %>% 
+  group_by(cyl) %>% 
+  arrange(cyl,mpg) %>% 
+  mutate(classificacao = min_rank(mpg))
+```
+
+
+Resultado idêntico você obtêm com o PostgreSQL utilizando apenas a função RANK:
+
+```sql
+SELECT mpg, cyl,
+RANK() OVER (PARTITION BY cyl ORDER BY mpg) FROM mtcars;
+```
+
+Note que o número quatro é saltado na coluna classificação. Isso porque o segundo 3 ocupa o seu lugar.
+
+## dense_rank
+
+Dense_rank é similar a rank, com a diferença de que não há saltos.
+
+```{r}
+mtcars %>% 
+   select(mpg,cyl) %>% 
+   group_by(cyl) %>% 
+   arrange(cyl,mpg) %>% 
+   mutate(classificacao = dense_rank(mpg))
+```
+
+Agora no PostgreSQL
+
+```sql
+SELECT mpg, cyl,
+DENSE_RANK() OVER (PARTITION BY cyl ORDER BY mpg) FROM mtcars;
+
+```
+
+## Percent_rank
+
+Percent_rank retorna a classificação relativa da linha atual, num intervalo de zero a um. O cálculo é feito da seguinte forma: (rank-1)/total de linhas na partição -1).  
+
+```{r}
+mtcars %>% 
+   select(mpg,cyl) %>% 
+   group_by(cyl) %>% 
+   arrange(cyl,mpg) %>% 
+   mutate(classificacao = percent_rank(mpg))
+```
+
+No PostgreSQL:
+
+```sql
+SELECT cyl,mpg,
+PERCENT_RANK() OVER (PARTITION BY cyl ORDER BY mpg) FROM mtcars;
+
+```
+
+## First, last e nth
+
+Estas funções retornam o primeiro, o último e valor n dentro da partição no R. First_value irá retornar o primeiro valor no postgreSQL, mas last_value e nth_value poderão lhe surpreender.
+
+
+
+```{r}
+mtcars %>% 
+   select(cyl,mpg) %>% 
+   group_by(cyl) %>% 
+   arrange(cyl,mpg) %>% 
+   mutate(primeiro_valor = first(mpg),
+      valor_5 = nth(mpg,5),
+      ultimo_valor = last(mpg))
+```
+
+Da primeira vez que eu usei o PostgreSQL para obter o último e o valor n dentro da partição, fiquei bastante supreso. Veja o resultado abaixo
+
+```sql
+SELECT cyl,mpg,
+FIRST_VALUE(mpg) OVER w,
+LAST_VALUE(mpg) OVER w,
+NTH_VALUE(mpg,5) OVER w
+FROM mtcars
+WINDOW w AS (PARTITION BY cyl ORDER BY mpg);
+```
+
+```{r, echo = FALSE}
+
+mtcars %>% 
+   select(cyl,mpg) %>% 
+   group_by(cyl) %>% 
+   arrange(cyl,mpg) %>% 
+   mutate(primeiro_valor = first(mpg),
+          valor_5 = nth(mpg,5),
+          ultimo_valor = mpg,
+          valor_5 = ifelse(row_number()<5,integer(0),valor_5)) %>% 
+   pander::pander()
+
+```
+
+Note que, o primeiro valor retornou os valores esperado. Já last_value retornou os mesmos valores de mpg, e nth_value retornou NULL até o quarto valor (Aparece NA pq importei o resultado para o R). Isso aconteceu por causa de algo chamado windown frame, que contêm uma cláusula implícita, cada vez que chamamos a cláusula OVER. Veremos no próximo tutorial o que são window frames. Por ora, vamos aprender a contornar esse resultado.
+
+Para obter resultado idêntido ao dplyr, devemos alterar a moldura da janela (window frame):
+
+
+```sql
+SELECT cyl,mpg,
+FIRST_VALUE(mpg) OVER w,
+NTH_VALUE(mpg,5) OVER w,
+LAST_VALUE(mpg) OVER w
+FROM mtcars
+WINDOW w AS (
+PARTITION BY cyl ORDER BY mpg
+RANGE BETWEEN UNBOUNDED  PRECEDING AND UNBOUNDED FOLLOWING
+);
+```
+
+
+## Lag e lead
+
+Duas funções extremamente úteis para quem trabalha com séries temporais são lag e lead. A primeira retorna o valor imediatamente anterior ao atual, por padrão, ou o valor distante n linhas. Lead  funciona de forma similar, mas para valores posteriores.
+
+```{r}
+mtcars %>% 
+   select(mpg,cyl) %>% 
+   group_by(cyl) %>% 
+   arrange(cyl,mpg) %>% 
+   mutate(anterior = lag(mpg),
+          posterior = lead(mpg))
+```
+
+No PostgreSQL:
+
+```sql
+SELECT mpg,cyl,
+lag(mpg) OVER w,
+lead(mpg) OVER w
+FROM mtcars
+WINDOW w AS (PARTITION BY cyl ORDER BY mpg);
+
+```
+
+## Ntile
+
+Por fim, resta falar de ntile, que eu particularmente considero muito útil para identificar grupos num dataframe a fim de paralelizar operações no R. Tanto no PostgreSQL quanto no R, faz também sentido usar sem PARTITION BY ou group_by respectivamente, pois assim a tabela inteira é agrupada. Note que ntile cria grupos, tanto quanto possível, iguais.
+
+```{r}
+mtcars %>% 
+   select(mpg,cyl) %>% 
+   arrange(cyl,mpg) %>% 
+   mutate(grupo = ntile(n=4))
+   
+```
+
+
+No PostgreSQL, você obtêm o mesmo resultado com:
+
+```sql
+SELECT mpg,cyl,
+NTILE(3) OVER (ORDER BY mpg) FROM mtcars;
+
+```
+
+## Conclusão
+
+Exploraramos as principais funcionalidades e nos detivemos mais nos aspectos estáticos. Funções janela possuem aplicações infindáveis. Iremos mostrar no próximo tutorial como funcionam as molduras de janela ou window frames, as quais permitem realizar excelentes operações, especialmente com séries temporais, que regularmente requerem transformações dinâmicas, tais soma cumulativa e média móvel.
+
+## Atenção
+
+Funções janela são os últimos ítens a serem avalidados numa query, com exceção da cláusula ORDER BY. Por serem a última avaliação, funções janela não podem ser usadas dentro de cláusulas WHERE, GROUP BY ou HAVING.
+

@@ -1,0 +1,252 @@
+---
+title: "TidyPG cheatsheet: sumarizando tabelas com R e PostgreSQL"
+description: |
+  Neste cheatsheet mostro como criar sumários no R e no PostgreSQL.
+author:
+  - name: José de Jesus Filho
+    url: https://rpg.consudata.com.br
+date: 01-04-2021
+output:
+  distill::distill_article:
+    self_contained: false
+preview: "summary.png"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+##  Count
+
+:::::: {style="display: flex;"}
+::: {.column width="40%"}
+
+
+#### Tidyverse
+
+```r
+## Número de colunas
+length(df)
+
+## Número de linhas
+nrow(df)
+
+## frequência para uma coluna
+df %>% 
+      count(col1)
+
+## frequência ordenada    
+df %>% 
+    count(col1,sort = T)
+
+##Frequência múltipla    
+
+df %>% 
+      count(col1,col2,...)
+      
+## Frequência múltipla ordenada
+
+df %>% 
+       count(col1,col2,...,sort = T)
+```
+:::
+
+::: {.column width="5%"}
+\
+:::
+
+::: {.column width="55%"}
+
+
+#### PostgreSQL
+
+```sql
+-- Número de colunas 
+SELECT COUNT(*) 
+FROM information_schema.columns 
+WHERE table_name = 'df'; 
+
+-- Número de linhas  
+SELECT COUNT(*) 
+FROM df;
+
+-- Frequência para uma coluna
+
+SELECT col1, COUNT(*) 
+FROM df 
+GROUP BY col1;  
+
+-- Frequência ordenada para uma coluna
+SELECT col1, COUNT(*) 
+FROM df
+GROUP BY col1 
+ORDER BY COUNT 
+DESC;  
+
+-- Frequência múltipla
+SELECT col1, col2,... COUNT(*) 
+FROM df 
+GROUP BY col1, col2;
+
+-- Frequência múltipla ordenada por uma  coluna
+SELECT col1, col2,... COUNT(*) 
+FROM df 
+GROUP BY col1 
+ORDER BY COUNT 
+DESC;
+
+-- Frequência múltipla ordenada
+SELECT col1,col2, COUNT(*) 
+FROM df 
+GROUP BY col1, col2 
+ORDER BY COUNT 
+DESC;
+```
+
+:::
+::::::
+
+## Summarize ou summarise
+
+### Sumário sem agrupamento
+
+:::::: {style="display: flex;"}
+::: {.column width="40%"}
+
+
+#### Tidyverse
+
+Estamos assumindo que a coluna col1 é numérica.
+
+```r
+
+df %>% 
+   summarize(n = n(),
+             min = min(col1),
+             max = max(col1),
+             media = mean(col1),
+             mediana = median(col1)
+             desvio_padrao = sd(col1),
+             )
+
+```
+:::
+
+::: {.column width="5%"}
+\
+:::
+
+::: {.column width="55%"}
+
+
+#### PostgreSQL
+
+Bases relacionais não possuem noção intrínseca de ordem, o que torna a verificação da mediana e outras percentis ou quantis mais verboso.
+
+```sql
+SELECT COUNT(*) AS n,  
+      MIN(col1) AS min,  
+      MAX(col1) AS max,  
+      AVG(col1) AS media,  
+      PERCENTILE_CONT(0.50) WITHIN GROUP (ORDER BY col1 ASC) AS mediana,  
+      STDDEV(col1) AS desvio_padrao  
+      FROM df;
+      
+```
+:::
+
+::::::
+
+
+
+
+
+### Sumário com agrupamento
+
+
+:::::: {style="display: flex;"}
+::: {.column width="40%"}
+
+#### Tidyverse
+
+Estamos assumindo que a coluna col1 é numérica.
+
+```r
+
+df %>% 
+   group_by(grupo) %>% 
+   summarize(n = n(),
+             min = min(col1),
+             max = max(col1),
+             media = mean(col1),
+             mediana = median(col1)
+             desvio_padrao = sd(col1),
+             )
+
+```
+:::
+
+::: {.column width="5%"}
+\
+:::
+
+::: {.column width="55%"}
+
+
+#### PostgreSQL
+
+Bases relacionais não têm noção intrínseca de ordem, o que torna a verificação da mediana e outras percentis ou quantis mais verbosa.
+
+```sql
+SELECT grupo, COUNT(*) AS n,  
+      MIN(col1) AS min,  
+      MAX(col1) AS max,  
+      AVG(col1) AS media,  
+      PERCENTILE_CONT(0.50) WITHIN GROUP (ORDER BY col1 ASC) AS mediana,  
+      STDDEV(col1) AS desvio_padrao  
+      FROM df  
+      GROUP BY grupo;  
+      
+```
+:::
+
+::::::
+
+
+
+
+
+### Sumário de vetores(R)/arrays(PostgreSQL)
+:::::: {style="display: flex;"}
+::: {.column width="40%"}
+
+#### R
+
+```r
+
+mean(c(8,7,1,4))
+
+```
+:::
+
+::: {.column width="5%"}
+\
+:::
+
+::: {.column width="55%"}
+
+
+#### PostgreSQL
+
+```sql
+SELECT AVG(a) 
+AS media 
+FROM UNNEST(ARRAY[8,7,1,4]) 
+AS a;
+      
+```
+:::
+
+::::::
