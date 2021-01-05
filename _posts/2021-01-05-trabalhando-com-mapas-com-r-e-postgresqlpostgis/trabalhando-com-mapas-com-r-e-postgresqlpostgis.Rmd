@@ -1,0 +1,185 @@
+---
+title: "Trabalhando com mapas com R e PostgreSQL/PostGIS"
+description: |
+  Neste tutorial, irei mostrar como armazenar shapes no PostgreSQL
+  usando a extensão PostGIS e criar mapas no R sem sobrecarregar a memória.
+author:
+  - name: José de Jesus Filho
+    url: https://rpg.consudata.com.br
+date: 01-05-2021
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introdução
+
+Nesta postagem, irei mostrar como usar a extensão PostGIS para armazenar shapes no formato simple features (sf) e chamá-las do R. O R possui um importante pacote chamdo ```sf``` que, assim como o PostGIS usa o padrão simple feature para organizar os shapes. Esta similaridade apresenta várias vantagens, sendo que a principal delas é a comunicação sem percalços entre o R e o PostgreSQL, quando se trata de trabalhar com mapas.
+
+Além disso, muitas das funções tanto da extensão PostGIS quanto do pacote ```sf``` têm nomes similares, começando com st_. Por fim, o pacote sf já possui algumas funções para escrever e ler polígonos do PostgreSQL, o que facilita em muito em termos de compatibilidade dos tipos.
+
+Há muitas vantagens em armazenar shapes no PostgreSQL. Geralmente, shapes ocupam muito espaço na memória. Se eles estão todos no banco, os problemas praticamente se acabam. Você pode criar queries para filtrar somente o que você quer, juntar tabelas etc. Seu shinyapp vai ficar leve como uma pena. Bastará montar um query parametrizada com o uso da função ```glue_sql``` do pacote ```glue```, que os usuários do seu shiny poderão plotar uma infinidade de mapas, sem que a memória seja sobrecarregada.
+
+
+
+## Prérrequisitos no PostgreSQL
+
+Primeiramente, devemos instalar o PostGIS no servidor onde se encontra o PostgreSQL. Eu estou usando o PostgreSQL versão 12 e irei instalar nele a versão 3 do PostGIS.
+
+```sh
+sudo apt install postgis postgresql-12-postgis-3
+```
+
+Feito isso, vamos entrar no PostgreSQL: 
+
+```sh
+sudo -u postgres psql
+```
+Vamos criar um banco de dados, onde instalaremos a extensão PostGIS. Estou assumindo que você já criou um role/usuário com o qual costuma conectar-se do R. O meu é jose e ele será o proprietário do banco criado. Eu chamarei o banco de geobr em homenagem ao pacote geobr.
+
+```sql
+create database geobr owner jose;
+```
+
+Agora, vamos nos connectar a banco recentemente criado.
+
+```sql
+\c geobr jose
+```
+
+Feito isso, podemos criar a extensão PostGIS:
+
+```sql
+create extension postgis;
+```
+
+## Prérrequisitos no R
+
+No servidor onde se encontra o R, precisamos instalar as dependências para então instalar os pacotes geobr e sf. A instalação do geobr também instala o sf. Vá para o terminal e proceda da seguinte forma:
+
+```sh
+sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable
+sudo apt update
+sudo apt-get install libudunits2-dev libgdal-dev libgeos-dev libproj-dev
+```
+
+Feito isso, basta instalar o pacote geobr diretamente do console do R:
+
+```r
+install.packages("geobr")
+```
+
+## Trabalhando com o PostGIS a partir do R
+
+Agora você verá como é simples e mágico trabalhar mapas no R sem se preocupar a memória. Vamos enviar o shape do mapa do Brasil para os PostgreSQL.
+
+```r
+library(geobr)
+library(sf)
+```
+
+```r
+br <- read_country(year = 2019, simplified = TRUE, showProgress = TRUE)
+```
+
+Connecte-se ao PostgreSQL:
+
+```r
+conn <- DBI::dbConnect(RPostgres::Postgres(), host= "endereco_servidor_postgres", dbname = "geobr", user = "seu_role", password = "sua_senha")
+```
+
+
+Agora é só enviar o mapa pra lá, usando a função ```st_write``` do pacote sf. Simples, não?
+
+```r
+st_write(br, conn)
+```
+
+### Preechimento
+
+Temos apenas o shape, precisamos preencher esses shapes com dados. Para tanto, usarei o pacote `brcities` que extrai informações populacionais do IBGE. Se quiser saber quais informações populacionais você pode baixar com este pacote, pode consultá-lo [aqui](https://abjur.github.io/brcities/). Se quiser instalá-lo, use o seguinte cógido:
+
+```
+remotes::install_github("abjur/brcities")
+```
+
+Vamos carregá-lo, bem como, o ```tidyverse``` e o ```sf```, para limpar e organizar os dados antes de enviá-los para o PostgreSQL. 
+
+```r
+library(brcities)
+library(tidyverse)
+library(sf)
+```
+
+Usaremos a função ```br_city_indicators()```. Esta função baixa dados municipais de uma unidade federativa por vez. Usaremos a função `map_dfr`  do pacote purrr para baixar de todas e já empilhá-las num único dataframe. 
+
+```r
+siglas <- c("RO", "AC", "AM", "RR", "PA", "AP", "TO", "MA", "PI", "CE", 
+"RN", "PB", "PE", "AL", "SE", "BA", "MG", "ES", "RJ", "SP", "PR", 
+"SC", "RS", "MS", "MT", "GO", "DF")
+
+indicador <- 25207L
+uf_pop <- map_dfr(siglas, ~br_cities_indicator(.x, indicators = indicador))
+```
+
+
+Agora, vamos fazer alguns pequenos ajustes no dataframe uf_pop antes de enviá-lo ao PostgreSQL. Iremos remover a última coluna, renomear a oitava coluna que contêm a população para pop, convertê-la para integer e escrevê-la no banco com o nome uf_pob.
+
+```r
+ if_pop <-  uf_pop %>% 
+      select(-9) %>%
+      rename(pop =8) %>% 
+      mutate(pop = as.integer(pop))
+
+      DBI::dbWriteTable(conn,"uf_pop",uf_pop)
+```
+
+## Plotando o mapa
+
+Pronto, estamos em condições de montar uma query para trazer os dados de interesse e plotá-los com ggplot2. Irei usar CTE (Common Table Expressions), que nada mais é do que um query temporário, para somar a população dos municípios por uf e depois juntá-las (inner join) no sf chamado br que foi inicialmente escrito no PostgreSQL.
+
+É importante notar que você deve usar a função ```st_read()``` do pacote ```sf```. Do contrário, o polígono não será importado como geometry.
+
+
+```{r echo= FALSE, message = FALSE, warning=FALSE}
+library(tidyverse)
+library(sf)
+conn <- DBI::dbConnect(RPostgres::Postgres(),host="postgres.consudata.com.br",dbname="geobr",user=Sys.getenv("DBUSER"),password=Sys.getenv("DBPASSWORD"))
+```
+
+
+```{r}
+dados <- st_read(conn, query = "
+                      with cte_pop as 
+                      (select uf, sum(pop) pop
+                      from uf_pop
+                      group by uf
+                      )
+                      select br.abbrev_state, br.name_state, cte_pop.pop, br.geom
+                      from br
+                      inner join cte_pop on cte_pop.uf = br.abbrev_state
+                      ")
+```
+
+Agora é ir para o abraço e plotar o mapa.
+
+```{r, warning=FALSE, message=FALSE, cache = TRUE}
+dados %>% 
+  mutate(pop = (pop/1000) %>% round(0)) %>% 
+ggplot() +
+  geom_sf(aes(fill = abbrev_state), show.legend = FALSE)+
+  geom_sf_label(aes(label = pop),size = 2)+
+  scale_fill_viridis_d()+
+  theme_bw()
+```
+
+
+
+
+
+
