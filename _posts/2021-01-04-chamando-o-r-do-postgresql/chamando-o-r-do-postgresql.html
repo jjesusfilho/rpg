@@ -85,621 +85,39 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </style>
 
   <!--radix_placeholder_meta_tags-->
-  <title>Ciência de Dados com R e PostgreSQL</title>
+  <title>Chamando o R do PostgreSQL</title>
+
+  <meta property="description" itemprop="description" content="Como instalar os dois e usá-los de forma integrada."/>
 
 
-
+  <!--  https://schema.org/Article -->
+  <meta property="article:published" itemprop="datePublished" content="2021-01-04"/>
+  <meta property="article:created" itemprop="dateCreated" content="2021-01-04"/>
+  <meta name="article:author" content="José de Jesus Filho"/>
 
   <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
-  <meta property="og:title" content="Ciência de Dados com R e PostgreSQL"/>
+  <meta property="og:title" content="Chamando o R do PostgreSQL"/>
   <meta property="og:type" content="article"/>
+  <meta property="og:description" content="Como instalar os dois e usá-los de forma integrada."/>
   <meta property="og:locale" content="en_US"/>
-  <meta property="og:site_name" content="Ciência de Dados com R e PostgreSQL"/>
 
   <!--  https://dev.twitter.com/cards/types/summary -->
   <meta property="twitter:card" content="summary"/>
-  <meta property="twitter:title" content="Ciência de Dados com R e PostgreSQL"/>
+  <meta property="twitter:title" content="Chamando o R do PostgreSQL"/>
+  <meta property="twitter:description" content="Como instalar os dois e usá-los de forma integrada."/>
 
   <!--/radix_placeholder_meta_tags-->
   <!--radix_placeholder_rmarkdown_metadata-->
 
   <script type="text/json" id="radix-rmarkdown-metadata">
-  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","site","listing"]}},"value":[{"type":"character","attributes":{},"value":["Ciência de Dados com R e PostgreSQL"]},{"type":"character","attributes":{},"value":["distill::distill_website"]},{"type":"character","attributes":{},"value":["posts"]}]}
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","output","preview"]}},"value":[{"type":"character","attributes":{},"value":["Chamando o R do PostgreSQL"]},{"type":"character","attributes":{},"value":["Como instalar os dois e usá-los de forma integrada.\n"]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","url"]}},"value":[{"type":"character","attributes":{},"value":["José de Jesus Filho"]},{"type":"character","attributes":{},"value":["https://rpg.consudata.com.br"]}]}]},{"type":"character","attributes":{},"value":["01-04-2021"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained"]}},"value":[{"type":"logical","attributes":{},"value":[false]}]}]},{"type":"character","attributes":{},"value":["linear_plot.png"]}]}
   </script>
   <!--/radix_placeholder_rmarkdown_metadata-->
+  
+  <script type="text/json" id="radix-resource-manifest">
+  {"type":"character","attributes":{},"value":["linear_plot.png"]}
+  </script>
   <!--radix_placeholder_navigation_in_header-->
-  <meta name="distill:offset" content=""/>
-
-  <script type="application/javascript">
-
-    window.headroom_prevent_pin = false;
-
-    window.document.addEventListener("DOMContentLoaded", function (event) {
-
-      // initialize headroom for banner
-      var header = $('header').get(0);
-      var headerHeight = header.offsetHeight;
-      var headroom = new Headroom(header, {
-        tolerance: 5,
-        onPin : function() {
-          if (window.headroom_prevent_pin) {
-            window.headroom_prevent_pin = false;
-            headroom.unpin();
-          }
-        }
-      });
-      headroom.init();
-      if(window.location.hash)
-        headroom.unpin();
-      $(header).addClass('headroom--transition');
-
-      // offset scroll location for banner on hash change
-      // (see: https://github.com/WickyNilliams/headroom.js/issues/38)
-      window.addEventListener("hashchange", function(event) {
-        window.scrollTo(0, window.pageYOffset - (headerHeight + 25));
-      });
-
-      // responsive menu
-      $('.distill-site-header').each(function(i, val) {
-        var topnav = $(this);
-        var toggle = topnav.find('.nav-toggle');
-        toggle.on('click', function() {
-          topnav.toggleClass('responsive');
-        });
-      });
-
-      // nav dropdowns
-      $('.nav-dropbtn').click(function(e) {
-        $(this).next('.nav-dropdown-content').toggleClass('nav-dropdown-active');
-        $(this).parent().siblings('.nav-dropdown')
-           .children('.nav-dropdown-content').removeClass('nav-dropdown-active');
-      });
-      $("body").click(function(e){
-        $('.nav-dropdown-content').removeClass('nav-dropdown-active');
-      });
-      $(".nav-dropdown").click(function(e){
-        e.stopPropagation();
-      });
-    });
-  </script>
-
-  <style type="text/css">
-
-  /* Theme (user-documented overrideables for nav appearance) */
-
-  .distill-site-nav {
-    color: rgba(255, 255, 255, 0.8);
-    background-color: #0F2E3D;
-    font-size: 15px;
-    font-weight: 300;
-  }
-
-  .distill-site-nav a {
-    color: inherit;
-    text-decoration: none;
-  }
-
-  .distill-site-nav a:hover {
-    color: white;
-  }
-
-  @media print {
-    .distill-site-nav {
-      display: none;
-    }
-  }
-
-  .distill-site-header {
-
-  }
-
-  .distill-site-footer {
-
-  }
-
-
-  /* Site Header */
-
-  .distill-site-header {
-    width: 100%;
-    box-sizing: border-box;
-    z-index: 3;
-  }
-
-  .distill-site-header .nav-left {
-    display: inline-block;
-    margin-left: 8px;
-  }
-
-  @media screen and (max-width: 768px) {
-    .distill-site-header .nav-left {
-      margin-left: 0;
-    }
-  }
-
-
-  .distill-site-header .nav-right {
-    float: right;
-    margin-right: 8px;
-  }
-
-  .distill-site-header a,
-  .distill-site-header .title {
-    display: inline-block;
-    text-align: center;
-    padding: 14px 10px 14px 10px;
-  }
-
-  .distill-site-header .title {
-    font-size: 18px;
-    min-width: 150px;
-  }
-
-  .distill-site-header .logo {
-    padding: 0;
-  }
-
-  .distill-site-header .logo img {
-    display: none;
-    max-height: 20px;
-    width: auto;
-    margin-bottom: -4px;
-  }
-
-  .distill-site-header .nav-image img {
-    max-height: 18px;
-    width: auto;
-    display: inline-block;
-    margin-bottom: -3px;
-  }
-
-
-
-  @media screen and (min-width: 1000px) {
-    .distill-site-header .logo img {
-      display: inline-block;
-    }
-    .distill-site-header .nav-left {
-      margin-left: 20px;
-    }
-    .distill-site-header .nav-right {
-      margin-right: 20px;
-    }
-    .distill-site-header .title {
-      padding-left: 12px;
-    }
-  }
-
-
-  .distill-site-header .nav-toggle {
-    display: none;
-  }
-
-  .nav-dropdown {
-    display: inline-block;
-    position: relative;
-  }
-
-  .nav-dropdown .nav-dropbtn {
-    border: none;
-    outline: none;
-    color: rgba(255, 255, 255, 0.8);
-    padding: 16px 10px;
-    background-color: transparent;
-    font-family: inherit;
-    font-size: inherit;
-    font-weight: inherit;
-    margin: 0;
-    margin-top: 1px;
-    z-index: 2;
-  }
-
-  .nav-dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: white;
-    min-width: 200px;
-    border: 1px solid rgba(0,0,0,0.15);
-    border-radius: 4px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.1);
-    z-index: 1;
-    margin-top: 2px;
-    white-space: nowrap;
-    padding-top: 4px;
-    padding-bottom: 4px;
-  }
-
-  .nav-dropdown-content hr {
-    margin-top: 4px;
-    margin-bottom: 4px;
-    border: none;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  }
-
-  .nav-dropdown-active {
-    display: block;
-  }
-
-  .nav-dropdown-content a, .nav-dropdown-content .nav-dropdown-header {
-    color: black;
-    padding: 6px 24px;
-    text-decoration: none;
-    display: block;
-    text-align: left;
-  }
-
-  .nav-dropdown-content .nav-dropdown-header {
-    display: block;
-    padding: 5px 24px;
-    padding-bottom: 0;
-    text-transform: uppercase;
-    font-size: 14px;
-    color: #999999;
-    white-space: nowrap;
-  }
-
-  .nav-dropdown:hover .nav-dropbtn {
-    color: white;
-  }
-
-  .nav-dropdown-content a:hover {
-    background-color: #ddd;
-    color: black;
-  }
-
-  .nav-right .nav-dropdown-content {
-    margin-left: -45%;
-    right: 0;
-  }
-
-  @media screen and (max-width: 768px) {
-    .distill-site-header a, .distill-site-header .nav-dropdown  {display: none;}
-    .distill-site-header a.nav-toggle {
-      float: right;
-      display: block;
-    }
-    .distill-site-header .title {
-      margin-left: 0;
-    }
-    .distill-site-header .nav-right {
-      margin-right: 0;
-    }
-    .distill-site-header {
-      overflow: hidden;
-    }
-    .nav-right .nav-dropdown-content {
-      margin-left: 0;
-    }
-  }
-
-
-  @media screen and (max-width: 768px) {
-    .distill-site-header.responsive {position: relative; min-height: 500px; }
-    .distill-site-header.responsive a.nav-toggle {
-      position: absolute;
-      right: 0;
-      top: 0;
-    }
-    .distill-site-header.responsive a,
-    .distill-site-header.responsive .nav-dropdown {
-      display: block;
-      text-align: left;
-    }
-    .distill-site-header.responsive .nav-left,
-    .distill-site-header.responsive .nav-right {
-      width: 100%;
-    }
-    .distill-site-header.responsive .nav-dropdown {float: none;}
-    .distill-site-header.responsive .nav-dropdown-content {position: relative;}
-    .distill-site-header.responsive .nav-dropdown .nav-dropbtn {
-      display: block;
-      width: 100%;
-      text-align: left;
-    }
-  }
-
-  /* Site Footer */
-
-  .distill-site-footer {
-    width: 100%;
-    overflow: hidden;
-    box-sizing: border-box;
-    z-index: 3;
-    margin-top: 30px;
-    padding-top: 30px;
-    padding-bottom: 30px;
-    text-align: center;
-  }
-
-  /* Headroom */
-
-  d-title {
-    padding-top: 6rem;
-  }
-
-  @media print {
-    d-title {
-      padding-top: 4rem;
-    }
-  }
-
-  .headroom {
-    z-index: 1000;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-  }
-
-  .headroom--transition {
-    transition: all .4s ease-in-out;
-  }
-
-  .headroom--unpinned {
-    top: -100px;
-  }
-
-  .headroom--pinned {
-    top: 0;
-  }
-
-  </style>
-
-  <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet"/>
-  <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet"/>
-  <script src="site_libs/headroom-0.9.4/headroom.min.js"></script>
-  <script src="site_libs/autocomplete-0.37.1/autocomplete.min.js"></script>
-  <script src="site_libs/fuse-6.4.1/fuse.min.js"></script>
-
-  <script type="application/javascript">
-
-  function getMeta(metaName) {
-    var metas = document.getElementsByTagName('meta');
-    for (let i = 0; i < metas.length; i++) {
-      if (metas[i].getAttribute('name') === metaName) {
-        return metas[i].getAttribute('content');
-      }
-    }
-    return '';
-  }
-
-  function offsetURL(url) {
-    var offset = getMeta('distill:offset');
-    return offset ? offset + '/' + url : url;
-  }
-
-  function createFuseIndex() {
-
-    // create fuse index
-    var options = {
-      keys: [
-        { name: 'title', weight: 20 },
-        { name: 'categories', weight: 15 },
-        { name: 'description', weight: 10 },
-        { name: 'contents', weight: 5 },
-      ],
-      ignoreLocation: true,
-      threshold: 0
-    };
-    var fuse = new window.Fuse([], options);
-
-    // fetch the main search.json
-    return fetch(offsetURL('search.json'))
-      .then(function(response) {
-        if (response.status == 200) {
-          return response.json().then(function(json) {
-            // index main articles
-            json.articles.forEach(function(article) {
-              fuse.add(article);
-            });
-            // download collections and index their articles
-            return Promise.all(json.collections.map(function(collection) {
-              return fetch(offsetURL(collection)).then(function(response) {
-                if (response.status === 200) {
-                  return response.json().then(function(articles) {
-                    articles.forEach(function(article) {
-                      fuse.add(article);
-                    });
-                  })
-                } else {
-                  return Promise.reject(
-                    new Error('Unexpected status from search index request: ' +
-                              response.status)
-                  );
-                }
-              });
-            })).then(function() {
-              return fuse;
-            });
-          });
-
-        } else {
-          return Promise.reject(
-            new Error('Unexpected status from search index request: ' +
-                        response.status)
-          );
-        }
-      });
-  }
-
-  window.document.addEventListener("DOMContentLoaded", function (event) {
-
-    // get search element (bail if we don't have one)
-    var searchEl = window.document.getElementById('distill-search');
-    if (!searchEl)
-      return;
-
-    createFuseIndex()
-      .then(function(fuse) {
-
-        // make search box visible
-        searchEl.classList.remove('hidden');
-
-        // initialize autocomplete
-        var options = {
-          autoselect: true,
-          hint: false,
-          minLength: 2,
-        };
-        window.autocomplete(searchEl, options, [{
-          source: function(query, callback) {
-            const searchOptions = {
-              isCaseSensitive: false,
-              shouldSort: true,
-              minMatchCharLength: 2,
-              limit: 10,
-            };
-            var results = fuse.search(query, searchOptions);
-            callback(results
-              .map(function(result) { return result.item; })
-              .filter(function(item) { return !!item.description; })
-            );
-          },
-          templates: {
-            suggestion: function(suggestion) {
-              var html = `
-                <div class="search-item">
-                  <h3>${suggestion.title}</h3>
-                  <div class="search-item-description">
-                    ${suggestion.description}
-                  </div>
-                  <div class="search-item-preview">
-                    <img src="${suggestion.preview ? offsetURL(suggestion.preview) : ''}"</img>
-                  </div>
-                </div>
-              `;
-              return html;
-            }
-          }
-        }]).on('autocomplete:selected', function(event, suggestion) {
-          window.location.href = offsetURL(suggestion.path);
-        });
-        // remove inline display style on autocompleter (we want to
-        // manage responsive display via css)
-        $('.algolia-autocomplete').css("display", "");
-      })
-      .catch(function(error) {
-        console.log(error);
-      });
-
-  });
-
-  </script>
-
-  <style type="text/css">
-
-  /* Algolioa Autocomplete */
-
-  .algolia-autocomplete {
-    display: inline-block;
-    margin-left: 10px;
-    vertical-align: sub;
-    background-color: white;
-    color: black;
-    padding: 6px;
-    padding-top: 8px;
-    padding-bottom: 0;
-    border-radius: 6px;
-    border: 1px #0F2E3D solid;
-    width: 180px;
-  }
-
-
-  @media screen and (max-width: 768px) {
-    .distill-site-nav .algolia-autocomplete {
-      display: none;
-      visibility: hidden;
-    }
-    .distill-site-nav.responsive .algolia-autocomplete {
-      display: inline-block;
-      visibility: visible;
-    }
-    .distill-site-nav.responsive .algolia-autocomplete .aa-dropdown-menu {
-      margin-left: 0;
-      width: 400px;
-      max-height: 400px;
-    }
-  }
-
-  .algolia-autocomplete .aa-input, .algolia-autocomplete .aa-hint {
-    width: 90%;
-    outline: none;
-    border: none;
-  }
-
-  .algolia-autocomplete .aa-hint {
-    color: #999;
-  }
-  .algolia-autocomplete .aa-dropdown-menu {
-    width: 550px;
-    max-height: 70vh;
-    overflow-x: visible;
-    overflow-y: scroll;
-    padding: 5px;
-    margin-top: 3px;
-    margin-left: -150px;
-    background-color: #fff;
-    border-radius: 5px;
-    border: 1px solid #999;
-    border-top: none;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion {
-    cursor: pointer;
-    padding: 5px 4px;
-    border-bottom: 1px solid #eee;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion:last-of-type {
-    border-bottom: none;
-    margin-bottom: 2px;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item {
-    overflow: hidden;
-    font-size: 0.8em;
-    line-height: 1.4em;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item h3 {
-    margin-block-start: 0;
-    margin-block-end: 5px;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item-description {
-    display: inline-block;
-    overflow: hidden;
-    height: 2.8em;
-    width: 80%;
-    margin-right: 4%;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item-preview {
-    display: inline-block;
-    width: 15%;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item-preview img {
-    height: 3em;
-    width: auto;
-    display: none;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item-preview img[src] {
-    display: initial;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion.aa-cursor {
-    background-color: #eee;
-  }
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion em {
-    font-weight: bold;
-    font-style: normal;
-  }
-
-  </style>
-
-
   <!--/radix_placeholder_navigation_in_header-->
   <!--radix_placeholder_distill-->
 
@@ -1985,395 +1403,203 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </script>
 
   <!--/radix_placeholder_distill-->
-  <script src="site_libs/header-attrs-2.6/header-attrs.js"></script>
-  <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
-  <script src="site_libs/anchor-4.2.2/anchor.min.js"></script>
-  <script src="site_libs/bowser-1.9.3/bowser.min.js"></script>
-  <script src="site_libs/webcomponents-2.0.0/webcomponents.js"></script>
-  <script src="site_libs/distill-2.2.21/template.v2.js"></script>
+  <script src="chamando-o-r-do-postgresql_files/header-attrs-2.6/header-attrs.js"></script>
+  <script src="chamando-o-r-do-postgresql_files/jquery-1.11.3/jquery.min.js"></script>
+  <script src="chamando-o-r-do-postgresql_files/anchor-4.2.2/anchor.min.js"></script>
+  <script src="chamando-o-r-do-postgresql_files/bowser-1.9.3/bowser.min.js"></script>
+  <script src="chamando-o-r-do-postgresql_files/webcomponents-2.0.0/webcomponents.js"></script>
+  <script src="chamando-o-r-do-postgresql_files/distill-2.2.21/template.v2.js"></script>
   <!--radix_placeholder_site_in_header-->
   <!--/radix_placeholder_site_in_header-->
 
 
 </head>
 
-<body class="layout-listing">
+<body>
 
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"Ciência de Dados com R e PostgreSQL","authors":[]}
+{"title":"Chamando o R do PostgreSQL","description":"Como instalar os dois e usá-los de forma integrada.","authors":[{"author":"José de Jesus Filho","authorURL":"https://rpg.consudata.com.br","affiliation":"&nbsp;","affiliationURL":"#","orcidID":""}],"publishedDate":"2021-01-04T00:00:00.000+00:00","citationText":"Filho, 2021"}
 </script>
 
 <!--/radix_placeholder_front_matter-->
 <!--radix_placeholder_navigation_before_body-->
-<header class="header header--fixed" role="banner">
-<nav class="distill-site-nav distill-site-header">
-<div class="nav-left">
-<a href="index.html" class="title">Ciência de Dados com R e PostgreSQL</a>
-<input id="distill-search" class="nav-search hidden" type="text" placeholder="Search..."/>
-</div>
-<div class="nav-right">
-<a href="index.html">Home</a>
-<a href="about.html">Sobre</a>
-<a href="javascript:void(0);" class="nav-toggle">&#9776;</a>
-</div>
-</nav>
-</header>
 <!--/radix_placeholder_navigation_before_body-->
 <!--radix_placeholder_site_before_body-->
 <!--/radix_placeholder_site_before_body-->
-<!--radix_placeholder_article_listing-->
-
-
-<script type="application/javascript">
-
-function init_posts_list() {
-
-  function load_image(img) {
-    var src = $(img).attr('data-src');
-    if (src) {
-      $(img).attr('src', src);
-      $(img).load(function() {
-        img.removeAttribute('data-src');
-      });
-    }
-  }
-
-  function set_posts_visible(posts, visible) {
-    if (visible) {
-
-      // show bottom border by default
-      $(posts).removeClass('post-preview-last');
-
-      // apply limits if need be
-      var max_posts = 25;
-      var apply_limits = $('.posts-container').hasClass('posts-apply-limit');
-      if (apply_limits && posts.length > max_posts) {
-        posts = $(posts).slice(0, max_posts);
-      } else {
-        $('.posts-more a').addClass('hidden');
-      }
-
-      // apply last style
-      $(posts.slice(-1)[0]).addClass('post-preview-last');
-
-      $(posts).removeClass('hidden');
-      $(posts).find('img[data-src]').each(function(i, img) {
-        load_image(img);
-      });
-    } else {
-      $(posts).addClass('hidden');
-    }
-  }
-
-  function apply_hash_filter() {
-
-    // clear active state
-    $('.categories .active').removeClass('active');
-
-    // mark all posts invisible to start
-    set_posts_visible($('.posts-list').children('a'), false);
-
-    // if we have a hash filter
-    if (window.location.hash && window.location.hash.startsWith("#category:")) {
-
-      // mark posts that match the category visible
-      var page_category = window.location.hash.replace(/^#category:/, "");
-      var posts = $('.post-metadata').map(function(idx, script) {
-        var metadata = $.parseJSON($(script).html());
-        var post = null;
-        $.each(metadata.categories, function(idx, category) {
-          category = category.replace(/ /g,"_");
-          if ((page_category || '').toLowerCase() === "articles" || category === page_category) {
-            post = $(script).parent().get();
-            return false;
-          }
-        });
-        return post;
-      });
-      set_posts_visible(posts, true);
-
-      // mark the hash active
-      $('.categories li>a[href="' + window.location.hash + '"]').addClass('active');
-
-      // update the list_caption
-      var list_caption = $('.posts-list-caption');
-      var caption = (page_category || '').toLowerCase() === "articles"
-        ? list_caption.attr('data-caption')
-        : ('Category: ' + page_category.replace(/_/g," "));
-      list_caption.text(caption);
-
-    } else {
-
-      // no hash filter, make all posts visible (subject to max display)
-      set_posts_visible($('.posts-list').children(), true);
-
-      // reset list caption
-      var list_caption = $('.posts-list-caption');
-      list_caption.text(list_caption.attr('data-caption'));
-
-
-    }
-  }
-
-  // more articles
-  function apply_post_limits(apply) {
-    if (apply) {
-      $('.posts-container').addClass('posts-apply-limit');
-      $('.posts-more a').removeClass('hidden');
-    } else {
-      $('.posts-container').removeClass('posts-apply-limit');
-      $('.posts-more a').addClass('hidden');
-    }
-  }
-
-  // click handling for tags
-  $('.dt-tag').click(function(ev) {
-    window.location.hash = '#category:' + $(this).text().replace(/ /g, "_");
-    return false;
-  })
-
-  // hash filter handling
-  apply_hash_filter();
-  $(window).on('hashchange',function() {
-    apply_post_limits(true);
-    apply_hash_filter();
-  });
-
-  // more articles link
-  $('.posts-more a').click(function(e) {
-    e.preventDefault();
-    apply_post_limits(false);
-    apply_hash_filter();
-    return false;
-  });
-
-}
-
-</script>
-
-
-
-<div class="posts-container posts-apply-limit l-page">
-<div class="posts-list">
-<h1 class="posts-list-caption" data-caption="Ciência de Dados com R e PostgreSQL">Ciência de Dados com R e PostgreSQL</h1>
-<a href="posts/2021-01-04-busca-textual-com-r-shiny-e-postgresql/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Jan. 4, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">José de Jesus Filho</div>
-</div>
-</div>
-<div class="thumbnail">
-<img/>
-</div>
-<div class="description">
-<h2>Busca textual com R, Shiny e PostgreSQL</h2>
-<div class="dt-tags"></div>
-<p>Este tutorial mostra como configurar busca textual num esquema do
-PostgreSQL e montar um aplicativo shiny para realizar buscas eficientes</p>
-</div>
-</a>
-<a href="posts/2021-01-04-chamando-o-r-do-postgresql/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Jan. 4, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">José de Jesus Filho</div>
-</div>
-</div>
-<div class="thumbnail">
-<img src="posts/2021-01-04-chamando-o-r-do-postgresql/linear_plot.png"/>
-</div>
-<div class="description">
-<h2>Chamando o R do PostgreSQL</h2>
-<div class="dt-tags"></div>
-<p>Como instalar os dois e usá-los de forma integrada.</p>
-</div>
-</a>
-<a href="posts/2021-01-04-como-subir-mltiplos-e-grandes-arquivos-para-o-postgresql-com-r/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Jan. 4, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">José de Jesus Filho</div>
-</div>
-</div>
-<div class="thumbnail">
-<img/>
-</div>
-<div class="description">
-<h2>Como subir múltiplos e grandes arquivos para o PostgreSQL com R</h2>
-<div class="dt-tags"></div>
-<p>Neste tutorial, irei mostrar como copiar para uma base de dados
-do PostgreSQL múltiplos arquivos com que não cabem na memória RAM,
-a partir do R, já tradados, sem sobrecarregar a memória.</p>
-</div>
-</a>
-<a href="posts/2021-01-04-r-postgresql-distinct-cheatsheet/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Jan. 4, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">José de Jesus Filho</div>
-</div>
-</div>
-<div class="thumbnail">
-<img/>
-</div>
-<div class="description">
-<h2>R + PostgreSQL - distinct cheatsheet</h2>
-<div class="dt-tags"></div>
-<p>Este cheatsheet mostra como filtrar tanto no R
-quanto no PostgreSQL linhas distintas com base
-em uma ou mais colunas.</p>
-</div>
-</a>
-<a href="posts/2021-01-04-tidypg-cheatsheet-sumarizando-tabelas-com-r-e-postgresql/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Jan. 4, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">José de Jesus Filho</div>
-</div>
-</div>
-<div class="thumbnail">
-<img src="posts/2021-01-04-tidypg-cheatsheet-sumarizando-tabelas-com-r-e-postgresql/summary.png"/>
-</div>
-<div class="description">
-<h2>TidyPG cheatsheet: sumarizando tabelas com R e PostgreSQL</h2>
-<div class="dt-tags"></div>
-<p>Neste cheatsheet mostro como criar sumários no R e no PostgreSQL.</p>
-</div>
-</a>
-<a href="posts/2021-01-04-window-functions-no-r-e-no-postgresql-parte-1-aspectos-estticos/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Jan. 4, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">José de Jesus Filho</div>
-</div>
-</div>
-<div class="thumbnail">
-<img/>
-</div>
-<div class="description">
-<h2>Window functions no R e no PostgreSQL - Parte 1: aspectos estáticos</h2>
-<div class="dt-tags"></div>
-<p>Neste tutorial mostro como operar com funções janela ou
-window functions tanto no R quanto no PostgreSQL.</p>
-</div>
-</a>
-<a href="posts/2021-01-03-joins-no-r-e-no-postgresql/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Jan. 3, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">José de Jesus Filho</div>
-</div>
-</div>
-<div class="thumbnail">
-<img data-src="posts/2021-01-03-joins-no-r-e-no-postgresql/inner_join.png"/>
-</div>
-<div class="description">
-<h2>Joins no R e no PostgreSQL</h2>
-<div class="dt-tags"></div>
-<p>Neste tutorial, mostro como as principais formas de joins tanto no R
-quanto no PostgreSQL.</p>
-</div>
-</a>
-<a href="posts/2021-01-03-pivotagem-com-r-e-postgresql/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Jan. 3, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">José de Jesus Filho</div>
-</div>
-</div>
-<div class="thumbnail">
-<img data-src="posts/2021-01-03-pivotagem-com-r-e-postgresql/pivotagem2.png"/>
-</div>
-<div class="description">
-<h2>Pivotagem com R e PostgreSQL</h2>
-<div class="dt-tags"></div>
-<p>Nesta postagem, eu mostro como converter dataframes e tabelas
-entre os formatos wide e long tanto no R quanto no PostgreSQL,
-além de permitir realizar essas operações no banco a partir do R.</p>
-</div>
-</a>
-<a href="posts/2021-01-03-similaridades-entre-na-no-r-e-null-no-postgresql/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Jan. 3, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">José de Jesus Filho</div>
-</div>
-</div>
-<div class="thumbnail">
-<img data-src="posts/2021-01-03-similaridades-entre-na-no-r-e-null-no-postgresql/missing.jpg"/>
-</div>
-<div class="description">
-<h2>Similaridades entre NA no R e NULL no PostgreSQL</h2>
-<div class="dt-tags"></div>
-<p>Neste tuturial iremos mostrar como o comportamento de `NAs` no **R** 
-é consistente com o de `NULL` no PostgreSQL.</p>
-</div>
-</a>
-<a href="posts/2021-01-03-tidypg-cheatsheet-criando-tabelas-a-partir-de-outras-parte-1/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Jan. 3, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">José de Jesus Filho</div>
-</div>
-</div>
-<div class="thumbnail">
-<img data-src="posts/2021-01-03-tidypg-cheatsheet-criando-tabelas-a-partir-de-outras-parte-1/bind_rows.png"/>
-</div>
-<div class="description">
-<h2>TidyPG cheatsheet: Criando tabelas a partir de outras - parte 1</h2>
-<div class="dt-tags"></div>
-<p>Neste cheatsheet mostramos como criar tabelas tanto no R 
-quanto no PostgreSQL a partir da junção de outras ou de filtros.</p>
-</div>
-</a>
-<a href="posts/welcome/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Jan. 3, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">José de Jesus Filho</div>
-</div>
-</div>
-<div class="thumbnail">
-<img/>
-</div>
-<div class="description">
-<h2>Bem-vinda à  Ciência de Dados com R e PostgreSQL</h2>
-<div class="dt-tags"></div>
-<p>Bem-vindo a este blog sobre Ciência de Dados com R e PostgreSQL. Periodicamente, irei
-postar tutoriais sobre !</p>
-</div>
-</a>
-</div>
-<div class="posts-more">
-<a href="#">More articles &raquo;</a>
-</div>
-</div>
-<!--/radix_placeholder_article_listing-->
 
 <div class="d-title">
-<h1>Ciência de Dados com R e PostgreSQL</h1>
+<h1>Chamando o R do PostgreSQL</h1>
 <!--radix_placeholder_categories-->
 <!--/radix_placeholder_categories-->
-
+<p><p>Como instalar os dois e usá-los de forma integrada.</p></p>
 </div>
 
+<div class="d-byline">
+  José de Jesus Filho <a href="https://rpg.consudata.com.br" class="uri">https://rpg.consudata.com.br</a> 
+  
+<br/>01-04-2021
+</div>
 
 <div class="d-article">
-<div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<h2 id="introdução">Introdução</h2>
+<p>Este tutorial irá mostrar como instalar o <em>R</em> e o <em>PostgreSQL</em> num mesmo servidor Ubuntu 20.04 ou 18.04. Em seguida, falaremos sobre como chamar o R a partir do PostgreSQL.</p>
+<p>Farei uma série de tutoriais. Este primeiro é voltado para aqueles com familiaridade com funções do R e que gostariam de rodá-las no PostgreSQL, sem necessariamente conhecer muito de SQL. Num próximo, iremos mostrar como criar queries e declarações do PostgreSQL do R, ou seja, será mais voltado para quem tem familiaridade com o SQL, mas não necessariamente versada em R.</p>
+<p>Os tutoriais posteriores serão voltados para aqueles com bastante familiaridade em tidyverse e que gostariam de realizar as mesmas coisas em SQL. Igualmente, servirão para aqueles que sabem manipular dados em SQL, mas gostariam de fazer as mesmas coisas no R.</p>
+<p>Em futuros tutoriais, falaremos quando compensa iniciar no PostgreSQL e terminar no R. Por exemplo, quando é mais vantajoso dar um join no R em vez de fazê-lo no PostgreSQL e vice-versa.</p>
+<h2 id="instalando-o-postgresql">Instalando o PostgreSQL</h2>
+<p>A primeira coisa a fazer é atualizar os pacotes do sistema:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">sudo</span> apt update</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">sudo</span> apt -y install vim bash-completion wget</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="fu">sudo</span> apt -y upgrade</span>
+<span id="cb1-4"><a href="#cb1-4"></a></span>
+<span id="cb1-5"><a href="#cb1-5"></a></span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="co">### Configuração do locale</span></span>
+<span id="cb1-7"><a href="#cb1-7"></a></span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="ex">Al</span>ém disso, é importante configurar o locale. Crie um arquivo chamado set_locale.sh:</span>
+<span id="cb1-9"><a href="#cb1-9"></a></span>
+<span id="cb1-10"><a href="#cb1-10"></a><span class="kw">```</span><span class="fu">sh</span></span>
+<span id="cb1-11"><a href="#cb1-11"></a>$ <span class="ex">vim</span> set_locale.sh</span></code></pre></div>
+<p>E cole o seguinte conteúdo:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a></span>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="co"># Set locales in /etc/default/locale file</span></span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="bu">echo</span> <span class="st">&quot;Ajustando o locale...&quot;</span></span>
+<span id="cb2-5"><a href="#cb2-5"></a><span class="bu">echo</span> <span class="st">&quot;# Locale settings</span></span>
+<span id="cb2-6"><a href="#cb2-6"></a><span class="st">export LANGUAGE=pt_BR.UTF-8</span></span>
+<span id="cb2-7"><a href="#cb2-7"></a><span class="st">export LANG=pt_BR.UTF-8</span></span>
+<span id="cb2-8"><a href="#cb2-8"></a><span class="st">export LC_ALL=pt_BR.UTF-8&quot;</span><span class="op">&gt;&gt;</span>~/.bash_profile</span>
+<span id="cb2-9"><a href="#cb2-9"></a></span>
+<span id="cb2-10"><a href="#cb2-10"></a><span class="ex">locale-gen</span> pt_BR.UTF-8</span>
+<span id="cb2-11"><a href="#cb2-11"></a></span>
+<span id="cb2-12"><a href="#cb2-12"></a><span class="fu">sudo</span> dpkg-reconfigure locales</span>
+<span id="cb2-13"><a href="#cb2-13"></a></span>
+<span id="cb2-14"><a href="#cb2-14"></a><span class="bu">source</span> ~/.bash_profile</span></code></pre></div>
+<p>autorize execução do arquivo:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1"></a>$ <span class="fu">sudo</span> chmod +x set_locale.sh</span></code></pre></div>
+<p>E rode o script:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1"></a>$ <span class="fu">sudo</span> ./set_locale.sh</span></code></pre></div>
+<p>Reinicie a máquina:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1"></a>$ <span class="fu">sudo</span> reboot</span></code></pre></div>
+<p>Acesse novavamente via ssh e verifique se o locale foi configurado para <code>pt_BR-UTF8</code>.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1"></a>$ <span class="ex">locale</span></span></code></pre></div>
+<p>O console deverá imprimir a seguinte configuração:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1"></a><span class="va">LANG=</span>pt_BR.UTF-8</span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="va">LANGUAGE=</span>pt_BR.UTF-8</span>
+<span id="cb7-3"><a href="#cb7-3"></a><span class="va">LC_CTYPE=</span><span class="st">&quot;pt_BR.UTF-8&quot;</span></span>
+<span id="cb7-4"><a href="#cb7-4"></a><span class="va">LC_NUMERIC=</span><span class="st">&quot;pt_BR.UTF-8&quot;</span></span>
+<span id="cb7-5"><a href="#cb7-5"></a><span class="va">LC_TIME=</span><span class="st">&quot;pt_BR.UTF-8&quot;</span></span>
+<span id="cb7-6"><a href="#cb7-6"></a><span class="va">LC_COLLATE=</span><span class="st">&quot;pt_BR.UTF-8&quot;</span></span>
+<span id="cb7-7"><a href="#cb7-7"></a><span class="va">LC_MONETARY=</span><span class="st">&quot;pt_BR.UTF-8&quot;</span></span>
+<span id="cb7-8"><a href="#cb7-8"></a><span class="va">LC_MESSAGES=</span><span class="st">&quot;pt_BR.UTF-8&quot;</span></span>
+<span id="cb7-9"><a href="#cb7-9"></a><span class="va">LC_PAPER=</span><span class="st">&quot;pt_BR.UTF-8&quot;</span></span>
+<span id="cb7-10"><a href="#cb7-10"></a><span class="va">LC_NAME=</span><span class="st">&quot;pt_BR.UTF-8&quot;</span></span>
+<span id="cb7-11"><a href="#cb7-11"></a><span class="va">LC_ADDRESS=</span><span class="st">&quot;pt_BR.UTF-8&quot;</span></span>
+<span id="cb7-12"><a href="#cb7-12"></a><span class="va">LC_TELEPHONE=</span><span class="st">&quot;pt_BR.UTF-8&quot;</span></span>
+<span id="cb7-13"><a href="#cb7-13"></a><span class="va">LC_MEASUREMENT=</span><span class="st">&quot;pt_BR.UTF-8&quot;</span></span>
+<span id="cb7-14"><a href="#cb7-14"></a><span class="va">LC_IDENTIFICATION=</span><span class="st">&quot;pt_BR.UTF-8&quot;</span></span>
+<span id="cb7-15"><a href="#cb7-15"></a><span class="va">LC_ALL=</span>pt_BR.UTF-8</span></code></pre></div>
+<p>Como última etapa, configure também o fuso horário:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1"></a>$ <span class="fu">sudo</span> timedatectl set-timezone America/Sao_Paulo</span></code></pre></div>
+<p>Confirme que o fuso horário foi configurado para São Paulo:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1"></a>$ <span class="ex">timedatectl</span></span></code></pre></div>
+<p>Você deverá visualizar o seguinte resultado:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1"></a><span class="ex">Local</span> time: Qua 2020-06-17 19:34:30 -03</span>
+<span id="cb10-2"><a href="#cb10-2"></a>  <span class="ex">Universal</span> time: Qua 2020-06-17 22:34:30 UTC</span>
+<span id="cb10-3"><a href="#cb10-3"></a>        <span class="ex">RTC</span> time: Qua 2020-06-17 22:34:30</span>
+<span id="cb10-4"><a href="#cb10-4"></a>       <span class="ex">Time</span> zone: America/Sao_Paulo (-03, -0300)</span>
+<span id="cb10-5"><a href="#cb10-5"></a> <span class="ex">Network</span> time on: yes</span>
+<span id="cb10-6"><a href="#cb10-6"></a><span class="ex">NTP</span> synchronized: yes</span>
+<span id="cb10-7"><a href="#cb10-7"></a> <span class="ex">RTC</span> in local TZ: no</span></code></pre></div>
+<p>Importe a chave GPG:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1"></a><span class="fu">wget</span> --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc <span class="kw">|</span> <span class="fu">sudo</span> apt-key add -</span></code></pre></div>
+<p>Adicione a chave GPG ao systema:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1"></a><span class="bu">echo</span> <span class="st">&quot;deb http://apt.postgresql.org/pub/repos/apt/ </span><span class="kw">`</span><span class="ex">lsb_release</span> -cs<span class="kw">`</span><span class="st">-pgdg main&quot;</span> <span class="kw">|</span><span class="fu">sudo</span> tee  /etc/apt/sources.list.d/pgdg.list</span></code></pre></div>
+<p>Atualize os pacotes do sistema e instale os pacotes do PostgreSQL necessários. Os dois primeiros são necessários para rodar o PostgreSQL, os três últimos são necessários para instalar o <code>plr</code>, o RPostgres e outras extensões. Falaremos deles mais adiante.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1"></a><span class="fu">sudo</span> apt update</span>
+<span id="cb13-2"><a href="#cb13-2"></a><span class="fu">sudo</span> apt install postgresql-12 postgresql-client-12 postgresql-server-dev-all libpq-dev postgresql-contrib</span></code></pre></div>
+<h2 id="instalação-do-r">Instalação do R</h2>
+<div class="sourceCode" id="cb14"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1"></a><span class="fu">sudo</span> echo <span class="st">&quot;deb https://cloud.r-project.org/bin/linux/ubuntu </span><span class="kw">`</span><span class="ex">lsb_release</span> -cs<span class="kw">`</span><span class="st">-cran40/&quot;</span> <span class="kw">|</span> <span class="fu">sudo</span> tee -a /etc/apt/sources.list</span></code></pre></div>
+<h3 id="adicionar-a-chave-gpg">Adicionar a chave GPG</h3>
+<div class="sourceCode" id="cb15"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1"></a><span class="fu">sudo</span> apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9</span></code></pre></div>
+<h3 id="instale-o-r">Instale o R</h3>
+<div class="sourceCode" id="cb16"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1"></a><span class="fu">sudo</span> apt-get update</span>
+<span id="cb16-2"><a href="#cb16-2"></a><span class="fu">sudo</span> apt-get install -y r-base r-base-dev </span></code></pre></div>
+<p>Instale também o git</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1"></a><span class="fu">sudo</span> apt install git</span></code></pre></div>
+<p>Agora use o git para clonar o plr. Não importa o local onde você irá cloná-lo. Desde que você tenha seguido fielmente os passos anteriores, tudo terminará bem.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1"></a><span class="fu">git</span> clone https://github.com/postgres-plr/plr</span></code></pre></div>
+<p>Feito isso, entre no diretório plr e rode os seguintes comandos para instalá-lo como extensão.</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1"></a><span class="bu">cd</span> plr</span>
+<span id="cb19-2"><a href="#cb19-2"></a><span class="va">USE_PGXS=</span>1 <span class="fu">make</span></span>
+<span id="cb19-3"><a href="#cb19-3"></a><span class="va">USE_PGXS=</span>1 <span class="fu">make</span> install</span></code></pre></div>
+<h2 id="criando-uma-base-de-dados">Criando uma base de dados</h2>
+<p>Vamos para o Postgres a fim de criar uma base de dados.</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1"></a><span class="fu">sudo</span> -u postgres psql</span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb21-1"><a href="#cb21-1"></a><span class="kw">CREATE</span> <span class="kw">DATABASE</span> datasets;</span></code></pre></div>
+<p>Além disso, você deve incluir a extensão <code>plr</code> na base de dados recentemente criada:</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb22-1"><a href="#cb22-1"></a>\c datasets <span class="co">-- conectar-se à base</span></span>
+<span id="cb22-2"><a href="#cb22-2"></a><span class="kw">CREATE</span> EXTENSION plr;</span>
+<span id="cb22-3"><a href="#cb22-3"></a>\q <span class="co">-- sair do psql</span></span></code></pre></div>
+<p>De volta ao R.</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1"></a><span class="ex">R</span></span></code></pre></div>
+<h3 id="instale-os-pacotes-rpostgres-e-broom">Instale os pacotes <code>RPostgres</code> e <code>broom</code></h3>
+<p>Instalando esses dois pacotes é suficiente para instalar também outras dependências como o DBI e o dplyr, as quais igualmente usaremos.</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a><span class="kw">install.packages</span>(<span class="kw">c</span>(<span class="st">&quot;RPostgres&quot;</span>,<span class="st">&quot;broom&quot;</span>))</span></code></pre></div>
+<h2 id="connexão-do-r-ao-postgres">Connexão do R ao Postgres</h2>
+<p>Eventualmente, você terá de autorizar a conexão local. Vá para o arquivo:</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1"></a><span class="ex">vim</span> /etc/postgresql/12/main/pg_hba.conf</span></code></pre></div>
+<p>E altere a seguinte linha de:</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1"></a><span class="bu">local</span> <span class="va">all</span> <span class="va">all</span> <span class="va">peer</span></span></code></pre></div>
+<p>Para:</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1"></a><span class="bu">local</span> <span class="va">all</span> <span class="va">all</span> <span class="va">trust</span></span></code></pre></div>
+<h3 id="colocando-uma-tabela-na-base-de-dados">Colocando uma tabela na base de dados</h3>
+<p>Admitindo que você ainda se encontra no R, estamos em condições de incluir uma tabela na base de dados.</p>
+<p>Primeiramente, vamos conectar-nos à base:</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a>conn &lt;-<span class="st"> </span>DBI<span class="op">::</span><span class="kw">dbConnect</span>(RPostgres<span class="op">::</span><span class="kw">Postgres</span>(), <span class="dt">dbname=</span><span class="st">&quot;datasets&quot;</span>)</span></code></pre></div>
+<p>Estou admidindo com o código acima que você está usando o R na mesma máquina do Postgres, usando o usuário <code>postgres</code> e dispensou o uso de senha para conexão local.</p>
+<p>Vamos enviar o dataframe mtcars para a base de dados. O exemplo do mtcars não é muito feliz porque ele poderia ser chamado do próprio R quando rodado no Postgres, mas apenas a título de exemplo, iremos assumir que ele seja qualquer outro data.frame.</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1"></a>DBI<span class="op">::</span><span class="kw">dbWriteTable</span>(conn,<span class="st">&quot;tabela&quot;</span>, mtcars)</span></code></pre></div>
+<h2 id="de-volta-ao-postgres">De volta ao Postgres</h2>
+<p>Mostraremos num próximo tutorial como realizar os procedimentos a seguir sem sair do R, mas o propósito deste tutorial é justamente ilustrar como podemos chamar o R do Postgres. Assim, faremos tudo no Postgres mesmo.</p>
+<p>Voltando para o shell, vamos conectar-nos à base datasets:</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1"></a><span class="fu">sudo</span> -u postgres psql datasets</span></code></pre></div>
+<p>Verifique se a tabela chamada “tabela” se encontra na base de dados:</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb31-1"><a href="#cb31-1"></a>\d<span class="op">+</span> <span class="co">-- ou </span></span>
+<span id="cb31-2"><a href="#cb31-2"></a>\d<span class="op">+</span> tabela</span></code></pre></div>
+<h2 id="preparando-o-terreno">Preparando o terreno</h2>
+<p>Vamos criar uma tabela que servirá de referência para receber os resultados de uma regressão linear. Veja que as colunas são as mesmas do <code>tibble</code> retornado pela função <code>tidy</code> do pacote <code>broom</code>, com a diferença de que os pontos foram substituídos pelo sublinhado e os nomes das colunas passados para o português.</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb32-1"><a href="#cb32-1"></a><span class="kw">create</span> <span class="kw">table</span> modelo (termo text, estimativa float8, erro_padrao float8, estatistica float8, p_valor float8);</span></code></pre></div>
+<h3 id="criando-uma-função-plr">Criando uma função plr</h3>
+<p>Enfim estamos em condições de criar uma função no PostgreSQL que chama o R para rodar uma regressão linear em uma tabela contida no próprio Postgres:</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb33-1"><a href="#cb33-1"></a><span class="kw">CREATE</span> <span class="kw">OR</span> <span class="kw">REPLACE</span> <span class="kw">FUNCTION</span> lm_teste() RETURNS SETOF modelo <span class="kw">AS</span></span>
+<span id="cb33-2"><a href="#cb33-2"></a>$$ </span>
+<span id="cb33-3"><a href="#cb33-3"></a>base <span class="op">&lt;&lt;-</span> pg.spi.<span class="kw">exec</span>(<span class="st">&#39;select mpg, wt, qsec, am  from tabela&#39;</span>)</span>
+<span id="cb33-4"><a href="#cb33-4"></a>df <span class="op">&lt;-</span> lm(mpg ~ wt <span class="op">+</span> qsec <span class="op">+</span> factor(am), <span class="kw">data</span><span class="op">=</span>base)</span>
+<span id="cb33-5"><a href="#cb33-5"></a>df <span class="op">&lt;-</span> broom:<span class="ch">:tidy</span>(df)</span>
+<span id="cb33-6"><a href="#cb33-6"></a>names(df) <span class="op">&lt;-</span> c(<span class="st">&#39;termo&#39;</span>,<span class="st">&#39;estimativa&#39;</span>,<span class="st">&#39;erro_padrao&#39;</span>,<span class="st">&#39;estatistica&#39;</span>,<span class="st">&#39;p_valor&#39;</span>)</span>
+<span id="cb33-7"><a href="#cb33-7"></a>df <span class="op">&lt;-</span> dplyr:<span class="ch">:mutate_at</span>(df,dplyr:<span class="ch">:vars</span>(<span class="dv">2</span><span class="ch">:5</span>), ~<span class="fu">round</span>(.,<span class="dv">2</span>))</span>
+<span id="cb33-8"><a href="#cb33-8"></a><span class="kw">return</span>(df)</span>
+<span id="cb33-9"><a href="#cb33-9"></a>$$</span>
+<span id="cb33-10"><a href="#cb33-10"></a>language <span class="st">&#39;plr&#39;</span>;</span></code></pre></div>
+<p>Note que o esqueleto da função é o mesmo para qualquer outra função do PostgreSQL. A diferença é que, para importar um objeto da base de dados para nossa função, devemos usar a função <code>pg.spi.exec</code>.</p>
+<h2 id="rodando-a-regressão-linear">Rodando a regressão linear</h2>
+<p>Agora ficou fácil. Basta chamar a função e ver os resultados:</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb34-1"><a href="#cb34-1"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> lm_teste();</span></code></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb35-1"><a href="#cb35-1"></a>datasets<span class="op">=</span># <span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> lm_teste();</span>
+<span id="cb35-2"><a href="#cb35-2"></a>    termo    | estimativa | erro_padrao | estatistica | p_valor</span>
+<span id="cb35-3"><a href="#cb35-3"></a><span class="co">-------------+------------+-------------+-------------+---------</span></span>
+<span id="cb35-4"><a href="#cb35-4"></a> (Intercept) |       <span class="fl">9.62</span> |        <span class="fl">6.96</span> |        <span class="fl">1.38</span> |    <span class="fl">0.18</span></span>
+<span id="cb35-5"><a href="#cb35-5"></a> wt          |      <span class="op">-</span><span class="fl">3.92</span> |        <span class="fl">0.71</span> |       <span class="op">-</span><span class="fl">5.51</span> |       <span class="dv">0</span></span>
+<span id="cb35-6"><a href="#cb35-6"></a> qsec        |       <span class="fl">1.23</span> |        <span class="fl">0.29</span> |        <span class="fl">4.25</span> |       <span class="dv">0</span></span>
+<span id="cb35-7"><a href="#cb35-7"></a> factor(am)<span class="dv">1</span> |       <span class="fl">2.94</span> |        <span class="fl">1.41</span> |        <span class="fl">2.08</span> |    <span class="fl">0.05</span></span>
+<span id="cb35-8"><a href="#cb35-8"></a>(<span class="dv">4</span> <span class="kw">rows</span>)</span></code></pre></div>
+<h2 id="vantagens">Vantagens</h2>
+<p>Eu apontaria duas principais vantagens em usar o plr:</p>
+<p>1 - Uma vez que a base se encontra no PostgreSQL, você não precisa mais transferi-la para o R a fim de rodar o modelo e retornar o resultado ao PostgreSQL. Essa viagem dos dados torna-se dispensável. No exemplo mostrado, porém, a base irá para uma sessão do R de qualquer forma. Veremos como solucionar isso em tutoriais futuros.</p>
+<p>2 - Você pode continuar trabalhando no R, enquanto seu modelo roda no PostgreSQL. Se o modelo tomar horas, este se torna um problema menor.</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>
