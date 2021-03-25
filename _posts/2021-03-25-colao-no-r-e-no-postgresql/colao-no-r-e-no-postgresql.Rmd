@@ -1,7 +1,7 @@
 ---
 title: "Colação no R e no PostgreSQL"
 description: |
-  Neste tutorial, mostro como usar regras de colação paraajustar tanto o R quanto o 
+  Neste tutorial, mostro como usar regras de colação para ajustar tanto o R quanto o 
   PostgreSQL para ignorar acentos, maiúsculas  e minúsculas, ordenar sequências numéricas contidas em texto e ignorar 
   pontuação em números, como em CPF ou CNPJ.
 author:
