@@ -26,7 +26,7 @@ Além disso, por vezes, você quer realizar buscas ignorando acentuação e caix
 
 Uma outra situação que você seguramente já se encontrou foi realizar buscas com sequências de números separados por pontuação, mas a sequência na sua tabela não está pontuada ou vice-versa. Bons exemplos são o CNPJ, o CPF, o CEP ou o número do processo judicial.
 
-A essa altura, você já deve ter perguntado existem regras para ordenar e comparar caracteres. A esse conjunto de regras para comparar e ordenar caracteres, respeitando os diferentes idiomas, chamamos de colação.
+A essa altura, você já deve ter perguntado se existem regras para ordenar e comparar caracteres. A esse conjunto de regras para comparar e ordenar caracteres, respeitando os diferentes idiomas, chamamos de colação.
 
 
 ```{r  out.width="40%", echo = FALSE}
