@@ -1,7 +1,7 @@
 ---
 title: "Colação no R e no PostgreSQL"
 description: |
-  Neste tutorial, mostro como usar regras de colação para ajustar tanto o R quanto o 
+  Neste tutorial, mostro como usar regras de colação e ajustar tanto o R quanto o 
   PostgreSQL para ignorar acentos, maiúsculas  e minúsculas, ordenar sequências numéricas contidas em texto e ignorar 
   pontuação em números, como em CPF ou CNPJ.
 author:
@@ -57,7 +57,9 @@ df <- data.frame(nome = c("Mário","Flávia","Angélica","Vinícios"),
              cpf = c("432.097.759-39", "017.372.652-92", "612.260.255-65", "828.483.096-08"),
              codigo = c("g123","g27","g34","g257")
                 )
+```
 
+```{r echo = FALSE}
 knitr::kable(df)
 ```
 
@@ -67,7 +69,7 @@ knitr::kable(df)
 
 O pacote `stringi` possui funções específicas para aplicar regras de colação. Você controla o comportamento do "colator" ICU levando em conta os quatro problemas acima mencionados por meio de quatro argumentos:
 
-```{r}
+```{r echo = FALSE}
 tb <-"
 | argumento          | opções | padrao | descrição                      | 
 |--------------------|--------|        |--------------------------------|
@@ -90,7 +92,7 @@ Eu particularmente considero as opções de argumento no stringi bem confusas. S
 
 ## Ordem numérica
 
-Vamos o dataframe criado acima pela coluna `codigo`:
+Vamos ordernar o dataframe criado acima pela coluna `codigo`:
 
 ```{r}
 df %>% 
@@ -98,8 +100,7 @@ df %>%
 ```
 
 Possivelmente não era esse o resultado que você queria, pois esperava que "g123" viesse depois de "g27" e de "g34". 
-
-Se você quiser garantir a ordenação conforme os número, use a função `stri_sort` com o argumento `numeric = TRUE`. Dessa forma, o R usará colação para garantir a ordem desejada:
+Se você quiser garantir a ordenação conforme os números, use a função `stri_sort` com o argumento `numeric = TRUE`. Dessa forma, o R usará colação para garantir a ordem desejada:
 
 ```{r}
 library(stringi)
@@ -130,12 +131,14 @@ E se quiser garantir que caso o filtro seja por "mario", "MARIO" ou "Mario", pod
 df %>% 
    filter(stri_detect_regex(nome,"(?i)m[áa]rio"))
 ```
+
 As desvantagens dessas duas abordagens são notórias, pois se sua intenção é realizar a busca conforme um termo fornecido pelo usuário, regex irá ajudar muito pouco. Para essas situações, colação vem a calhar:
 
 ```{r}
 df  %>% 
    filter(stri_detect_coll(nome,"mario", strength = 1L))
 ```
+
 Para filtrar, eu usei a função `stri_detect_coll`. Esta função usará regras de colação para comparar os caracteres. A regra usada foi a de nível 1, argumento `strength = 1L`, ou seja, a mais flexível, indicando que serão ignorados os acentos e a caixa. 
 
 Se você usar o nível 2, apenas caixa será ignorada:
@@ -180,7 +183,7 @@ No PostgreSQL, podemos usar  as mesmas regras, com a diferença que a sintaxe mu
 
 A vantagem no uso de colação no PostgreSQL é que você pode armazenar os dados de uma forma e flexibilizar para o  usuário como ele irá realizar buscas. Por exemplo, você pode armazenar o CNPJ sem pontuação e deixar que o usuário busque com ou sem pontos e vice-versa.
 
-Basicamente, no PostgreSQL criamos uma colação e, ao criar ou alterar a coluna, indicamos qual colação será usada. Se  não indicarmos, será adotada a do locale e determinística.
+Basicamente, no PostgreSQL criamos uma colação e, ao criar ou alterar a coluna, indicamos qual colação será usada. Se não indicarmos, será adotada a do locale e determinística.
 
 Inicialmente, vamos criar a colação para a coluna `codigo`. Se você consultar as opções de ajuste na [página oficial](http://www.unicode.org/reports/tr35/tr35-collation.html#Collation_Settings) da ICU, verá que para ordem numérica, usa-se o parâmetro `kn-on`. 
 
@@ -191,10 +194,9 @@ locale = 'und-u-kn-on'
 deterministic = false
 );
 ```
-Primeiramente, demos o nome `colacao_num`, que será usado mais adiante para alterar a colação da coluna codigo. Depois definimos o provedor, vez que o PostgreSQL não admite somente a ICU. Em seguida, definimos o locale com a inclusão das regras de colação. `und-u` nenhuma linguagem específica e mantêm o locale padrão. A chave `kn` quando ligada `on` considera o valor numérico da sequência de números. Além disso, você 
+Primeiramente, demos o nome `colacao_num`, que será usado mais adiante para alterar a colação da coluna codigo. Depois definimos o provedor, vez que o PostgreSQL não admite somente a ICU. Em seguida, definimos o locale com a inclusão das regras de colação,  `und-u` nenhuma linguagem específica e mantêm o locale padrão. A chave `kn` quando ligada `on` considera o valor numérico da sequência de números. 
 
-
-Se você ordenar a tabela pela coluna número, verá que a ordem não é aquela desejada:
+Se você ordenar a tabela pela coluna codigo, verá que a ordem não é aquela desejada:
 
 ```sql
 SELECT * FROM df ORDER BY codigo;
@@ -241,7 +243,7 @@ cat(d)
 
 ## Ignorar acentos e caixa
 
-Vamos agora criar uma colação para ignorar acentos e caixa a coluna nome. Para tanto, basta você optar para level1 na chave `ks`:
+Vamos agora criar uma colação para ignorar acentos e caixa na coluna nome. Para tanto, basta você optar para level1 na chave `ks`:
 
 ```sql
 CREATE COLLATION  colacao_nome (
