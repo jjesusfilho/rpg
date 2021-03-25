@@ -41,7 +41,7 @@ As regras de colação são amplas e à primeira vista um tanto complexas, você
 
 ## Unicode e ICU
 
-Unicode é um padrão de tecnologia da informação para dar consistência ao encoding, à representação e ao manuseio de caracteres [wikipedi](https://en.wikipedia.org/wiki/Unicode#History). Encoding é basicamente um sistema, dentre muitos, adotado para representar caracteres numericamente, na linguagem do computador. 
+Unicode é um padrão de tecnologia da informação para dar consistência ao encoding, à representação e ao manuseio de caracteres [wikipedia](https://en.wikipedia.org/wiki/Unicode#History). Encoding é basicamente um sistema, dentre muitos, adotado para representar caracteres numericamente na linguagem do computador. 
 
 Antes do Unicode ascender como padrão preferível, havia uma multiplicidade de regras definidas conforme a conveniência da lingua ou do criador do programa. Infelizmente ainda há, mas ao menos agora todos têm uma opção unificadora que cobre praticamente todos os caracteres existentes.
 
