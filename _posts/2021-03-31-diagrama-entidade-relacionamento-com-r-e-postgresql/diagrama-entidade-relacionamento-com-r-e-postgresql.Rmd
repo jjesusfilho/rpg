@@ -1,0 +1,18 @@
+---
+title: "Diagrama Entidade-Relacionamento com R e PostgreSQL"
+description: |
+  A short description of the post.
+author:
+  - name: José de Jesus Filho
+    url: https://rpg.consudata.com.br
+date: 03-31-2021
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+

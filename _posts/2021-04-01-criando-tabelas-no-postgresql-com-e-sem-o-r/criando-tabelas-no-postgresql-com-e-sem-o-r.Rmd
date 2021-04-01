@@ -1,0 +1,183 @@
+---
+title: "Criando tabelas no PostgreSQL com e sem o R"
+description: |
+  A short description of the post.
+author:
+  - name: José de Jesus Filho
+  - name: "Revisor: Rubem Dornas"
+    url: https://rpg.consudata.com.br
+date: 04-01-2021
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+
+## Introdução
+
+Neste primeiro tutorial, iremos mostrar como criar tabelas no PostgreSQL e com várias opções, porém, sem esgotar todas as possibilidades, vez que são muitas. Primeiramente usando o psql, posteriormente a partir do próprio R.
+
+### Acesso ao psql
+
+Para a acessar o PostgreSQL com o psql, você deve usar o seguinte comando:
+
+```sql
+sudo -u postgres psql
+```
+
+O comando `sudo`, seguido da opção `-u` informa o sistema que outro usuário irá executar o comando `psql`, ou seja, o usuário `postgres`.
+
+O usuário `postgres` é ao mesmo tempo um super usuário do PostgreSQL como também do sistema operacional. A menos que você especifique diferentemente no initdb, ele é criado quando você instala o PostgreSQL. Além disso, ao instalar o PostgreSQL, é criada uma base de dados chamada `postgres` com as configurações de local e do `template1` existente. Falaremos sobre os detalhes dessas configurações no tutorial sobre [base de dados](https://app.consudata.com.br/postgresql/db). Por ora, é importante saber que, por meio do comando acima, estamos conectados à base de dados `postgres`. 
+
+Opcionalmente, você pode conectar-se diretamente à uma outra base existente. Para tanto, basta colocar o nome da base de dados ao final do comando:
+
+```sql
+sudo -u postgres psql dbname
+```
+
+### Criando nossa primeira tabela
+
+A forma mais simples de criar uma tabela no PostgreSQL é por meio do comando `create table`. Vamos criar uma tabela chamada `t1`, com duas colunas, uma do tipo texto, outra do tipo inteiro. Lembre que o psql exige que você termine o comando com um ponto e vírgula. Do contrário, ele espera que você seguirá escrevendo.
+
+Caso cometa algum erro na hora de escrever o comando ou queira desistir de rodá-lo, basta dar `ctrl + c` para voltar ao prompt do psql.
+
+```sql
+dbname=# CREATE TABLE t1 (col1 text, col2 int);
+```
+Note que após indicar o nome da tabela, eu abro parênteses para declarar as colunas e seus respectivos tipos.
+
+Opcionalmente, você pode indicar que essa tabela é temporária. Assim, ao sair do psql, ela desaparecerá:
+
+```sql
+dbname=# CREATE TEMP TABLE t1 (col1 text, col2 int);
+```
+
+### Inserindo valores na tabela
+
+Para inserir valor na tabela, usamos o comando `INSERT INTO`, seguido do nome da tabela,  do comando `VALUES` e, por fim, de parênteses com os valores separados por vírgula.
+
+```sql
+dbname=# INSERT INTO t1 VALUES ('primeira linha', 2);
+```
+
+No exemplo acima, nós inserimos uma linha sem mencionar os nomes das colunas, pois elas elas estão subentendidas pela ordem das inserções. Porém, é recomendável explicitá-las, para evitar inserções incorretas
+
+```sql
+dbname=# INSERT INTO t1 (col1, col2) VALUES ('segunda linha', 5);
+```
+
+Até porque, assim, você pode mencionar as colunas na ordem em que preferir:
+
+```sql
+dbname = INSERT INTO t1 (col2, col1) VALUES (7, 'terceira linha');
+```
+
+Se você quiser inserir várias linhas, basta separar os parênteses com os valores por vírgula:
+
+```sql
+INSERT INTO t1 (col1, col2) VALUES ('quarta linha', 35), ('quinta linha', 6);
+```
+
+Vamos imprimir a tabela:
+
+```sql
+SELECT * FROM t1;
+
+```
+
+```{r echo = FALSE}
+a <- "
+col1      | col2
+----------------+------
+ primeira linha |    2
+ segunda linha  |    5
+ terceira linha |    7
+ quarta linha   |   35
+ quinta linha   |    6
+(5 rows)"
+cat(a)
+```
+
+
+### Criando tabelas e inserindo valores numa única etapa
+
+Dito isso, há a opção de criar a tabela e inserir os valores numa única etapa:
+
+```sql
+dbname=# CREATE TABLE t2 (col1, col2) AS VALUES ('primeira linha', 45);
+```
+
+Note que eu não declarei os tipos de colunas. Caso queira declará-los, você deve fazê-lo nos valores e não nos nomes das colunas:
+
+```sql
+dbname=# CREATE TABLE t2 (col1, col2) AS VALUES ('primeira linha'::text, 45::int);
+```
+
+### Removendo tabelas
+
+Para remover as tabelas, basta usar o comando `drop`:
+
+
+```sql
+dbname=# DROP TABLE t2;
+```
+
+## Criando tabelas a partir do R
+
+Assumindo que você já sabe se conectar ao PostgreSQL a partir do R, vamos usar o pacote `DBI`, que chamará o `RPostgres` para criar tabelas e inserir valores. 
+
+Para criar a tabela e inserir valores de uma única vez, use a função `dbWriteTable`.
+
+```r
+library(DBI)
+con <- dbConnect(RPostgres::Postgres(), host, dbname,user,password)
+
+dbWriteTable(con,"mtcars", mtcars)
+```
+
+Para apenas criar a tabela com as colunas vazias, use a função `dbCreateTable`:
+
+```r
+dbCreateTable(con, "mtcars", mtcars)
+```
+
+Agora você pode inserir os valores:
+
+```r
+dbAppendTable(con, "mtcars", mtcars)
+```
+
+Particularmente, eu acho essa segunda opção mais segura. Para inserir valores, eu prefiro usar a função `dbxInsert()` do pacote `dbx`. Ele é especialmente útil para inserir grandes volumes em parcelas, além de ser bem mais rápido que o `dbAppendTable()`. Por exemplo, se você tiver um dataframe com milhoes de linhas, você pode inseri-las a cada 100 mil:
+
+```r
+library(dbx)
+dbxInsert(con,"nome_tbl", df, batch_size = 100000)
+```
+
+
+Se você quiser ler a tabela, use a função `dbReadTable`:
+
+```r
+df <- dbReadTable(con,'mtcars')
+```
+
+
+Se você quiser remover a tabela, use a função `dbRemoveTable`.
+
+```r
+dbRemoveTable(con, "mtcars")
+```
+
+Ao final, não se esqueça de se desconectar:
+
+```r
+dbDisconnect(con)
+```
+
+

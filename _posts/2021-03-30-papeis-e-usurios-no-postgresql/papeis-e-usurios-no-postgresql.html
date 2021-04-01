@@ -85,621 +85,39 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </style>
 
   <!--radix_placeholder_meta_tags-->
-  <title>Ciência de Dados com R e PostgreSQL</title>
+  <title>Papeis e usuários no PostgreSQL</title>
+
+  <meta property="description" itemprop="description" content="A short description of the post."/>
 
 
-
+  <!--  https://schema.org/Article -->
+  <meta property="article:published" itemprop="datePublished" content="2021-03-30"/>
+  <meta property="article:created" itemprop="dateCreated" content="2021-03-30"/>
+  <meta name="article:author" content="José de Jesus Filho"/>
 
   <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
-  <meta property="og:title" content="Ciência de Dados com R e PostgreSQL"/>
+  <meta property="og:title" content="Papeis e usuários no PostgreSQL"/>
   <meta property="og:type" content="article"/>
+  <meta property="og:description" content="A short description of the post."/>
   <meta property="og:locale" content="en_US"/>
-  <meta property="og:site_name" content="Ciência de Dados com R e PostgreSQL"/>
 
   <!--  https://dev.twitter.com/cards/types/summary -->
   <meta property="twitter:card" content="summary"/>
-  <meta property="twitter:title" content="Ciência de Dados com R e PostgreSQL"/>
+  <meta property="twitter:title" content="Papeis e usuários no PostgreSQL"/>
+  <meta property="twitter:description" content="A short description of the post."/>
 
   <!--/radix_placeholder_meta_tags-->
   <!--radix_placeholder_rmarkdown_metadata-->
 
   <script type="text/json" id="radix-rmarkdown-metadata">
-  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","site","listing"]}},"value":[{"type":"character","attributes":{},"value":["Ciência de Dados com R e PostgreSQL"]},{"type":"character","attributes":{},"value":["distill::distill_website"]},{"type":"character","attributes":{},"value":["posts"]}]}
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","output"]}},"value":[{"type":"character","attributes":{},"value":["Papeis e usuários no PostgreSQL"]},{"type":"character","attributes":{},"value":["A short description of the post.\n"]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","url"]}},"value":[{"type":"character","attributes":{},"value":["José de Jesus Filho"]},{"type":"character","attributes":{},"value":["https://rpg.consudata.com.br"]}]}]},{"type":"character","attributes":{},"value":["03-30-2021"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained"]}},"value":[{"type":"logical","attributes":{},"value":[false]}]}]}]}
   </script>
   <!--/radix_placeholder_rmarkdown_metadata-->
+  
+  <script type="text/json" id="radix-resource-manifest">
+  {"type":"character","attributes":{},"value":["papeis-e-usurios-no-postgresql_files/anchor-4.2.2/anchor.min.js","papeis-e-usurios-no-postgresql_files/bowser-1.9.3/bowser.min.js","papeis-e-usurios-no-postgresql_files/distill-2.2.21/template.v2.js","papeis-e-usurios-no-postgresql_files/header-attrs-2.6/header-attrs.js","papeis-e-usurios-no-postgresql_files/jquery-1.11.3/jquery.min.js","papeis-e-usurios-no-postgresql_files/webcomponents-2.0.0/webcomponents.js"]}
+  </script>
   <!--radix_placeholder_navigation_in_header-->
-  <meta name="distill:offset" content=""/>
-
-  <script type="application/javascript">
-
-    window.headroom_prevent_pin = false;
-
-    window.document.addEventListener("DOMContentLoaded", function (event) {
-
-      // initialize headroom for banner
-      var header = $('header').get(0);
-      var headerHeight = header.offsetHeight;
-      var headroom = new Headroom(header, {
-        tolerance: 5,
-        onPin : function() {
-          if (window.headroom_prevent_pin) {
-            window.headroom_prevent_pin = false;
-            headroom.unpin();
-          }
-        }
-      });
-      headroom.init();
-      if(window.location.hash)
-        headroom.unpin();
-      $(header).addClass('headroom--transition');
-
-      // offset scroll location for banner on hash change
-      // (see: https://github.com/WickyNilliams/headroom.js/issues/38)
-      window.addEventListener("hashchange", function(event) {
-        window.scrollTo(0, window.pageYOffset - (headerHeight + 25));
-      });
-
-      // responsive menu
-      $('.distill-site-header').each(function(i, val) {
-        var topnav = $(this);
-        var toggle = topnav.find('.nav-toggle');
-        toggle.on('click', function() {
-          topnav.toggleClass('responsive');
-        });
-      });
-
-      // nav dropdowns
-      $('.nav-dropbtn').click(function(e) {
-        $(this).next('.nav-dropdown-content').toggleClass('nav-dropdown-active');
-        $(this).parent().siblings('.nav-dropdown')
-           .children('.nav-dropdown-content').removeClass('nav-dropdown-active');
-      });
-      $("body").click(function(e){
-        $('.nav-dropdown-content').removeClass('nav-dropdown-active');
-      });
-      $(".nav-dropdown").click(function(e){
-        e.stopPropagation();
-      });
-    });
-  </script>
-
-  <style type="text/css">
-
-  /* Theme (user-documented overrideables for nav appearance) */
-
-  .distill-site-nav {
-    color: rgba(255, 255, 255, 0.8);
-    background-color: #0F2E3D;
-    font-size: 15px;
-    font-weight: 300;
-  }
-
-  .distill-site-nav a {
-    color: inherit;
-    text-decoration: none;
-  }
-
-  .distill-site-nav a:hover {
-    color: white;
-  }
-
-  @media print {
-    .distill-site-nav {
-      display: none;
-    }
-  }
-
-  .distill-site-header {
-
-  }
-
-  .distill-site-footer {
-
-  }
-
-
-  /* Site Header */
-
-  .distill-site-header {
-    width: 100%;
-    box-sizing: border-box;
-    z-index: 3;
-  }
-
-  .distill-site-header .nav-left {
-    display: inline-block;
-    margin-left: 8px;
-  }
-
-  @media screen and (max-width: 768px) {
-    .distill-site-header .nav-left {
-      margin-left: 0;
-    }
-  }
-
-
-  .distill-site-header .nav-right {
-    float: right;
-    margin-right: 8px;
-  }
-
-  .distill-site-header a,
-  .distill-site-header .title {
-    display: inline-block;
-    text-align: center;
-    padding: 14px 10px 14px 10px;
-  }
-
-  .distill-site-header .title {
-    font-size: 18px;
-    min-width: 150px;
-  }
-
-  .distill-site-header .logo {
-    padding: 0;
-  }
-
-  .distill-site-header .logo img {
-    display: none;
-    max-height: 20px;
-    width: auto;
-    margin-bottom: -4px;
-  }
-
-  .distill-site-header .nav-image img {
-    max-height: 18px;
-    width: auto;
-    display: inline-block;
-    margin-bottom: -3px;
-  }
-
-
-
-  @media screen and (min-width: 1000px) {
-    .distill-site-header .logo img {
-      display: inline-block;
-    }
-    .distill-site-header .nav-left {
-      margin-left: 20px;
-    }
-    .distill-site-header .nav-right {
-      margin-right: 20px;
-    }
-    .distill-site-header .title {
-      padding-left: 12px;
-    }
-  }
-
-
-  .distill-site-header .nav-toggle {
-    display: none;
-  }
-
-  .nav-dropdown {
-    display: inline-block;
-    position: relative;
-  }
-
-  .nav-dropdown .nav-dropbtn {
-    border: none;
-    outline: none;
-    color: rgba(255, 255, 255, 0.8);
-    padding: 16px 10px;
-    background-color: transparent;
-    font-family: inherit;
-    font-size: inherit;
-    font-weight: inherit;
-    margin: 0;
-    margin-top: 1px;
-    z-index: 2;
-  }
-
-  .nav-dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: white;
-    min-width: 200px;
-    border: 1px solid rgba(0,0,0,0.15);
-    border-radius: 4px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.1);
-    z-index: 1;
-    margin-top: 2px;
-    white-space: nowrap;
-    padding-top: 4px;
-    padding-bottom: 4px;
-  }
-
-  .nav-dropdown-content hr {
-    margin-top: 4px;
-    margin-bottom: 4px;
-    border: none;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  }
-
-  .nav-dropdown-active {
-    display: block;
-  }
-
-  .nav-dropdown-content a, .nav-dropdown-content .nav-dropdown-header {
-    color: black;
-    padding: 6px 24px;
-    text-decoration: none;
-    display: block;
-    text-align: left;
-  }
-
-  .nav-dropdown-content .nav-dropdown-header {
-    display: block;
-    padding: 5px 24px;
-    padding-bottom: 0;
-    text-transform: uppercase;
-    font-size: 14px;
-    color: #999999;
-    white-space: nowrap;
-  }
-
-  .nav-dropdown:hover .nav-dropbtn {
-    color: white;
-  }
-
-  .nav-dropdown-content a:hover {
-    background-color: #ddd;
-    color: black;
-  }
-
-  .nav-right .nav-dropdown-content {
-    margin-left: -45%;
-    right: 0;
-  }
-
-  @media screen and (max-width: 768px) {
-    .distill-site-header a, .distill-site-header .nav-dropdown  {display: none;}
-    .distill-site-header a.nav-toggle {
-      float: right;
-      display: block;
-    }
-    .distill-site-header .title {
-      margin-left: 0;
-    }
-    .distill-site-header .nav-right {
-      margin-right: 0;
-    }
-    .distill-site-header {
-      overflow: hidden;
-    }
-    .nav-right .nav-dropdown-content {
-      margin-left: 0;
-    }
-  }
-
-
-  @media screen and (max-width: 768px) {
-    .distill-site-header.responsive {position: relative; min-height: 500px; }
-    .distill-site-header.responsive a.nav-toggle {
-      position: absolute;
-      right: 0;
-      top: 0;
-    }
-    .distill-site-header.responsive a,
-    .distill-site-header.responsive .nav-dropdown {
-      display: block;
-      text-align: left;
-    }
-    .distill-site-header.responsive .nav-left,
-    .distill-site-header.responsive .nav-right {
-      width: 100%;
-    }
-    .distill-site-header.responsive .nav-dropdown {float: none;}
-    .distill-site-header.responsive .nav-dropdown-content {position: relative;}
-    .distill-site-header.responsive .nav-dropdown .nav-dropbtn {
-      display: block;
-      width: 100%;
-      text-align: left;
-    }
-  }
-
-  /* Site Footer */
-
-  .distill-site-footer {
-    width: 100%;
-    overflow: hidden;
-    box-sizing: border-box;
-    z-index: 3;
-    margin-top: 30px;
-    padding-top: 30px;
-    padding-bottom: 30px;
-    text-align: center;
-  }
-
-  /* Headroom */
-
-  d-title {
-    padding-top: 6rem;
-  }
-
-  @media print {
-    d-title {
-      padding-top: 4rem;
-    }
-  }
-
-  .headroom {
-    z-index: 1000;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-  }
-
-  .headroom--transition {
-    transition: all .4s ease-in-out;
-  }
-
-  .headroom--unpinned {
-    top: -100px;
-  }
-
-  .headroom--pinned {
-    top: 0;
-  }
-
-  </style>
-
-  <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet"/>
-  <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet"/>
-  <script src="site_libs/headroom-0.9.4/headroom.min.js"></script>
-  <script src="site_libs/autocomplete-0.37.1/autocomplete.min.js"></script>
-  <script src="site_libs/fuse-6.4.1/fuse.min.js"></script>
-
-  <script type="application/javascript">
-
-  function getMeta(metaName) {
-    var metas = document.getElementsByTagName('meta');
-    for (let i = 0; i < metas.length; i++) {
-      if (metas[i].getAttribute('name') === metaName) {
-        return metas[i].getAttribute('content');
-      }
-    }
-    return '';
-  }
-
-  function offsetURL(url) {
-    var offset = getMeta('distill:offset');
-    return offset ? offset + '/' + url : url;
-  }
-
-  function createFuseIndex() {
-
-    // create fuse index
-    var options = {
-      keys: [
-        { name: 'title', weight: 20 },
-        { name: 'categories', weight: 15 },
-        { name: 'description', weight: 10 },
-        { name: 'contents', weight: 5 },
-      ],
-      ignoreLocation: true,
-      threshold: 0
-    };
-    var fuse = new window.Fuse([], options);
-
-    // fetch the main search.json
-    return fetch(offsetURL('search.json'))
-      .then(function(response) {
-        if (response.status == 200) {
-          return response.json().then(function(json) {
-            // index main articles
-            json.articles.forEach(function(article) {
-              fuse.add(article);
-            });
-            // download collections and index their articles
-            return Promise.all(json.collections.map(function(collection) {
-              return fetch(offsetURL(collection)).then(function(response) {
-                if (response.status === 200) {
-                  return response.json().then(function(articles) {
-                    articles.forEach(function(article) {
-                      fuse.add(article);
-                    });
-                  })
-                } else {
-                  return Promise.reject(
-                    new Error('Unexpected status from search index request: ' +
-                              response.status)
-                  );
-                }
-              });
-            })).then(function() {
-              return fuse;
-            });
-          });
-
-        } else {
-          return Promise.reject(
-            new Error('Unexpected status from search index request: ' +
-                        response.status)
-          );
-        }
-      });
-  }
-
-  window.document.addEventListener("DOMContentLoaded", function (event) {
-
-    // get search element (bail if we don't have one)
-    var searchEl = window.document.getElementById('distill-search');
-    if (!searchEl)
-      return;
-
-    createFuseIndex()
-      .then(function(fuse) {
-
-        // make search box visible
-        searchEl.classList.remove('hidden');
-
-        // initialize autocomplete
-        var options = {
-          autoselect: true,
-          hint: false,
-          minLength: 2,
-        };
-        window.autocomplete(searchEl, options, [{
-          source: function(query, callback) {
-            const searchOptions = {
-              isCaseSensitive: false,
-              shouldSort: true,
-              minMatchCharLength: 2,
-              limit: 10,
-            };
-            var results = fuse.search(query, searchOptions);
-            callback(results
-              .map(function(result) { return result.item; })
-              .filter(function(item) { return !!item.description; })
-            );
-          },
-          templates: {
-            suggestion: function(suggestion) {
-              var html = `
-                <div class="search-item">
-                  <h3>${suggestion.title}</h3>
-                  <div class="search-item-description">
-                    ${suggestion.description}
-                  </div>
-                  <div class="search-item-preview">
-                    <img src="${suggestion.preview ? offsetURL(suggestion.preview) : ''}"</img>
-                  </div>
-                </div>
-              `;
-              return html;
-            }
-          }
-        }]).on('autocomplete:selected', function(event, suggestion) {
-          window.location.href = offsetURL(suggestion.path);
-        });
-        // remove inline display style on autocompleter (we want to
-        // manage responsive display via css)
-        $('.algolia-autocomplete').css("display", "");
-      })
-      .catch(function(error) {
-        console.log(error);
-      });
-
-  });
-
-  </script>
-
-  <style type="text/css">
-
-  /* Algolioa Autocomplete */
-
-  .algolia-autocomplete {
-    display: inline-block;
-    margin-left: 10px;
-    vertical-align: sub;
-    background-color: white;
-    color: black;
-    padding: 6px;
-    padding-top: 8px;
-    padding-bottom: 0;
-    border-radius: 6px;
-    border: 1px #0F2E3D solid;
-    width: 180px;
-  }
-
-
-  @media screen and (max-width: 768px) {
-    .distill-site-nav .algolia-autocomplete {
-      display: none;
-      visibility: hidden;
-    }
-    .distill-site-nav.responsive .algolia-autocomplete {
-      display: inline-block;
-      visibility: visible;
-    }
-    .distill-site-nav.responsive .algolia-autocomplete .aa-dropdown-menu {
-      margin-left: 0;
-      width: 400px;
-      max-height: 400px;
-    }
-  }
-
-  .algolia-autocomplete .aa-input, .algolia-autocomplete .aa-hint {
-    width: 90%;
-    outline: none;
-    border: none;
-  }
-
-  .algolia-autocomplete .aa-hint {
-    color: #999;
-  }
-  .algolia-autocomplete .aa-dropdown-menu {
-    width: 550px;
-    max-height: 70vh;
-    overflow-x: visible;
-    overflow-y: scroll;
-    padding: 5px;
-    margin-top: 3px;
-    margin-left: -150px;
-    background-color: #fff;
-    border-radius: 5px;
-    border: 1px solid #999;
-    border-top: none;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion {
-    cursor: pointer;
-    padding: 5px 4px;
-    border-bottom: 1px solid #eee;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion:last-of-type {
-    border-bottom: none;
-    margin-bottom: 2px;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item {
-    overflow: hidden;
-    font-size: 0.8em;
-    line-height: 1.4em;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item h3 {
-    margin-block-start: 0;
-    margin-block-end: 5px;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item-description {
-    display: inline-block;
-    overflow: hidden;
-    height: 2.8em;
-    width: 80%;
-    margin-right: 4%;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item-preview {
-    display: inline-block;
-    width: 15%;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item-preview img {
-    height: 3em;
-    width: auto;
-    display: none;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion .search-item-preview img[src] {
-    display: initial;
-  }
-
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion.aa-cursor {
-    background-color: #eee;
-  }
-  .algolia-autocomplete .aa-dropdown-menu .aa-suggestion em {
-    font-weight: bold;
-    font-style: normal;
-  }
-
-  </style>
-
-
   <!--/radix_placeholder_navigation_in_header-->
   <!--radix_placeholder_distill-->
 
@@ -1985,465 +1403,113 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </script>
 
   <!--/radix_placeholder_distill-->
-  <script src="site_libs/header-attrs-2.6/header-attrs.js"></script>
-  <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
-  <script src="site_libs/anchor-4.2.2/anchor.min.js"></script>
-  <script src="site_libs/bowser-1.9.3/bowser.min.js"></script>
-  <script src="site_libs/webcomponents-2.0.0/webcomponents.js"></script>
-  <script src="site_libs/distill-2.2.21/template.v2.js"></script>
+  <script src="papeis-e-usurios-no-postgresql_files/header-attrs-2.6/header-attrs.js"></script>
+  <script src="papeis-e-usurios-no-postgresql_files/jquery-1.11.3/jquery.min.js"></script>
+  <script src="papeis-e-usurios-no-postgresql_files/anchor-4.2.2/anchor.min.js"></script>
+  <script src="papeis-e-usurios-no-postgresql_files/bowser-1.9.3/bowser.min.js"></script>
+  <script src="papeis-e-usurios-no-postgresql_files/webcomponents-2.0.0/webcomponents.js"></script>
+  <script src="papeis-e-usurios-no-postgresql_files/distill-2.2.21/template.v2.js"></script>
   <!--radix_placeholder_site_in_header-->
   <!--/radix_placeholder_site_in_header-->
 
 
 </head>
 
-<body class="layout-listing">
+<body>
 
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"Ciência de Dados com R e PostgreSQL","authors":[]}
+{"title":"Papeis e usuários no PostgreSQL","description":"A short description of the post.","authors":[{"author":"José de Jesus Filho","authorURL":"https://rpg.consudata.com.br","affiliation":"&nbsp;","affiliationURL":"#","orcidID":""}],"publishedDate":"2021-03-30T00:00:00.000+00:00","citationText":"Filho, 2021"}
 </script>
 
 <!--/radix_placeholder_front_matter-->
 <!--radix_placeholder_navigation_before_body-->
-<header class="header header--fixed" role="banner">
-<nav class="distill-site-nav distill-site-header">
-<div class="nav-left">
-<a href="index.html" class="title">Ciência de Dados com R e PostgreSQL</a>
-<input id="distill-search" class="nav-search hidden" type="text" placeholder="Search..."/>
-</div>
-<div class="nav-right">
-<a href="index.html">Home</a>
-<a href="about.html">Sobre</a>
-<a href="javascript:void(0);" class="nav-toggle">&#9776;</a>
-</div>
-</nav>
-</header>
 <!--/radix_placeholder_navigation_before_body-->
 <!--radix_placeholder_site_before_body-->
 <!--/radix_placeholder_site_before_body-->
-<!--radix_placeholder_article_listing-->
-
-
-<script type="application/javascript">
-
-function init_posts_list() {
-
-  function load_image(img) {
-    var src = $(img).attr('data-src');
-    if (src) {
-      $(img).attr('src', src);
-      $(img).load(function() {
-        img.removeAttribute('data-src');
-      });
-    }
-  }
-
-  function set_posts_visible(posts, visible) {
-    if (visible) {
-
-      // show bottom border by default
-      $(posts).removeClass('post-preview-last');
-
-      // apply limits if need be
-      var max_posts = 25;
-      var apply_limits = $('.posts-container').hasClass('posts-apply-limit');
-      if (apply_limits && posts.length > max_posts) {
-        posts = $(posts).slice(0, max_posts);
-      } else {
-        $('.posts-more a').addClass('hidden');
-      }
-
-      // apply last style
-      $(posts.slice(-1)[0]).addClass('post-preview-last');
-
-      $(posts).removeClass('hidden');
-      $(posts).find('img[data-src]').each(function(i, img) {
-        load_image(img);
-      });
-    } else {
-      $(posts).addClass('hidden');
-    }
-  }
-
-  function apply_hash_filter() {
-
-    // clear active state
-    $('.categories .active').removeClass('active');
-
-    // mark all posts invisible to start
-    set_posts_visible($('.posts-list').children('a'), false);
-
-    // if we have a hash filter
-    if (window.location.hash && window.location.hash.startsWith("#category:")) {
-
-      // mark posts that match the category visible
-      var page_category = window.location.hash.replace(/^#category:/, "");
-      var posts = $('.post-metadata').map(function(idx, script) {
-        var metadata = $.parseJSON($(script).html());
-        var post = null;
-        $.each(metadata.categories, function(idx, category) {
-          category = category.replace(/ /g,"_");
-          if ((page_category || '').toLowerCase() === "articles" || category === page_category) {
-            post = $(script).parent().get();
-            return false;
-          }
-        });
-        return post;
-      });
-      set_posts_visible(posts, true);
-
-      // mark the hash active
-      $('.categories li>a[href="' + window.location.hash + '"]').addClass('active');
-
-      // update the list_caption
-      var list_caption = $('.posts-list-caption');
-      var caption = (page_category || '').toLowerCase() === "articles"
-        ? list_caption.attr('data-caption')
-        : ('Category: ' + page_category.replace(/_/g," "));
-      list_caption.text(caption);
-
-    } else {
-
-      // no hash filter, make all posts visible (subject to max display)
-      set_posts_visible($('.posts-list').children(), true);
-
-      // reset list caption
-      var list_caption = $('.posts-list-caption');
-      list_caption.text(list_caption.attr('data-caption'));
-
-
-    }
-  }
-
-  // more articles
-  function apply_post_limits(apply) {
-    if (apply) {
-      $('.posts-container').addClass('posts-apply-limit');
-      $('.posts-more a').removeClass('hidden');
-    } else {
-      $('.posts-container').removeClass('posts-apply-limit');
-      $('.posts-more a').addClass('hidden');
-    }
-  }
-
-  // click handling for tags
-  $('.dt-tag').click(function(ev) {
-    window.location.hash = '#category:' + $(this).text().replace(/ /g, "_");
-    return false;
-  })
-
-  // hash filter handling
-  apply_hash_filter();
-  $(window).on('hashchange',function() {
-    apply_post_limits(true);
-    apply_hash_filter();
-  });
-
-  // more articles link
-  $('.posts-more a').click(function(e) {
-    e.preventDefault();
-    apply_post_limits(false);
-    apply_hash_filter();
-    return false;
-  });
-
-}
-
-</script>
-
-
-
-<div class="posts-container posts-apply-limit l-page">
-<div class="posts-list">
-<h1 class="posts-list-caption" data-caption="Ciência de Dados com R e PostgreSQL">Ciência de Dados com R e PostgreSQL</h1>
-<a href="posts/2021-04-01-criando-tabelas-no-postgresql-com-e-sem-o-r/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">April 1, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">José de Jesus Filho</div>
-<div class="dt-author">Revisor: Rubem Dornas</div>
-</div>
-</div>
-<div class="thumbnail"></div>
-<div class="description">
-<h2>Criando tabelas no PostgreSQL com e sem o R</h2>
-<div class="dt-tags"></div>
-<p>A short description of the post.</p>
-</div>
-</a>
-<a href="posts/2021-03-30-papeis-e-usurios-no-postgresql/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">March 30, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">José de Jesus Filho</div>
-</div>
-</div>
-<div class="thumbnail">
-<img/>
-</div>
-<div class="description">
-<h2>Papeis e usuários no PostgreSQL</h2>
-<div class="dt-tags"></div>
-<p>A short description of the post.</p>
-</div>
-</a>
-<a href="posts/2021-03-25-colao-no-r-e-no-postgresql/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">March 25, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">José de Jesus Filho</div>
-</div>
-</div>
-<div class="thumbnail">
-<img src="posts/2021-03-25-colao-no-r-e-no-postgresql/colacao.png"/>
-</div>
-<div class="description">
-<h2>Colação no R e no PostgreSQL</h2>
-<div class="dt-tags"></div>
-<p>Neste tutorial, mostro como usar regras de colação e ajustar tanto o R quanto o 
-PostgreSQL para ignorar acentos, maiúsculas  e minúsculas, ordenar sequências numéricas contidas em texto e ignorar 
-pontuação em números, como em CPF ou CNPJ.</p>
-</div>
-</a>
-<a href="posts/2021-01-05-trabalhando-com-mapas-com-r-e-postgresqlpostgis/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Jan. 5, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">José de Jesus Filho</div>
-</div>
-</div>
-<div class="thumbnail">
-<img src="posts/2021-01-05-trabalhando-com-mapas-com-r-e-postgresqlpostgis/trabalhando-com-mapas-com-r-e-postgresqlpostgis_files/figure-html5/unnamed-chunk-3-1.png"/>
-</div>
-<div class="description">
-<h2>Trabalhando com mapas com R e PostgreSQL/PostGIS</h2>
-<div class="dt-tags"></div>
-<p>Neste tutorial, irei mostrar como armazenar shapes no PostgreSQL
-usando a extensão PostGIS e criar mapas no R sem sobrecarregar a memória.</p>
-</div>
-</a>
-<a href="posts/2021-01-04-busca-textual-com-r-shiny-e-postgresql/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Jan. 4, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">José de Jesus Filho</div>
-</div>
-</div>
-<div class="thumbnail">
-<img/>
-</div>
-<div class="description">
-<h2>Busca textual com R, Shiny e PostgreSQL</h2>
-<div class="dt-tags"></div>
-<p>Este tutorial mostra como configurar busca textual num esquema do
-PostgreSQL e montar um aplicativo shiny para realizar buscas eficientes</p>
-</div>
-</a>
-<a href="posts/2021-01-04-chamando-o-r-do-postgresql/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Jan. 4, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">José de Jesus Filho</div>
-</div>
-</div>
-<div class="thumbnail">
-<img data-src="posts/2021-01-04-chamando-o-r-do-postgresql/linear_plot.png"/>
-</div>
-<div class="description">
-<h2>Chamando o R do PostgreSQL</h2>
-<div class="dt-tags"></div>
-<p>Como instalar os dois e usá-los de forma integrada.</p>
-</div>
-</a>
-<a href="posts/2021-01-04-como-subir-mltiplos-e-grandes-arquivos-para-o-postgresql-com-r/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Jan. 4, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">José de Jesus Filho</div>
-</div>
-</div>
-<div class="thumbnail">
-<img/>
-</div>
-<div class="description">
-<h2>Como subir múltiplos e grandes arquivos para o PostgreSQL com R</h2>
-<div class="dt-tags"></div>
-<p>Neste tutorial, irei mostrar como copiar para uma base de dados
-do PostgreSQL múltiplos arquivos com que não cabem na memória RAM,
-a partir do R, já tradados, sem sobrecarregar a memória.</p>
-</div>
-</a>
-<a href="posts/2021-01-04-r-postgresql-distinct-cheatsheet/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Jan. 4, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">José de Jesus Filho</div>
-</div>
-</div>
-<div class="thumbnail">
-<img/>
-</div>
-<div class="description">
-<h2>R + PostgreSQL - distinct cheatsheet</h2>
-<div class="dt-tags"></div>
-<p>Este cheatsheet mostra como filtrar tanto no R
-quanto no PostgreSQL linhas distintas com base
-em uma ou mais colunas.</p>
-</div>
-</a>
-<a href="posts/2021-01-04-tidypg-cheatsheet-sumarizando-tabelas-com-r-e-postgresql/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Jan. 4, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">José de Jesus Filho</div>
-</div>
-</div>
-<div class="thumbnail">
-<img data-src="posts/2021-01-04-tidypg-cheatsheet-sumarizando-tabelas-com-r-e-postgresql/summary.png"/>
-</div>
-<div class="description">
-<h2>TidyPG cheatsheet: sumarizando tabelas com R e PostgreSQL</h2>
-<div class="dt-tags"></div>
-<p>Neste cheatsheet mostro como criar sumários no R e no PostgreSQL.</p>
-</div>
-</a>
-<a href="posts/2021-01-04-window-functions-no-r-e-no-postgresql-parte-1-aspectos-estticos/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Jan. 4, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">José de Jesus Filho</div>
-</div>
-</div>
-<div class="thumbnail">
-<img/>
-</div>
-<div class="description">
-<h2>Window functions no R e no PostgreSQL - Parte 1: aspectos estáticos</h2>
-<div class="dt-tags"></div>
-<p>Neste tutorial mostro como operar com funções janela ou
-window functions tanto no R quanto no PostgreSQL.</p>
-</div>
-</a>
-<a href="posts/2021-01-03-joins-no-r-e-no-postgresql/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Jan. 3, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">José de Jesus Filho</div>
-</div>
-</div>
-<div class="thumbnail">
-<img data-src="posts/2021-01-03-joins-no-r-e-no-postgresql/inner_join.png"/>
-</div>
-<div class="description">
-<h2>Joins no R e no PostgreSQL</h2>
-<div class="dt-tags"></div>
-<p>Neste tutorial, mostro como as principais formas de joins tanto no R
-quanto no PostgreSQL.</p>
-</div>
-</a>
-<a href="posts/2021-01-03-pivotagem-com-r-e-postgresql/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Jan. 3, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">José de Jesus Filho</div>
-</div>
-</div>
-<div class="thumbnail">
-<img data-src="posts/2021-01-03-pivotagem-com-r-e-postgresql/pivotagem2.png"/>
-</div>
-<div class="description">
-<h2>Pivotagem com R e PostgreSQL</h2>
-<div class="dt-tags"></div>
-<p>Nesta postagem, eu mostro como converter dataframes e tabelas
-entre os formatos wide e long tanto no R quanto no PostgreSQL,
-além de permitir realizar essas operações no banco a partir do R.</p>
-</div>
-</a>
-<a href="posts/2021-01-03-similaridades-entre-na-no-r-e-null-no-postgresql/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Jan. 3, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">José de Jesus Filho</div>
-</div>
-</div>
-<div class="thumbnail">
-<img data-src="posts/2021-01-03-similaridades-entre-na-no-r-e-null-no-postgresql/missing.jpg"/>
-</div>
-<div class="description">
-<h2>Similaridades entre NA no R e NULL no PostgreSQL</h2>
-<div class="dt-tags"></div>
-<p>Neste tuturial iremos mostrar como o comportamento de `NAs` no **R** 
-é consistente com o de `NULL` no PostgreSQL.</p>
-</div>
-</a>
-<a href="posts/2021-01-03-tidypg-cheatsheet-criando-tabelas-a-partir-de-outras-parte-1/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Jan. 3, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">José de Jesus Filho</div>
-</div>
-</div>
-<div class="thumbnail">
-<img data-src="posts/2021-01-03-tidypg-cheatsheet-criando-tabelas-a-partir-de-outras-parte-1/bind_rows.png"/>
-</div>
-<div class="description">
-<h2>TidyPG cheatsheet: Criando tabelas a partir de outras - parte 1</h2>
-<div class="dt-tags"></div>
-<p>Neste cheatsheet mostramos como criar tabelas tanto no R 
-quanto no PostgreSQL a partir da junção de outras ou de filtros.</p>
-</div>
-</a>
-<a href="posts/welcome/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Jan. 3, 2021</div>
-<div class="dt-authors">
-<div class="dt-author">José de Jesus Filho</div>
-</div>
-</div>
-<div class="thumbnail">
-<img/>
-</div>
-<div class="description">
-<h2>Bem-vinda à  Ciência de Dados com R e PostgreSQL</h2>
-<div class="dt-tags"></div>
-<p>Bem-vindo a este blog sobre Ciência de Dados com R e PostgreSQL. Periodicamente, irei
-postar tutoriais sobre !</p>
-</div>
-</a>
-</div>
-<div class="posts-more">
-<a href="#">More articles &raquo;</a>
-</div>
-</div>
-<!--/radix_placeholder_article_listing-->
 
 <div class="d-title">
-<h1>Ciência de Dados com R e PostgreSQL</h1>
+<h1>Papeis e usuários no PostgreSQL</h1>
 <!--radix_placeholder_categories-->
 <!--/radix_placeholder_categories-->
-
+<p><p>A short description of the post.</p></p>
 </div>
 
+<div class="d-byline">
+  José de Jesus Filho <a href="https://rpg.consudata.com.br" class="uri">https://rpg.consudata.com.br</a> 
+  
+<br/>03-30-2021
+</div>
 
 <div class="d-article">
-<div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<h2 id="papéis-e-usuários">Papéis e usuários</h2>
+<p>Segundo sua <a href="https://www.postgresql.org/docs/current/user-manag.html">documentação oficial</a>, o PostgreSQL gerencia as permissões de acesso por meio do conceito de roles (papeis). Roles podem ser tanto users (usuários), quanto group (grupos) de usuários. Roles são também proprietários de objetos no banco de dados, bem como, nessa condição, autorizar acesso a outros roles e, inclusive, conferir propriedade a outros roles.</p>
+<p>Neste tutorial, iremos mostrar como criar e gerenciar roles. Seguiremos a orientação da documentação oficial, vez que, ela é bem completa e até dispensaria este texto.</p>
+<h2 id="roles-no-banco-de-dados">Roles no banco de dados</h2>
+<p>De início, é importante frisar dois aspectos importantes concernentes aos roles. Eles são criados e existem independentemente dos bancos de dados invididuais e não necessariamente correspondem aos usuários do sistema operacional. Isto é, ao criar um usuário no PostgreSQL, você não criou automaticamente um usuário do sistema e vice-versa.</p>
+<h2 id="como-criar-e-remover-roles">Como criar e remover roles</h2>
+<p>Há duas formas de criar novos roles. Uma delas é criar utilizando o cliente. Por exemplo, vamos criar um role chamado novousuario a partir do psql:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1"></a>dbname# <span class="kw">create</span> <span class="kw">role</span> novousuario;</span></code></pre></div>
+<p>Isso é suficiente para criar um novo role, mas o mais comum é criar, autorizar o acesso e, eventualmente, definir uma senha:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1"></a>dbname# <span class="kw">create</span> <span class="kw">role</span> novousuario <span class="kw">WITH</span> LOGIN <span class="kw">PASSWORD</span> <span class="st">&#39;umasenha&#39;</span>;</span></code></pre></div>
+<p>Alternativamente, você chamar o programa <code>createuser</code> diretamente do shell para criar um novo role:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1"></a>$ <span class="ex">createuser</span> novousuario</span></code></pre></div>
+<p>Se quiser conferir login e atribuir senha:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1"></a>$ <span class="ex">createuser</span> -l -W novousuario</span></code></pre></div>
+<p>Para remover um role no cliente, e.g., psql, você usa o comando <code>drop role</code>:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb5-1"><a href="#cb5-1"></a>dbname# <span class="kw">DROP</span> <span class="kw">ROLE</span> novousuario;</span></code></pre></div>
+<p>Alternativamente, você pode chamar no shell o comando <code>dropuser</code>:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1"></a>$ <span class="ex">dropuser</span> novousuario</span></code></pre></div>
+<h2 id="atributos">Atributos</h2>
+<p>Os roles possuem alguns atributos que definem os seus privilégios.</p>
+<h3 id="login">Login</h3>
+<p>Para conectar-se a um banco de dados, é necessário que o role tenha o atributo de login. Ao criar um novo usuário, você pode atribuir login de duas formas. A primeira é informar o atributo explicitamente:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb7-1"><a href="#cb7-1"></a>dbname<span class="op">=</span># <span class="kw">CREATE</span> <span class="kw">ROLE</span> novousuario <span class="kw">WITH</span> LOGIN;</span></code></pre></div>
+<p>A segunda é substituir role por user, pois ao criar dessa forma, você implicitamente autoriza login:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb8-1"><a href="#cb8-1"></a>dbname<span class="op">=</span># <span class="kw">CREATE</span> <span class="fu">USER</span> novousuario;</span></code></pre></div>
+<h3 id="superusuário">Superusuário</h3>
+<p>Ao iniciar o cluster do PostgreSQL, um usuário é definido como superusuário. Este pode ser o próprio usuário do sistema que iniciou o cluster, ou o usuário postgres. O superusuário possui todos os privilégios, exceto o de login. Para login, é recomendável criar outros usuários, sem super poderes e atribuí-los permissões específicas.</p>
+<h3 id="criação-de-bancos">Criação de bancos</h3>
+<p>Com exceção do super usuário, para criar novos bancos, é necessário que o usuário tenha explícitos podere para tanto. Para autorizar o usuário a criar novos bancos:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb9-1"><a href="#cb9-1"></a><span class="kw">CREATE</span> <span class="kw">ROLE</span> novousuario CREATEDB;</span></code></pre></div>
+<h3 id="criar-novos-roles">Criar novos roles</h3>
+<p>Igualmente, se não for super usuário, para criar novos usuários, é necessário ter recebido explicitamente esse poder:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb10-1"><a href="#cb10-1"></a>dbname<span class="op">=</span># <span class="kw">CREATE</span> <span class="kw">ROLE</span>  novousuario CREATEROLE;</span></code></pre></div>
+<h3 id="iniciar-repliacação">Iniciar repliacação</h3>
+<p>Para iniciar replicação, se não for super usuário, também é necessário ter o poder de replicação concedido:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb11-1"><a href="#cb11-1"></a>dbname<span class="op">=</span># <span class="kw">CREATE</span> <span class="kw">ROLE</span> novousuario REPLICATION LOGIN;</span></code></pre></div>
+<h3 id="senha">Senha</h3>
+<p>Se a conexão será local ou via rede privada, em princípio, não há necessidade de criar-se senha para o usuário. Porém, se for avaliado que será necessário conexão com o uso de senha, basta criá-la no momento juntamente com o usuário:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb12-1"><a href="#cb12-1"></a>dbname<span class="op">=</span># <span class="kw">CREATE</span> <span class="kw">ROLE</span> novousuario <span class="kw">WITH</span> LOGIN <span class="kw">PASSWORD</span> <span class="st">&#39;senha&#39;</span>;</span></code></pre></div>
+<h2 id="privilégios">Privilégios</h2>
+<p>Quanto um objeto é criado, e.g. banco, tabela, visão, sequência, a ele é atribuído um proprietário, salvo disposição diferente. Por exemplo, se você está conectado com o usuário postgres e cria um novo banco sem mencionar o proprietário, o PostgreSQL atribui a propriedade ao usuário conectado:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb13-1"><a href="#cb13-1"></a>postgres<span class="op">=</span># <span class="kw">CREATE</span> <span class="kw">DATABASE</span> novodb;</span></code></pre></div>
+<p>Se quiser conferir quem é o proprietário via psql, basta chamar:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb14-1"><a href="#cb14-1"></a>postgres<span class="op">=</span># \l novodb</span></code></pre></div>
+<div class="layout-chunk" data-layout="l-body">
+<pre><code>
+                         List of databases
+  Name  |  Owner   | Encoding | Collate | Ctype | Access privileges
+--------+----------+----------+---------+-------+-------------------
+ novodb | postgres | UTF8     | C       | C     |
+(1 row)</code></pre>
+</div>
+<p>Ou por outro cliente, usando esta query:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb16-1"><a href="#cb16-1"></a>postgres<span class="op">=</span># <span class="kw">SELECT</span> datname <span class="kw">as</span> banco, pg_get_userbyid(datdba) <span class="kw">AS</span> proprietario</span>
+<span id="cb16-2"><a href="#cb16-2"></a><span class="kw">FROM</span></span>
+<span id="cb16-3"><a href="#cb16-3"></a>pg_catalog.pg_database <span class="kw">WHERE</span> datname <span class="op">=</span> <span class="st">&#39;novodb&#39;</span>;</span></code></pre></div>
+<div class="layout-chunk" data-layout="l-body">
+<pre><code> banco  | proprietario
+--------+--------------
+ novodb | postgres
+(1 row)</code></pre>
+</div>
+<p>Para atribuir a propriedade do objeto criado a um proprietário diferente daquele que o criou, você pode fazê-lo durante a criação:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb18-1"><a href="#cb18-1"></a>postgres<span class="op">=</span># <span class="kw">CREATE</span> <span class="kw">DATABASE</span> novodb OWNER novousuario;</span></code></pre></div>
+<p>Ou alterar a propriedade após a criação:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode sql"><code class="sourceCode sql"><span id="cb19-1"><a href="#cb19-1"></a>postgres<span class="op">=</span># <span class="kw">ALTER</span> <span class="kw">DATABASE</span> novodb OWNER <span class="kw">TO</span> novousuario;</span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>

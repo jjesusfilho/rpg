@@ -1,0 +1,280 @@
+---
+title: "Papeis e usuários no PostgreSQL"
+description: |
+  A short description of the post.
+author:
+  - name: José de Jesus Filho
+    url: https://rpg.consudata.com.br
+date: 03-30-2021
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Papéis e usuários
+
+Segundo sua [documentação oficial](https://www.postgresql.org/docs/current/user-manag.html), o PostgreSQL gerencia as permissões de acesso por meio do conceito de roles (papeis). Roles podem ser tanto users (usuários), quanto group (grupos) de usuários. Roles são também proprietários de objetos no banco de dados e, nessa condição, autorizar acesso a outros roles e, inclusive, transferir propriedade a outros roles.
+
+Feita esta distinção, nós iremos falar em usuário ou role para nos referir à mesma coisa, exceto quando discriminar for necessário.
+
+Neste tutorial, iremos mostrar como criar e gerenciar roles. Na medida do possível, seguiremos a orientação da documentação oficial.
+
+## Roles no banco de dados
+
+De início, é importante frisar dois aspectos importantes concernentes aos roles. Eles são criados e existem independentemente dos bancos de dados invididuais e não necessariamente correspondem aos usuários do sistema operacional. Isto é, ao criar um usuário no PostgreSQL, você não criou automaticamente um usuário do sistema e vice-versa.
+
+## Como criar e remover usuários e grupos de usuários
+
+A criação de usuários e grupos segue a seguinte sintaxe:
+
+``` {.sql}
+dbname=# CREATE ROLE nome WITH opções
+```
+
+Das opções falaremos mais adiante, por ora é importante notar que há duas formas de criar novos usuários ou grupos. Uma delas é criar utilizando o cliente. Por exemplo, vamos criar um role chamado novousuario a partir do psql:
+
+``` {.sql}
+dbname# create role novousuario;
+```
+
+Isso é suficiente para criar um novo role, mas o mais comum é criar e autorizar o acesso.
+
+``` {.sql}
+dbname# create role novousuario WITH LOGIN;
+```
+
+Alternativamente, você pode chamar o programa `createuser` diretamente do shell para criar um novo role:
+
+``` {.sh}
+$ createuser novousuario
+```
+
+Se quiser conferir login:
+
+``` {.sh}
+$ createuser -l
+```
+
+Para remover um role no cliente, e.g., psql, você usa o comando `drop role`:
+
+``` {.sql}
+dbname# DROP ROLE novousuario;
+```
+
+Alternativamente, você pode chamar no shell o comando `dropuser`:
+
+``` {.sh}
+$ dropuser novousuario
+```
+
+### Opções ou parâmetros
+
+Ao criar um usuário ou um grupo, uma série de parâmetros pode ser definidos. Abaixo listamos cada um deles com uma breve explanação do seu significado. Esses parâmetros são opcionais, na medida em que, se forem omitidos, o padrão será adotado.
+
+## Grupos
+
+## Atributos
+
+Os roles possuem alguns atributos que definem os seus privilégios.
+
+### Login
+
+Para conectar-se a um banco de dados, é necessário que o role tenha o atributo de login. Ao criar um novo usuário, você pode atribuir login de duas formas. A primeira é informar o atributo explicitamente:
+
+``` {.sql}
+dbname=# CREATE ROLE novousuario WITH LOGIN;
+```
+
+A segunda é substituir role por user, pois ao criar dessa forma, você implicitamente autoriza login:
+
+``` {.sql}
+dbname=# CREATE USER novousuario;
+```
+
+### Superusuário
+
+Ao iniciar o cluster do PostgreSQL, um usuário é definido como superusuário. Este pode ser o próprio usuário do sistema que iniciou o cluster, ou o usuário postgres. O superusuário possui todos os privilégios, exceto o de login. Para login, é recomendável criar outros usuários, sem super poderes e atribuí-los permissões específicas.
+
+### Criação de bancos
+
+Com exceção do super usuário, para criar novos bancos, é necessário que o usuário tenha explícitos podere para tanto. Para autorizar o usuário a criar novos bancos:
+
+``` {.sql}
+CREATE ROLE novousuario CREATEDB;
+```
+
+### Criar novos roles
+
+Igualmente, se não for super usuário, para criar novos usuários, é necessário ter recebido explicitamente esse poder:
+
+``` {.sql}
+dbname=# CREATE ROLE  novousuario CREATEROLE;
+```
+
+### Iniciar repliacação
+
+Para iniciar replicação, se não for super usuário, também é necessário ter o poder de replicação concedido:
+
+``` {.sql}
+dbname=# CREATE ROLE novousuario REPLICATION LOGIN;
+```
+
+### Senha
+
+Se a conexão será local ou via rede privada, em princípio, não há necessidade de criar-se senha para o usuário. Porém, se for avaliado que será necessário conexão com o uso de senha, basta criá-la no momento juntamente com o usuário:
+
+``` {.sql}
+dbname=# CREATE ROLE novousuario WITH LOGIN PASSWORD 'senha';
+```
+
+## Privilégios
+
+### Proprietário
+
+Quanto um objeto é criado, e.g. banco, tabela, visão, sequência, a ele é atribuído um proprietário, salvo disposição diferente. Por exemplo, se você está conectado com o usuário postgres e cria um novo banco sem mencionar o proprietário, o PostgreSQL atribui a propriedade ao usuário conectado:
+
+``` {.sql}
+postgres=# CREATE DATABASE novodb;
+```
+
+Se quiser conferir quem é o proprietário via psql, basta chamar:
+
+``` {.sql}
+postgres=# \l novodb
+```
+
+```{r}
+a <- "
+                         List of databases
+  Name  |  Owner   | Encoding | Collate | Ctype | Access privileges
+--------+----------+----------+---------+-------+-------------------
+ novodb | postgres | UTF8     | C       | C     |
+(1 row)
+"
+cat(a)
+```
+
+Ou por outro cliente, usando esta query:
+
+``` {.sql}
+postgres=# SELECT datname as banco, pg_get_userbyid(datdba) AS proprietario
+FROM
+pg_catalog.pg_database WHERE datname = 'novodb';
+```
+
+```{r}
+a <- " banco  | proprietario
+--------+--------------
+ novodb | postgres
+(1 row)"
+cat(a)
+```
+
+Para atribuir a propriedade do objeto criado a um proprietário diferente daquele que o criou, você pode fazê-lo durante a criação:
+
+``` {.sql}
+postgres=# CREATE DATABASE novodb OWNER novousuario;
+```
+
+Ou alterar a propriedade após a criação:
+
+``` {.sql}
+postgres=# ALTER DATABASE novodb OWNER TO novousuario;
+```
+
+O direito de modificar ou remover um objeto é um poder exclusivo do proprietário e não pode ser concedido ou revegado, a menos que a propriedade seja transferida para outro usuário. Porém, como os demais privilégios, o direito de propriedade pode ser herdado por um membro de um role.
+
+### Concedendo privilégios
+
+Há diferentes tipos de privilégios, abaixo listados. Eles podem ser concedidos conforme o tipo de objeto.
+
+```{r}
+a <- c("SELECT", "INSERT", "UPDATE", "DELETE", "TRUNCATE", "REFERENCES", 
+"TRIGGER", "CREATE", "CONNECT", "TEMPORARY", "EXECUTE", "USAGE"
+)
+cat(paste0("-",a), sep =  "\n")
+```
+
+Para conceder um privilégio, usa-se o comando `GRANT`.
+
+Todos os privilégios concernentes um tipo de objeto podem ser concedidos de uma única vez:
+
+``` {.sql}
+novodb=# GRANT ALL PRIVILEGES ON tabela TO novousario; 
+```
+
+Ou simplesmente:
+
+``` {.sql}
+novodb=# GRANT ALL ON tabela TO novousario; 
+```
+
+Para revogar os privilégios, usa-se o comando `REVOKE`:
+
+``` {.sql}
+novodb=# REVOKE ALL ON tabela FROM jose;
+```
+
+`GRANT` segue a seguinte sintaxe, a barra vertical indica opções alternativas.
+
+``` {.sql}
+novodb=# GRANT lista_de_privilégios | ALL
+         ON lista_de_objetos | ALL tipo_de_objeto IN SCHEMA nome_do_schema
+         TO usuario;
+```
+
+### SELECT
+
+Por vezes, você quer autorizar apenas leitura de tabelas e visões para um usuário. Com `SELECT` isso é possível:
+
+``` {.sql}
+novodb=# GRANT SELECT ON tabela TO novousuario;
+```
+
+Para permitir `SELECT` a algumas tabelas, mencione cada uma delas:
+
+``` {.sql}
+novodb=# GRANT SELECT ON tabela1, tabela2 TO novousuario;
+```
+
+### INSERT
+
+Autorização para `INSERT` pode incluir toda a tabela, como também algumas colunas. Neste último caso, as demais coluna irão receber valores padrão.
+
+### UPDATE
+
+O Privilégio `UPDATE` permite alterar ou alterar valores de uma ou mais colunas numa tabela e usar as funções nexval e setval nas em sequências. Como atualização supôe referenciar valores de algumas colunas, este privilégio inclui `SELECT`.
+
+### DELETE
+
+Assim como `UPDATE`, para deletar linhas de uma tabela é necessário encontrá-las antes, de modo que, este privilégio inclui `SELECT`.
+
+### TRUNCATE
+
+Permite esvaziar uma tabela.
+
+### REFERENCES
+
+Permite a criação de chaves estrangeiras
+
+### TRIGGER
+
+Autoriza criar e associar uma gatilho a uma tabela ou visão.
+
+### CREATE
+
+Para bancos, permite criar novos schemas e publicações. Igualmente, permite criar extensões. Para schemas, permite criar novos objetos. Para tablespaces, permite criar novos objetos em um tablespace.
+
+### CONNECT
+
+Autoriza a conectar a um determinado banco.
+
+### EXECUTE
+
+Autoriza executar funções.
+
+### USAGE

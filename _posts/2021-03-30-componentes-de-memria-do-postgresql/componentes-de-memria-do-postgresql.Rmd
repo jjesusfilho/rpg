@@ -1,0 +1,12 @@
+---
+title: "Componentes de memória do PostgreSQL"
+description: |
+  A short description of the post.
+author:
+  - name: José de Jesus Filho
+    url: https://rpg.consudata.com.br
+date: 03-30-2021
+output:
+  distill::distill_article:
+    self_contained: false
+---

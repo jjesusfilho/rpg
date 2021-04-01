@@ -108,7 +108,7 @@ stri_sort(df$codigo, numeric = TRUE)
 
 ```
 
-No entanto, para usar dentro do arrange, você deve informar qual posição deve ocupar cada um desses valores. Isto é, que o "g123" vá para a terceira posição, o "g27" vá para a primeira e assim por diante. Para tanto, a função match do pacote base vem ao socorro.
+No entanto, para usar dentro do arrange, você deve informar qual posição deve ocupar cada um desses valores. Isto é, que o "g123" vá para a terceira posição, o "g27" vá para a primeira e assim por diante. Para tanto, a função `match` do pacote base vem ao socorro.
 
 ```{r}
 df %>% 
@@ -125,6 +125,7 @@ df %>%
   mutate(nome = stringi::stri_trans_general(nome,"latin-ascii")) %>% 
   filter(nome == "Mario")
 ```
+
 E se quiser garantir que caso o filtro seja por "mario", "MARIO" ou "Mario", poderia recorrer a regex, com a vantagem de que não precisa transformar a variável:
 
 ```{r}
@@ -179,7 +180,7 @@ df %>%
 
 ## Colação no PostgreSQL
 
-No PostgreSQL, podemos usar  as mesmas regras, com a diferença que a sintaxe muda e me parece mais consistente que o R. Vale notar que, por padrão, o PostgreSQL usa colação determinística, ou seja, a comparação é por identidade da sequência de bites. Por exemplo, a $\ne$ á. Colação não determinística, adicionada na versão 12 do PostgreSQL, considera alguns caracteres como iguais, mesmo quando eles têm sequências diferentes de bites. Por exemplo, a = á = A = Á. 
+No PostgreSQL, podemos usar  as mesmas regras, com a diferença de que a sintaxe muda e me parece mais consistente que o R. Vale notar que, por padrão, o PostgreSQL usa colação determinística, ou seja, a comparação é por identidade da sequência de bites. Por exemplo, a $\ne$ á. Colação não determinística, adicionada na versão 12 do PostgreSQL, considera alguns caracteres como iguais, mesmo quando eles têm sequências diferentes de bites. Por exemplo, a = á = A = Á. 
 
 A vantagem no uso de colação no PostgreSQL é que você pode armazenar os dados de uma forma e flexibilizar para o  usuário como ele irá realizar buscas. Por exemplo, você pode armazenar o CNPJ sem pontuação e deixar que o usuário busque com ou sem pontos e vice-versa.
 
