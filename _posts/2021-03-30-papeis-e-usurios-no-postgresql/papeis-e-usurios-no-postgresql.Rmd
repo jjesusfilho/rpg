@@ -1,11 +1,11 @@
 ---
-title: "Papeis e usuários no PostgreSQL"
+title: "Como criar e gerenciar usuários no PostgreSQL"
 description: |
-  A short description of the post.
+  Neste tutorial, iremos mostrar como criar e gerenciar usuários e grupos de usuários no PostgreSQL.
 author:
   - name: José de Jesus Filho
     url: https://rpg.consudata.com.br
-date: 03-30-2021
+date: 04-01-2021
 output:
   distill::distill_article:
     self_contained: false
@@ -15,13 +15,13 @@ output:
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-## Papéis e usuários
+## Roles (usuários e grupos)
 
 Segundo sua [documentação oficial](https://www.postgresql.org/docs/current/user-manag.html), o PostgreSQL gerencia as permissões de acesso por meio do conceito de roles (papeis). Roles podem ser tanto users (usuários), quanto group (grupos) de usuários. Roles são também proprietários de objetos no banco de dados e, nessa condição, autorizar acesso a outros roles e, inclusive, transferir propriedade a outros roles.
 
 Feita esta distinção, nós iremos falar em usuário ou role para nos referir à mesma coisa, exceto quando discriminar for necessário.
 
-Neste tutorial, iremos mostrar como criar e gerenciar roles. Na medida do possível, seguiremos a orientação da documentação oficial.
+Neste tutorial, iremos mostrar como criar e gerenciar usuários e grupos de usuários. Na medida do possível, seguiremos a orientação da documentação oficial.
 
 ## Roles no banco de dados
 
