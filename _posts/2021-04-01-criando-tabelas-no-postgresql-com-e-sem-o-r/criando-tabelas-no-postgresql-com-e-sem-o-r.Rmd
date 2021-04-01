@@ -1,7 +1,7 @@
 ---
 title: "Criando tabelas no PostgreSQL com e sem o R"
 description: |
-  A short description of the post.
+  Neste primeiro tutorial, iremos mostrar como criar tabelas no PostgreSQL e com várias opções, porém, sem esgotar todas as possibilidades, vez que são muitas. Primeiramente usando o psql, posteriormente a partir do próprio R.
 author:
   - name: José de Jesus Filho
   - name: "Revisor: Rubem Dornas"
