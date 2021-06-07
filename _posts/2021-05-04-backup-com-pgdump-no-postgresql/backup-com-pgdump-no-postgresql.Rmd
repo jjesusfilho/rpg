@@ -1,0 +1,34 @@
+---
+title: "Backup com pg_dump no PostgreSQL"
+description: |
+  A short description of the post.
+author:
+  - name: José de Jesus Filho
+    url: {}
+  - name: 'Revisor: Rubem Dornas'
+    url: https://rpg.consudata.com.br
+date: 05-04-2021
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Introdução
+
+Uma das tarefas mais relevantes e críticas de um banco de dados é a criação de backups. Você pode perder ou ter os dados corrompidos por diversas razões e jamais assuma que isso não irá acontecer com você. Neste tutorial, irei mostrar como realizar backups usando `pg_dump` e `pg_dumpall`, que são duas estratégias muito comuns. Você verá que elas, além de simples, são bem flexíveis.
+
+## Dump
+
+A forma mais básica de realizar um dump é simples e direta. Você chama do shell o comando `pg_dump`, seguido do nome do banco e redireciona o resultado para um arquivo:
+
+```sh
+$ pg_dump nome_banco > arquivo
+```
+
+
+

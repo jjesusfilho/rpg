@@ -7,7 +7,7 @@ description: |
 author:
   - name: José de Jesus Filho
     url: https://rpg.consudata.com.br
-date: 01-04-2021
+date: 06-07-2021
 output:
   distill::distill_article:
     self_contained: false
@@ -20,6 +20,10 @@ knitr::opts_chunk$set(echo = TRUE)
 Neste tutorial, irei mostrar como copiar para uma base de dados do PostgreSQL múltiplos arquivos com que não cabem na memória RAM, a partir do R, sem sobrecarregar a memória. Além disso, você poderá realizar todas as transformações necessárias nos dados, antes de inseri-los. 
 
 Eu diria que há algumas vantagens nesta solução. A primeira delas é a possibilidade de inspecionar os arquivos antes de inseri-los na base de dados SQL. A segunda é  inserir os arquivos em parcelas, sem ter de carregar na memória todas as linhas, principalmente quando esta é formada por milhões de linhas. A terceira é a possibilidade de realizar ajustes prévios, tais como selecionar apenas algumas colunas, manter unicamente linhas de interesse, ajustar encoding e  realizar todo tipo de transformação nos dados antes de inseri-los.
+
+Por outro lado, algumas precauções devem ser tomadas, tanto do lado do R, quanto do lado do PostgreSQL a fim de otimizar o processo de inserção. Assim mesmo, se você possui grandes arquivos em csv ou txt que não carecem de transformação, possivelmente a opção mais eficaz será usar copy diretamente no psql em vez de inserir via R.
+
+Para melhor desempenho, também não crie chaves primárias nem faça indexação antes do término na inserção. Igualmente, se você usa apenas uma instância do PostgreSQL, sem replicação, e não há uma preocupação com eventual interrupção ou de desligamento repentino da máquina, você pode desativar o WAL, por meio da criação de UNLOGGED TABLE. Para mais informações acerca de melhoria de desempenho em inserções e cópia de grande volumes de dados, veja esse [tutorial](https://www.cybertec-postgresql.com/en/postgresql-bulk-loading-huge-amounts-of-data/)
 
 A título de exemplo, iremos utilizar os arquivos da RAIS (relação anual de informações sociais) do Ministério do Trabalho do ano de 2018.
 

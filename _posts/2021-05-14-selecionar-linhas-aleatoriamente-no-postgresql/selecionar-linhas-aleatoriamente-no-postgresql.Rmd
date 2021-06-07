@@ -1,0 +1,19 @@
+---
+title: "Selecionar linhas aleatoriamente no PostgreSQL"
+description: |
+  Este artigo mostra três maneiras distintas de selecionar aleatoriamente linhas de uma tabela do PostgreSQL
+author:
+  - name: José de Jesus Filho
+    url: https://rpg.consudata.com.br
+date: 05-14-2021
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+Selecionar linhas aleatórias de um data.frame ou tabela é algo que todo cientista de dados

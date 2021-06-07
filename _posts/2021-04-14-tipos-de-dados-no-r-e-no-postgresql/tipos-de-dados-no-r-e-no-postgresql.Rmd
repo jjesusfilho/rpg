@@ -1,0 +1,47 @@
+---
+title: "Tipos de dados no R e no PostgreSQL"
+description: |
+  A short description of the post.
+author:
+  - name: José de Jesus Filho
+    url: https://rpg.consudata.com.br
+date: 04-14-2021
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Introdução
+
+Umas primeiras lições quando aprendemos uma linguagem de programação são os vários tipos de dados. Com R e PostgreSQL não poderia ser diferente. Neste tutorial, iremos mostrar os diferentes tipos de dados tanto no R quanto no PostgreSQL, porém, sem esgotá-los, uma vez que ambas linguagens são extensíveis. Isto é, é possível criar novos tipos de dados para para atender a novas e diferentes demandas.
+
+Conhecer os diferentes tipos facilita o processo de transferência de dados entre as duas linguagens e ajuda a resolver eventuais incompatibilidades.
+
+Uma característica comum em ambas linguagens é que a seleção de elementos em vetores ou linhas no R e arrays no PostgreSQL começa por 1 e não por zero, como em outras linguagens.
+
+## Dados básicos no R
+
+## Dados compostos no R
+
+## Dados básicos no PostgreSQL
+
+## Dados compostos no PostgreSQL
+
+### Arrays
+
+### Json
+
+
+
+## Integração
+
+
+
+
+
+

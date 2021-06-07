@@ -17,15 +17,15 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ## Roles (usuários e grupos)
 
-Segundo sua [documentação oficial](https://www.postgresql.org/docs/current/user-manag.html), o PostgreSQL gerencia as permissões de acesso por meio do conceito de roles (papeis). Roles podem ser tanto users (usuários), quanto group (grupos) de usuários. Roles são também proprietários de objetos no banco de dados e, nessa condição, autorizar acesso a outros roles e, inclusive, transferir propriedade a outros roles.
+Segundo sua [documentação oficial](https://www.postgresql.org/docs/current/user-manag.html), o PostgreSQL gerencia as permissões de acesso por meio do conceito de roles (papeis). Roles podem ser tanto users (usuários), quanto groups (grupos) de usuários. Roles são também proprietários de objetos no banco de dados e, nessa condição, autorizar acesso a outros roles e, inclusive, transferir propriedade a outros roles.
 
-Feita esta distinção, nós iremos falar em usuário ou role para nos referir à mesma coisa, exceto quando discriminar for necessário.
+Feita esta distinção, nós iremos falar em usuário ou em role para nos referir à mesma coisa, exceto quando discriminar for necessário.
 
 Neste tutorial, iremos mostrar como criar e gerenciar usuários e grupos de usuários. Na medida do possível, seguiremos a orientação da documentação oficial.
 
 ## Roles no banco de dados
 
-De início, é importante frisar dois aspectos importantes concernentes aos roles. Eles são criados e existem independentemente dos bancos de dados invididuais e não necessariamente correspondem aos usuários do sistema operacional. Isto é, ao criar um usuário no PostgreSQL, você não criou automaticamente um usuário do sistema e vice-versa.
+De início, cabe ressaltar dois aspectos relevantes concernentes aos roles. Eles são criados e existem independentemente dos bancos de dados invididuais e não necessariamente correspondem aos usuários do sistema operacional. Isto é, ao criar um usuário no PostgreSQL, você não criou automaticamente um usuário do sistema e vice-versa.
 
 ## Como criar e remover usuários e grupos de usuários
 
@@ -35,7 +35,7 @@ A criação de usuários e grupos segue a seguinte sintaxe:
 dbname=# CREATE ROLE nome WITH opções
 ```
 
-Das opções falaremos mais adiante, por ora é importante notar que há duas formas de criar novos usuários ou grupos. Uma delas é criar utilizando o cliente. Por exemplo, vamos criar um role chamado novousuario a partir do psql:
+Das opções falaremos mais adiante, por ora é importante notar que há duas formas de criar novos usuários ou grupos. Uma delas é criar a partir do cliente. Por exemplo, vamos criar um role chamado novousuario a partir do psql:
 
 ``` {.sql}
 dbname# create role novousuario;
@@ -83,7 +83,7 @@ Os roles possuem alguns atributos que definem os seus privilégios.
 
 ### Login
 
-Para conectar-se a um banco de dados, é necessário que o role tenha o atributo de login. Ao criar um novo usuário, você pode atribuir login de duas formas. A primeira é informar o atributo explicitamente:
+Para conectar-se a um banco de dados, é necessário que o usuário tenha o atributo de login. Ao criar um novo usuário, você pode atribuir login de duas formas. A primeira é informar o atributo explicitamente:
 
 ``` {.sql}
 dbname=# CREATE ROLE novousuario WITH LOGIN;
@@ -101,7 +101,7 @@ Ao iniciar o cluster do PostgreSQL, um usuário é definido como superusuário. 
 
 ### Criação de bancos
 
-Com exceção do super usuário, para criar novos bancos, é necessário que o usuário tenha explícitos podere para tanto. Para autorizar o usuário a criar novos bancos:
+Com exceção do superusuário, para criar novos bancos, é necessário que o usuário tenha explícitos poderes para tanto. Para autorizar o usuário a criar novos bancos:
 
 ``` {.sql}
 CREATE ROLE novousuario CREATEDB;
@@ -109,7 +109,7 @@ CREATE ROLE novousuario CREATEDB;
 
 ### Criar novos roles
 
-Igualmente, se não for super usuário, para criar novos usuários, é necessário ter recebido explicitamente esse poder:
+Igualmente, se não for superusuário, para criar novos usuários, é necessário ter recebido explicitamente esse poder:
 
 ``` {.sql}
 dbname=# CREATE ROLE  novousuario CREATEROLE;
@@ -117,7 +117,7 @@ dbname=# CREATE ROLE  novousuario CREATEROLE;
 
 ### Iniciar repliacação
 
-Para iniciar replicação, se não for super usuário, também é necessário ter o poder de replicação concedido:
+Para iniciar replicação, se não for superusuário, também é necessário ter o poder de replicação concedido:
 
 ``` {.sql}
 dbname=# CREATE ROLE novousuario REPLICATION LOGIN;
@@ -135,7 +135,7 @@ dbname=# CREATE ROLE novousuario WITH LOGIN PASSWORD 'senha';
 
 ### Proprietário
 
-Quanto um objeto é criado, e.g. banco, tabela, visão, sequência, a ele é atribuído um proprietário, salvo disposição diferente. Por exemplo, se você está conectado com o usuário postgres e cria um novo banco sem mencionar o proprietário, o PostgreSQL atribui a propriedade ao usuário conectado:
+Quando um objeto é criado, e.g. banco, tabela, visão, sequência, a ele é atribuído um proprietário, salvo disposição em contrário. Por exemplo, se você está conectado com o usuário postgres e cria um novo banco sem mencionar o proprietário, o PostgreSQL atribui a propriedade ao usuário conectado:
 
 ``` {.sql}
 postgres=# CREATE DATABASE novodb;
@@ -158,7 +158,7 @@ a <- "
 cat(a)
 ```
 
-Ou por outro cliente, usando esta query:
+Ou por outro cliente, consultando a tabela pg_database do pg_catalog:
 
 ``` {.sql}
 postgres=# SELECT datname as banco, pg_get_userbyid(datdba) AS proprietario
