@@ -1,0 +1,100 @@
+---
+title: "Iteração no PostgreSQL com Lateral Joins"
+description: |
+  A short description of the post.
+author:
+  - name: José de Jesus Filho
+    url: https://rpg.consudata.com.br
+date: 06-09-2021
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r, echo=FALSE}
+# Define variable containing url
+url <- "https://thumbs.dreamstime.com/b/iteration-concept-life-cycle-product-development-diagram-flat-style-vector-illustration-eps-file-109264602.jpg"
+```
+
+Em um [outro tutorial](http://rpg.consudata.com.br/posts/2021-01-03-joins-no-r-e-no-postgresql/) eu tratei de joins no R e no PostgreSQL. Neste tutorial, abordaremos um outro tipo de join, que é super poderoso e flexível, chamado lateral join. Lateral joins  permitem você realizar subqueries fazendo referência a tabelas externas a ele, que de outra forma não seria possível, porque subqueries são avaliadas indepentemente pelo planner do PostgreSQL.
+
+Com lateral joins, cada registro da tabela à esquerda será avaliada dentro do subquery à direita. Essa iteração é também chamada de "Nested Loop Join". 
+
+<center><img src="`r url`"></center>
+
+Em jurimetria, eu geralmente tenho uma tabelas com os metadados processuais, como número do processo, comarca, foro e vara numa tabela e a movimentação processual, com a data e o movimento em outra e naturalmente o número do processo para permitir joins com a tabela de metadados. Por vezes, eu tenho interesse em saber quais foram os três últimos andamentos (movimentação) de uma tabela e  juntá-la com os demais dados da outra. Nessas situações, lateral joins vêm a calhar.
+
+No entanto, não irei cansá-la com as especificidades da jurimetria. Neste tutorial, irei usar algo mais comum, que é obter os três últimos produtos comprados pelo cliente. Como sempre, parto do suposto de que suas tabelas foram criadas no R e enviadas para o PostgreSQL. Vamos criar uma tabela com os nomes e ids dos clientes  e outra com as compras de cinco produtos distintos pelos quatro clientes em datas diferentes.
+
+```r
+clientes <- data.frame(nome = c("José","Maria","Pedro","Flávia"),
+                      id_cliente = c(1:4))
+datas <- seq(Sys.Date() - 1000, Sys.Date(), 1)
+
+datas <- sample(datas,100)
+
+produto <- sample(1:5,100,replace = T)
+
+id_cliente <- sample(1:4,100, replace = TRUE)
+
+compras <- data.frame(data = datas, produto, id_cliente )
+
+```
+
+Agora, vamos enviá-las para o PostgreSQL:
+
+```r
+library(DBI)
+conn <- dbConnection(...)
+dbWriteTable(conn,"clientes", clientes)
+dbWriteTable(conn,"compras", compras)
+```
+
+Feito isso, podemos montar o query do próprio R e enviá-lo para o PostgreSQL:
+
+```r
+df <- dbGetQuery(conn,"
+          select cliente.nome, cliente.cliente_id,
+          compras.data, compras.produto
+          from cliente
+          cross join lateral
+          (
+          select produto, data
+          from compras 
+          where compras.cliente_id = cliente.cliente_id
+          order by compras.data
+          desc limit 3
+          ) as  compras
+                ")
+```
+
+Note que eu usei a tabela cliente dentro do subquery que chama colunas da tabela compras. Isso só é possível por conta da da palavrinha mágica lateral entre a seleção de colunas do lado esquerdo e o subquery do lado direito (abaixo, na exemplo).
+
+Se você imprimir o resultado, verá que evetivamente os três produtos mais recentemente comprados pelos clientes retornaram.
+
+```{r echo = FALSE}
+a <- "nome  | id_cliente |    data    | produto
+--------+------------+------------+---------
+ José   |          1 | 2021-05-05 |       1
+ José   |          1 | 2021-03-25 |       2
+ José   |          1 | 2021-03-03 |       5
+ Maria  |          2 | 2021-05-15 |       3
+ Maria  |          2 | 2021-03-14 |       2
+ Maria  |          2 | 2021-02-05 |       1
+ Pedro  |          3 | 2021-05-18 |       2
+ Pedro  |          3 | 2021-04-13 |       3
+ Pedro  |          3 | 2021-01-25 |       5
+ Flávia |          4 | 2021-06-03 |       5
+ Flávia |          4 | 2021-05-03 |       3
+ Flávia |          4 | 2021-03-05 |       3"
+
+cat(a)
+```
+
+Continuaremos com iterações no PostgreSQL, especialmente com CTEs recursivas, mas isso ficará para um próximo tutorial.
+
