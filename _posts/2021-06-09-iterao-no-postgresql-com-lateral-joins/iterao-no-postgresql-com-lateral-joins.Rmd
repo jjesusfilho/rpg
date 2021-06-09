@@ -1,7 +1,7 @@
 ---
 title: "Iteração no PostgreSQL com Lateral Joins"
 description: |
-  A short description of the post.
+  Lateral joins  permitem você realizar subqueries fazendo referência a tabelas externas a ele, que de outra forma não seria possível, porque subqueries são avaliadas indepentemente pelo planner do PostgreSQL.
 author:
   - name: José de Jesus Filho
     url: https://rpg.consudata.com.br
@@ -21,7 +21,7 @@ knitr::opts_chunk$set(echo = FALSE)
 url <- "https://thumbs.dreamstime.com/b/iteration-concept-life-cycle-product-development-diagram-flat-style-vector-illustration-eps-file-109264602.jpg"
 ```
 
-Em um [outro tutorial](http://rpg.consudata.com.br/posts/2021-01-03-joins-no-r-e-no-postgresql/) eu tratei de joins no R e no PostgreSQL. Neste tutorial, abordaremos um outro tipo de join, que é super poderoso e flexível, chamado lateral join. Lateral joins  permitem você realizar subqueries fazendo referência a tabelas externas a ele, que de outra forma não seria possível, porque subqueries são avaliadas indepentemente pelo planner do PostgreSQL.
+Em um [outro tutorial](http://rpg.consudata.com.br/posts/2021-01-03-joins-no-r-e-no-postgresql/) eu tratei de joins no R e no PostgreSQL. Neste tutorial, abordaremos um outro tipo de join, que é super poderoso e flexível, chamado lateral join. Lateral joins  permitem você realizar subqueries fazendo referência a tabelas externas a ele, que de outra forma não seria possível, porque subqueries são avaliadas independentemente pelo planner do PostgreSQL.
 
 Com lateral joins, cada registro da tabela à esquerda será avaliada dentro do subquery à direita. Essa iteração é também chamada de "Nested Loop Join". 
 
