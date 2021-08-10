@@ -1,0 +1,55 @@
+## Transações 
+
+Cenários
+
+Cenário 1:
+
+create table foo (x int, id serial);
+
+insert into foo(x) select generate_series(1,10);
+
+Fulano pede para atualizar um valor na tabela ao mesmo tempo em que ciclano também o faz:
+ 
+ update foo set x = x + 1 where id = 5;
+ 
+ Após essas duas transações, qual será o valor de x quando id for 5?
+
+
+Cenário 2:
+
+Numa tabela de controle de emissão de notas fiscais, fulano e ciclano pedem simultaneamente para emitir uma nova nota, quando o último número era 12. Qual o número da nota para fulano e qual o número para ciclano?
+
+Definition: a transactionis a group of SQL commands whose results will be made visible to the rest of the system as a unit when the transaction commits --- or not at all, if the transaction aborts
+
+Transactions are expected to be atomic, consistent, isolated, and durable.
+
+“A transaction will only see data if it has been committed by the write transaction before the initiation of the read transaction. One transaction cannot inspect the changes that have been made by another active connection. A transaction can see only those changes that have already been committed.”
+
+Excerpt From: Hans-Jürgen Schönig. “Mastering PostgreSQL 13.” Apple Books. 
+
+
+ACID
+
+1 - Atomicidade
+
+results of a transaction are seen entirely or not at all within other transactions.(A transaction need not appear atomic to itself.
+
+
+2 - Consistência
+
+system-defined consistency constraints are enforced on the results of transactions.  (Not going to discuss constraint checking today.)
+
+3 - Isolamento
+
+transactions are not affected by the behavior of concurrently-running transactions.
+
+
+Stronger variant:serializable.If the final results of a set of concurrent transactionsare the same as if we’d run the transactions serially in some order (not necessarilyany predetermined order), then we say the behavior is serializable
+
+4 - Durabilidade
+
+
+once a transaction commits, its results will not be lost regardless of subsequent failures.
+
+
+

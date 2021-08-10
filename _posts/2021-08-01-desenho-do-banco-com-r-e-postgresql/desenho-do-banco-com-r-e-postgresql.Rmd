@@ -1,0 +1,48 @@
+---
+title: "Desenho do banco com R e PostgreSQL"
+description: |
+  A short description of the post.
+author:
+  - name: José de Jesus Filho
+    url: https://rpg.consudata.com.br
+date: 08-01-2021
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      message = FALSE,
+                      warning = FALSE)
+```
+
+Desde que comecei a me aprofundar em SQL, especialmente em PostgreSQL, notei que cientistas de dados sabem pouco ou quase nada da infinidade de recursos que SQL oference. Frequentemente, usam SQL como depósito de dados, sem se dar conta dos esforços que as comunidades do R e do PostgreSQL têm dedicado para tornar nosso trabalho mais fácil, mais eficiente e, principalmente, mais organizado.
+
+Neste tutorial, iremos percorrer o caminho do desenho de um esquema (schema) no banco de dados. Faremos algo leve. Isso significa que deixaremos de lado muitos recursos que poderiam ser adicionados ou melhorados, pois o foco está no trajeto e no essencial que todo schema possui.
+
+Vamos utilizar um exemplo trivial, mas comum, que  é a criação de um schema para uma loja online. Uma configuração mínima supõe uma tabela de clientes, uma de produtos e outra de pedidos desses clientes.
+
+## Criando o Schema
+
+Como estamos usando o R para acesso ao PostgreSQL, todos os códigos serão criados a partir da sintaxe do DBI/RPostgres. Depois de conectados ao PostgreSQL, crie um schema e coloque ele no caminho de busca.
+
+```r
+library(DBI)
+
+conn <- dbConnect(RPostgres::Postgres(),
+                       host="localhost",
+                       dbname="nome_do_banco",
+                       user="usuário",
+                       password="senha")
+
+dbExcute(conn,"create schema )
+
+```
+
+
+
+
+
+
