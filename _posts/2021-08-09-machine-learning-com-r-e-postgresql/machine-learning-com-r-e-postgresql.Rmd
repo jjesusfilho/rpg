@@ -1,7 +1,7 @@
 ---
 title: "Machine learning com R e PostgreSQL"
 description: |
-  Neste tutorial, irei mostrar como rodar kmeans, ou qualquer modelo, supervisionado ou não, estatístico ou de machine learning no PostgreSQL chamando o R. Com extensão PL/R isso é perfeitamente possível e fácil.
+  Neste tutorial, iremos mostrar como rodar kmeans e floresta aleatória, ou qualquer ou modelo estatístico ou de machine learning no PostgreSQL chamando o R. Com extensão PL/R isso é perfeitamente possível, simples e fácil.
 author:
   - name: José de Jesus Filho
     url: https://rpg.consudata.com.br
@@ -16,13 +16,13 @@ output:
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-Neste tutorial, irei mostrar como rodar um modelo estatístico ou de machine learning no PostgreSQL chamando o R. Com extensão PL/R isso é perfeitamente possível e fácil. Se você quiser saber mais sobre a extensão PL/R no PostgreSQL, acesse [este tutorial](https://direito.consudata.com.br/rpsql/plr/) ou o [guia do usuário](https://github.com/postgres-plr/plr/blob/master/userguide.md).
+Neste tutorial, iremos mostrar como rodar um modelo estatístico ou de machine learning no PostgreSQL chamando o R. Para tanto, usaremos a extensão PL/R. Se você quiser saber mais sobre a extensão PL/R no PostgreSQL, acesse [este tutorial](https://direito.consudata.com.br/rpsql/plr/) ou o [guia do usuário](https://github.com/postgres-plr/plr/blob/master/userguide.md).
 
-Um desafio a ser enfrentado é que modelos estatísticos e de machine learning geralmente retornam uma lista. No entanto, o PostgreSQL não reconhece listas do R. 
+Um desafio a ser enfrentado é que modelos estatísticos e de machine learning geralmente retornam uma lista com uma classe atribuída. No entanto, o PostgreSQL não reconhece listas do R. 
 
 Para esse problema há duas soluções possíveis. Uma delas é usar o pacote broom, que converte grande parte dos resultados de modelos em dataframe. A outra, que acho mais elegante e flexível, é armazenar o modelo em formato json ou, melhor ainda, em jsonb no PostgreSQL. Nesse sentido, o pacote jsonlite vem a calhar, uma vez que, com ele, podemos converter listas para json e enviar para o PostgreSQL. Eventualmente, bastará  trazer o json do PostgreSQL para o R e  transformá-lo em lista novamente.
 
-Para este tutorial, iremos mostrar como rodar kmeans. Naturalmente, você pode usar outro modelo, pois a lógica é a mesma. Usarei kmeans porque um amigo e ex-aluno trouxe o desafio dias atrás.
+Neste tutorial, iremos mostrar como rodar kmeans e floresta aleatória. Naturalmente, você pode usar outros modelos, pois a lógica é a mesma. Usarei kmeans porque um amigo e ex-aluno trouxe o desafio dias atrás. Depois disso, adotarei o mesmo método para floresta aleatória a fim de mostrar sua flexibilidade.
 
 Assumindo que você tem uma conexão com o PostgreSQL, vamos enviar o dataframe USArrests do pacote datasets para o PostgreSQL.
 
@@ -76,7 +76,7 @@ Na primeira linha, criamos a função kmeans com a mesma quantidade de argumento
 
 Note na segunda linha que informamos jsonb como resposta. Em seguida, usamos `$$` para indicar que iniciaremos o corpo da função.
 
-Em seguida, passamos os demais argumentos contidos na própria função kmeans do R, com seus valores padrão (default). Na primeira linha do corpo, chamamos a função `pg.spi.exec(arg1)` para converter a query num dataframe. Particularmente, acho essa função fantástica, pois no fundo podemos inserir nela uma query que resulta numa tabela. 
+Em seguida, passamos os demais argumentos contidos na própria função kmeans do R, com seus valores padrão (default). Na primeira linha do corpo, chamamos a função `pg.spi.exec(arg1)` para converter a query num dataframe. Particularmente, acho essa função fantástica, pois no fundo podemos inserir nela qualquer query que resulte numa tabela. 
 
 Como o modelo tem classe "kmeans", precisamos substituí-la por  "list", do contrário o jsonlite não saberá como converter para json. Por fim, convertemos para json com serializeJSON, em vez de toJSON, para preservar os atributos.
 
@@ -101,7 +101,58 @@ modelo
 kmeans(USArrests,4)
 ```
 
+## Random Forest
 
+Para finalizar, vamos criar mais uma função para rodar floresta aleatória. Uma vez que o  princípio é o mesmo, iremos usar somente os argumentos fórmula e data. Se você quiser, pode ir adiante e adicionar os demais argumentos. Usaremos o pacote `ranger`. Portanto, é preciso tê-lo instalado, além do dplyr.
+
+
+```r
+
+DBI::dbExecute(conn,"
+
+create or replace function rf(formula text, query text) returns jsonb AS
+
+$$ 
+
+df <- pg.spi.exec(query)
+
+df <- dplyr::mutate_if(df,is.character, as.factor)
+
+modelo <- ranger::ranger(formula, data = df)
+
+class(modelo) <- "list"
+
+modelo <- jsonlite::serializeJSON(modelo)
+
+return(modelo)
+
+$$
+language plr
+
+")
+
+```
+
+Agora é só chamar a função para ter o seu modelo em jsonb no PostgreSQL.
+
+
+```r
+modelo <- DBI::dbGetQuery("select rf('Species ~ .', 'table iris'))
+```
+
+Caso queira visualizar o modelo no R, basta seguir os mesmos passos:
+
+```r
+library(ranger)
+
+modelo <- jsonlite::unserializeJSON(modelo$rf)
+class(modelo) <- "ranger"
+modelo
+```
+
+```{r echo = FALSE, message = FALSE, warning = FALSE}
+ranger::ranger(Species ~., data = iris)
+```
 
 
 

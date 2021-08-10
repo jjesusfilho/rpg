@@ -88,7 +88,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <!--radix_placeholder_meta_tags-->
   <title>Machine learning com R e PostgreSQL</title>
 
-  <meta property="description" itemprop="description" content="Neste tutorial, irei mostrar como rodar kmeans, ou qualquer modelo, supervisionado ou não, estatístico ou de machine learning no PostgreSQL chamando o R. Com extensão PL/R isso é perfeitamente possível e fácil."/>
+  <meta property="description" itemprop="description" content="Neste tutorial, iremos mostrar como rodar kmeans e floresta aleatória, ou qualquer ou modelo estatístico ou de machine learning no PostgreSQL chamando o R. Com extensão PL/R isso é perfeitamente possível, simples e fácil."/>
 
 
   <!--  https://schema.org/Article -->
@@ -99,19 +99,19 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
   <meta property="og:title" content="Machine learning com R e PostgreSQL"/>
   <meta property="og:type" content="article"/>
-  <meta property="og:description" content="Neste tutorial, irei mostrar como rodar kmeans, ou qualquer modelo, supervisionado ou não, estatístico ou de machine learning no PostgreSQL chamando o R. Com extensão PL/R isso é perfeitamente possível e fácil."/>
+  <meta property="og:description" content="Neste tutorial, iremos mostrar como rodar kmeans e floresta aleatória, ou qualquer ou modelo estatístico ou de machine learning no PostgreSQL chamando o R. Com extensão PL/R isso é perfeitamente possível, simples e fácil."/>
   <meta property="og:locale" content="en_US"/>
 
   <!--  https://dev.twitter.com/cards/types/summary -->
   <meta property="twitter:card" content="summary"/>
   <meta property="twitter:title" content="Machine learning com R e PostgreSQL"/>
-  <meta property="twitter:description" content="Neste tutorial, irei mostrar como rodar kmeans, ou qualquer modelo, supervisionado ou não, estatístico ou de machine learning no PostgreSQL chamando o R. Com extensão PL/R isso é perfeitamente possível e fácil."/>
+  <meta property="twitter:description" content="Neste tutorial, iremos mostrar como rodar kmeans e floresta aleatória, ou qualquer ou modelo estatístico ou de machine learning no PostgreSQL chamando o R. Com extensão PL/R isso é perfeitamente possível, simples e fácil."/>
 
   <!--/radix_placeholder_meta_tags-->
   <!--radix_placeholder_rmarkdown_metadata-->
 
   <script type="text/json" id="radix-rmarkdown-metadata">
-  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","output"]}},"value":[{"type":"character","attributes":{},"value":["Machine learning com R e PostgreSQL"]},{"type":"character","attributes":{},"value":["Neste tutorial, irei mostrar como rodar kmeans, ou qualquer modelo, supervisionado ou não, estatístico ou de machine learning no PostgreSQL chamando o R. Com extensão PL/R isso é perfeitamente possível e fácil.\n"]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","url"]}},"value":[{"type":"character","attributes":{},"value":["José de Jesus Filho"]},{"type":"character","attributes":{},"value":["https://rpg.consudata.com.br"]}]}]},{"type":"character","attributes":{},"value":["08-09-2021"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained"]}},"value":[{"type":"logical","attributes":{},"value":[false]}]}]}]}
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","output"]}},"value":[{"type":"character","attributes":{},"value":["Machine learning com R e PostgreSQL"]},{"type":"character","attributes":{},"value":["Neste tutorial, iremos mostrar como rodar kmeans e floresta aleatória, ou qualquer ou modelo estatístico ou de machine learning no PostgreSQL chamando o R. Com extensão PL/R isso é perfeitamente possível, simples e fácil.\n"]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","url"]}},"value":[{"type":"character","attributes":{},"value":["José de Jesus Filho"]},{"type":"character","attributes":{},"value":["https://rpg.consudata.com.br"]}]}]},{"type":"character","attributes":{},"value":["08-09-2021"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained"]}},"value":[{"type":"logical","attributes":{},"value":[false]}]}]}]}
   </script>
   <!--/radix_placeholder_rmarkdown_metadata-->
   
@@ -1455,7 +1455,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"Machine learning com R e PostgreSQL","description":"Neste tutorial, irei mostrar como rodar kmeans, ou qualquer modelo, supervisionado ou não, estatístico ou de machine learning no PostgreSQL chamando o R. Com extensão PL/R isso é perfeitamente possível e fácil.","authors":[{"author":"José de Jesus Filho","authorURL":"https://rpg.consudata.com.br","affiliation":"&nbsp;","affiliationURL":"#","orcidID":""}],"publishedDate":"2021-08-09T00:00:00.000+00:00","citationText":"Filho, 2021"}
+{"title":"Machine learning com R e PostgreSQL","description":"Neste tutorial, iremos mostrar como rodar kmeans e floresta aleatória, ou qualquer ou modelo estatístico ou de machine learning no PostgreSQL chamando o R. Com extensão PL/R isso é perfeitamente possível, simples e fácil.","authors":[{"author":"José de Jesus Filho","authorURL":"https://rpg.consudata.com.br","affiliation":"&nbsp;","affiliationURL":"#","orcidID":""}],"publishedDate":"2021-08-09T00:00:00.000+00:00","citationText":"Filho, 2021"}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -1468,7 +1468,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <h1>Machine learning com R e PostgreSQL</h1>
 <!--radix_placeholder_categories-->
 <!--/radix_placeholder_categories-->
-<p><p>Neste tutorial, irei mostrar como rodar kmeans, ou qualquer modelo, supervisionado ou não, estatístico ou de machine learning no PostgreSQL chamando o R. Com extensão PL/R isso é perfeitamente possível e fácil.</p></p>
+<p><p>Neste tutorial, iremos mostrar como rodar kmeans e floresta aleatória, ou qualquer ou modelo estatístico ou de machine learning no PostgreSQL chamando o R. Com extensão PL/R isso é perfeitamente possível, simples e fácil.</p></p>
 </div>
 
 <div class="d-byline">
@@ -1478,10 +1478,10 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </div>
 
 <div class="d-article">
-<p>Neste tutorial, irei mostrar como rodar um modelo estatístico ou de machine learning no PostgreSQL chamando o R. Com extensão PL/R isso é perfeitamente possível e fácil. Se você quiser saber mais sobre a extensão PL/R no PostgreSQL, acesse <a href="https://direito.consudata.com.br/rpsql/plr/">este tutorial</a> ou o <a href="https://github.com/postgres-plr/plr/blob/master/userguide.md">guia do usuário</a>.</p>
-<p>Um desafio a ser enfrentado é que modelos estatísticos e de machine learning geralmente retornam uma lista. No entanto, o PostgreSQL não reconhece listas do R.</p>
+<p>Neste tutorial, iremos mostrar como rodar um modelo estatístico ou de machine learning no PostgreSQL chamando o R. Para tanto, usaremos a extensão PL/R. Se você quiser saber mais sobre a extensão PL/R no PostgreSQL, acesse <a href="https://direito.consudata.com.br/rpsql/plr/">este tutorial</a> ou o <a href="https://github.com/postgres-plr/plr/blob/master/userguide.md">guia do usuário</a>.</p>
+<p>Um desafio a ser enfrentado é que modelos estatísticos e de machine learning geralmente retornam uma lista com uma classe atribuída. No entanto, o PostgreSQL não reconhece listas do R.</p>
 <p>Para esse problema há duas soluções possíveis. Uma delas é usar o pacote broom, que converte grande parte dos resultados de modelos em dataframe. A outra, que acho mais elegante e flexível, é armazenar o modelo em formato json ou, melhor ainda, em jsonb no PostgreSQL. Nesse sentido, o pacote jsonlite vem a calhar, uma vez que, com ele, podemos converter listas para json e enviar para o PostgreSQL. Eventualmente, bastará trazer o json do PostgreSQL para o R e transformá-lo em lista novamente.</p>
-<p>Para este tutorial, iremos mostrar como rodar kmeans. Naturalmente, você pode usar outro modelo, pois a lógica é a mesma. Usarei kmeans porque um amigo e ex-aluno trouxe o desafio dias atrás.</p>
+<p>Neste tutorial, iremos mostrar como rodar kmeans e floresta aleatória. Naturalmente, você pode usar outros modelos, pois a lógica é a mesma. Usarei kmeans porque um amigo e ex-aluno trouxe o desafio dias atrás. Depois disso, adotarei o mesmo método para floresta aleatória a fim de mostrar sua flexibilidade.</p>
 <p>Assumindo que você tem uma conexão com o PostgreSQL, vamos enviar o dataframe USArrests do pacote datasets para o PostgreSQL.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>DBI<span class="sc">::</span><span class="fu">dbWriteTable</span>(conn,<span class="st">&quot;us_arrests&quot;</span>, USArrests)</span></code></pre></div>
 <p>Se você já instalou a extensão PL/R, não se esqueça de criá-la no banco:</p>
@@ -1518,7 +1518,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span>)</span></code></pre></div>
 <p>Na primeira linha, criamos a função kmeans com a mesma quantidade de argumentos da função kmeans do R base. A única diferença é que o primeiro argumento é do tipo charactere, enquanto a função kmeans do R aceita qualquer objeto que possa ser convertido para matriz, ele um vetor, um dataframe ou a própria matriz. Acontece que a PL/R tem uma função que aceita uma query do PostgreSQL como argumento, de modo que, se dermos um <code>SELECT</code>, o R irá receber esse argumento como um tabela.</p>
 <p>Note na segunda linha que informamos jsonb como resposta. Em seguida, usamos <code>$$</code> para indicar que iniciaremos o corpo da função.</p>
-<p>Em seguida, passamos os demais argumentos contidos na própria função kmeans do R, com seus valores padrão (default). Na primeira linha do corpo, chamamos a função <code>pg.spi.exec(arg1)</code> para converter a query num dataframe. Particularmente, acho essa função fantástica, pois no fundo podemos inserir nela uma query que resulta numa tabela.</p>
+<p>Em seguida, passamos os demais argumentos contidos na própria função kmeans do R, com seus valores padrão (default). Na primeira linha do corpo, chamamos a função <code>pg.spi.exec(arg1)</code> para converter a query num dataframe. Particularmente, acho essa função fantástica, pois no fundo podemos inserir nela qualquer query que resulte numa tabela.</p>
 <p>Como o modelo tem classe “kmeans”, precisamos substituí-la por “list”, do contrário o jsonlite não saberá como converter para json. Por fim, convertemos para json com serializeJSON, em vez de toJSON, para preservar os atributos.</p>
 <p>Ao receber a resposta da função, o PostgreSQL irá automaticamente convertê-la para jsonb. Nós iremos chamá-la do R mesmo a fim de que possamos verificar se o resultado pode ser usado como objeto kmeans. Naturalmente, você pode criar uma tabela no PostgreSQL e populá-la com o resultado.</p>
 <pre><code>df &lt;- DBI::dbGetQuery(conn,&quot;select kmeans(&#39;select * from us_arrests&#39;,array [4]) as modelo&quot;)
@@ -1530,45 +1530,45 @@ class(modelo) &lt;- &#39;kmeans&#39;
 <p>Agora é só imprimir para ver o resultado:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>modelo</span></code></pre></div>
 <div class="layout-chunk" data-layout="l-body">
-<pre><code>K-means clustering with 4 clusters of sizes 14, 4, 12, 20
+<pre><code>K-means clustering with 4 clusters of sizes 12, 4, 14, 20
 
 Cluster means:
      Murder  Assault UrbanPop     Rape
-1  8.214286 173.2857 70.64286 22.84286
+1 11.766667 257.9167 68.41667 28.93333
 2 11.950000 316.5000 68.00000 26.70000
-3 11.766667 257.9167 68.41667 28.93333
+3  8.214286 173.2857 70.64286 22.84286
 4  4.270000  87.5500 59.75000 14.39000
 
 Clustering vector:
        Alabama         Alaska        Arizona       Arkansas 
-             3              3              2              1 
+             1              1              2              3 
     California       Colorado    Connecticut       Delaware 
-             3              1              4              3 
+             1              3              4              1 
        Florida        Georgia         Hawaii          Idaho 
-             2              1              4              4 
+             2              3              4              4 
       Illinois        Indiana           Iowa         Kansas 
-             3              4              4              4 
+             1              4              4              4 
       Kentucky      Louisiana          Maine       Maryland 
-             4              3              4              2 
+             4              1              4              2 
  Massachusetts       Michigan      Minnesota    Mississippi 
-             1              3              4              3 
+             3              1              4              1 
       Missouri        Montana       Nebraska         Nevada 
-             1              4              4              3 
+             3              4              4              1 
  New Hampshire     New Jersey     New Mexico       New York 
-             4              1              3              3 
+             4              3              1              1 
 North Carolina   North Dakota           Ohio       Oklahoma 
-             2              4              4              1 
+             2              4              4              3 
         Oregon   Pennsylvania   Rhode Island South Carolina 
-             1              4              1              3 
+             3              4              3              1 
   South Dakota      Tennessee          Texas           Utah 
-             4              1              1              4 
+             4              3              3              4 
        Vermont       Virginia     Washington  West Virginia 
-             4              1              1              4 
+             4              3              3              4 
      Wisconsin        Wyoming 
-             4              1 
+             4              3 
 
 Within cluster sum of squares by cluster:
-[1]  9136.643  2546.350  6705.907 19263.760
+[1]  6705.907  2546.350  9136.643 19263.760
  (between_SS / total_SS =  89.4 %)
 
 Available components:
@@ -1577,7 +1577,56 @@ Available components:
 [5] &quot;tot.withinss&quot; &quot;betweenss&quot;    &quot;size&quot;         &quot;iter&quot;        
 [9] &quot;ifault&quot;      </code></pre>
 </div>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<h2 id="random-forest">Random Forest</h2>
+<p>Para finalizar, vamos criar mais uma função para rodar floresta aleatória. Uma vez que o princípio é o mesmo, iremos usar somente os argumentos fórmula e data. Se você quiser, pode ir adiante e adicionar os demais argumentos. Usaremos o pacote <code>ranger</code>. Portanto, é preciso tê-lo instalado, além do dplyr.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>DBI<span class="sc">::</span><span class="fu">dbExecute</span>(conn,<span class="st">&quot;</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="st">create or replace function rf(formula text, query text) returns jsonb AS</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="st">$$ </span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="st">df &lt;- pg.spi.exec(query)</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="st">df &lt;- dplyr::mutate_if(df,is.character, as.factor)</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="st">modelo &lt;- ranger::ranger(formula, data = df)</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="st">class(modelo) &lt;- &quot;</span>list<span class="st">&quot;</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="st">modelo &lt;- jsonlite::serializeJSON(modelo)</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="st">return(modelo)</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="st">$$</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="st">language plr</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span>)</span></code></pre></div>
+<p>Agora é só chamar a função para ter o seu modelo em jsonb no PostgreSQL.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>modelo <span class="ot">&lt;-</span> DBI<span class="sc">::</span><span class="fu">dbGetQuery</span>(<span class="st">&quot;select rf(&#39;Species ~ .&#39;, &#39;table iris&#39;))</span></span></code></pre></div>
+<p>Caso queira visualizar o modelo no R, basta seguir os mesmos passos:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ranger)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>modelo <span class="ot">&lt;-</span> jsonlite<span class="sc">::</span><span class="fu">unserializeJSON</span>(modelo<span class="sc">$</span>rf)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(modelo) <span class="ot">&lt;-</span> <span class="st">&quot;ranger&quot;</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>modelo</span></code></pre></div>
+<div class="layout-chunk" data-layout="l-body">
+<pre><code>Ranger result
+
+Call:
+ ranger::ranger(Species ~ ., data = iris) 
+
+Type:                             Classification 
+Number of trees:                  500 
+Sample size:                      150 
+Number of independent variables:  4 
+Mtry:                             2 
+Target node size:                 1 
+Variable importance mode:         none 
+Splitrule:                        gini 
+OOB prediction error:             4.00 % </code></pre>
+</div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>
