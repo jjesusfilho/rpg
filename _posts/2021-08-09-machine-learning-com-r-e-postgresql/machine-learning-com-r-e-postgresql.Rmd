@@ -1,7 +1,7 @@
 ---
 title: "Machine learning com R e PostgreSQL"
 description: |
-  Neste tutorial, irei mostrar como rodar um modelo estatístico ou de machine learning no PostgreSQL chamando o R. Com extensão PL/R isso é perfeitamente possível e fácil.
+  Neste tutorial, irei mostrar como rodar kmeans, ou qualquer modelo, supervisionado ou não, estatístico ou de machine learning no PostgreSQL chamando o R. Com extensão PL/R isso é perfeitamente possível e fácil.
 author:
   - name: José de Jesus Filho
     url: https://rpg.consudata.com.br
@@ -16,13 +16,13 @@ output:
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-Neste tutorial, irei mostrar como rodar um modelo estatístico ou de machine learning no PostgreSQL chamando o R. Com extensão PL/R isso é perfeitamente possível e fácil. Se você quiser saber mais sobre a extensão PL/R no PostgreSQL, acesse [este tutorial](https://direito.consudata.com.br/rpsql/plr/).
+Neste tutorial, irei mostrar como rodar um modelo estatístico ou de machine learning no PostgreSQL chamando o R. Com extensão PL/R isso é perfeitamente possível e fácil. Se você quiser saber mais sobre a extensão PL/R no PostgreSQL, acesse [este tutorial](https://direito.consudata.com.br/rpsql/plr/) ou o [guia do usuário](https://github.com/postgres-plr/plr/blob/master/userguide.md).
 
-Você deve estar se perguntando, tudo bem, eu tenho um tabela no PostgreSQL, rodo o modelo, mas ele irá retornar uma lista com a classe dada pela função que chamou o modelo. 
+Um desafio a ser enfrentado é que modelos estatísticos e de machine learning geralmente retornam uma lista. No entanto, o PostgreSQL não reconhece listas do R. 
 
-Para esse problema há duas soluções possíveis. Uma delas é usar o pacote broom, que converte grande parte dos resultados de modelos em dataframe. A outra, que acho mais elegante e flexível, é armazenar o objeto com o modelo em json, ou melhor ainda, em jsonb no PostgreSQL. Nesse sentido, o pacote jsonlite vem a calhar, uma vez que, com ele, podemos converter listas para json e enviar para o PostgreSQL. Eventualmente, bastará  trazer o json do PostgreSQL para o R, transformá-lo em lista para, então, atribuir a classe específica do modelo. 
+Para esse problema há duas soluções possíveis. Uma delas é usar o pacote broom, que converte grande parte dos resultados de modelos em dataframe. A outra, que acho mais elegante e flexível, é armazenar o modelo em formato json ou, melhor ainda, em jsonb no PostgreSQL. Nesse sentido, o pacote jsonlite vem a calhar, uma vez que, com ele, podemos converter listas para json e enviar para o PostgreSQL. Eventualmente, bastará  trazer o json do PostgreSQL para o R e  transformá-lo em lista novamente.
 
-Para este tutorial, iremos mostrar como rodar kmeans. Naturalmente, você pode usar o modelo, pois a lógica é a mesma. Usarei kmeans porque um amigo e ex-aluno trouxe o desafio dias atrás.
+Para este tutorial, iremos mostrar como rodar kmeans. Naturalmente, você pode usar outro modelo, pois a lógica é a mesma. Usarei kmeans porque um amigo e ex-aluno trouxe o desafio dias atrás.
 
 Assumindo que você tem uma conexão com o PostgreSQL, vamos enviar o dataframe USArrests do pacote datasets para o PostgreSQL.
 
@@ -43,7 +43,7 @@ Agora vamos criar uma função no PostgreSQL para rodar kmeans no R.
 
 DBI::dbExecute(conn,"
 
-CREATE OR REPLACE FUNCTION kmeans(text, centers integer[], iter_max integer default 10, nstart integer default 1, algorithm text default 'Hartigan-Wong', trace boolean default FALSE) RETURNS jsonb AS
+CREATE OR REPLACE FUNCTION kmeans(text, centers integer[], iter_max integer default 10, nstart integer default 1, algorithm text default 'Hartigan-Wong', trace boolean default false) RETURNS jsonb AS
     
 $$
 
@@ -72,7 +72,7 @@ $$
 
 ```
 
-Na primeira linha, criamos a função kmeans com a mesma quantidade de argumentos da função kmeans do R base. A única diferença é que o primeiro argumento é do tipo charactere, enquanto a função kmeans do R aceita qualquer objeto que possa ser convertido para matriz, seja matriz, vetor ou um dataframe. Acontece que a PL/R tem uma função que aceita uma query do PostgreSQL como argumento, de modo que, se dermos um `SELECT` o R irá receber esse argumento como um tabela.
+Na primeira linha, criamos a função kmeans com a mesma quantidade de argumentos da função kmeans do R base. A única diferença é que o primeiro argumento é do tipo charactere, enquanto a função kmeans do R aceita qualquer objeto que possa ser convertido para matriz, ele um vetor, um dataframe ou a própria matriz. Acontece que a PL/R tem uma função que aceita uma query do PostgreSQL como argumento, de modo que, se dermos um `SELECT`, o R irá receber esse argumento como um tabela.
 
 Note na segunda linha que informamos jsonb como resposta. Em seguida, usamos `$$` para indicar que iniciaremos o corpo da função.
 
@@ -80,7 +80,7 @@ Em seguida, passamos os demais argumentos contidos na própria função kmeans d
 
 Como o modelo tem classe "kmeans", precisamos substituí-la por  "list", do contrário o jsonlite não saberá como converter para json. Por fim, convertemos para json com serializeJSON, em vez de toJSON, para preservar os atributos.
 
-Ao receber a resposta da função, o PostgreSQL irá automaticamente convertê-la para jsonb. Nós iremos chamar do R mesmo a fim de que possamos verificar se o resultado pode ser usado como objeto kmeans. Naturalmente, você pode criar uma tabela no PostgreSQL e populá-la com o resultado.
+Ao receber a resposta da função, o PostgreSQL irá automaticamente convertê-la para jsonb. Nós iremos chamá-la do R mesmo a fim de que possamos verificar se o resultado pode ser usado como objeto kmeans. Naturalmente, você pode criar uma tabela no PostgreSQL e populá-la com o resultado.
 
 ```
 df <- DBI::dbGetQuery(conn,"select kmeans('select * from us_arrests',array [4]) as modelo")
