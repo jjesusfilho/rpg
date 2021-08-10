@@ -1530,46 +1530,46 @@ class(modelo) &lt;- &#39;kmeans&#39;
 <p>Agora é só imprimir para ver o resultado:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>modelo</span></code></pre></div>
 <div class="layout-chunk" data-layout="l-body">
-<pre><code>K-means clustering with 4 clusters of sizes 12, 4, 14, 20
+<pre><code>K-means clustering with 4 clusters of sizes 10, 10, 14, 16
 
 Cluster means:
      Murder  Assault UrbanPop     Rape
-1 11.766667 257.9167 68.41667 28.93333
-2 11.950000 316.5000 68.00000 26.70000
+1  2.950000  62.7000 53.90000 11.51000
+2  5.590000 112.4000 65.60000 17.27000
 3  8.214286 173.2857 70.64286 22.84286
-4  4.270000  87.5500 59.75000 14.39000
+4 11.812500 272.5625 68.31250 28.37500
 
 Clustering vector:
        Alabama         Alaska        Arizona       Arkansas 
-             1              1              2              3 
+             4              4              4              3 
     California       Colorado    Connecticut       Delaware 
-             1              3              4              1 
+             4              3              2              4 
        Florida        Georgia         Hawaii          Idaho 
-             2              3              4              4 
+             4              3              1              2 
       Illinois        Indiana           Iowa         Kansas 
-             1              4              4              4 
+             4              2              1              2 
       Kentucky      Louisiana          Maine       Maryland 
-             4              1              4              2 
+             2              4              1              4 
  Massachusetts       Michigan      Minnesota    Mississippi 
-             3              1              4              1 
+             3              4              1              4 
       Missouri        Montana       Nebraska         Nevada 
-             3              4              4              1 
+             3              2              2              4 
  New Hampshire     New Jersey     New Mexico       New York 
-             4              3              1              1 
+             1              3              4              4 
 North Carolina   North Dakota           Ohio       Oklahoma 
-             2              4              4              3 
+             4              1              2              3 
         Oregon   Pennsylvania   Rhode Island South Carolina 
-             3              4              3              1 
+             3              2              3              4 
   South Dakota      Tennessee          Texas           Utah 
-             4              3              3              4 
+             1              3              3              2 
        Vermont       Virginia     Washington  West Virginia 
-             4              3              3              4 
+             1              3              3              1 
      Wisconsin        Wyoming 
-             4              3 
+             1              3 
 
 Within cluster sum of squares by cluster:
-[1]  6705.907  2546.350  9136.643 19263.760
- (between_SS / total_SS =  89.4 %)
+[1]  4547.914  1480.210  9136.643 19563.863
+ (between_SS / total_SS =  90.2 %)
 
 Available components:
 
@@ -1577,8 +1577,8 @@ Available components:
 [5] &quot;tot.withinss&quot; &quot;betweenss&quot;    &quot;size&quot;         &quot;iter&quot;        
 [9] &quot;ifault&quot;      </code></pre>
 </div>
-<h2 id="random-forest">Random Forest</h2>
-<p>Para finalizar, vamos criar mais uma função para rodar floresta aleatória. Uma vez que o princípio é o mesmo, iremos usar somente os argumentos fórmula e data. Se você quiser, pode ir adiante e adicionar os demais argumentos. Usaremos o pacote <code>ranger</code>. Portanto, é preciso tê-lo instalado, além do dplyr.</p>
+<h2 id="floresta-aleatória">Floresta aleatória</h2>
+<p>Para finalizar, vamos criar mais uma função para rodar floresta aleatória. Uma vez que o princípio é o mesmo, iremos usar somente os argumentos fórmula e data. Se você quiser, pode ir adiante e adicionar os demais argumentos, fique à vontade. Usaremos o pacote <code>ranger</code>. Portanto, é preciso tê-lo instalado, além do dplyr.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>DBI<span class="sc">::</span><span class="fu">dbExecute</span>(conn,<span class="st">&quot;</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1624,7 +1624,7 @@ Mtry:                             2
 Target node size:                 1 
 Variable importance mode:         none 
 Splitrule:                        gini 
-OOB prediction error:             4.00 % </code></pre>
+OOB prediction error:             4.67 % </code></pre>
 </div>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->

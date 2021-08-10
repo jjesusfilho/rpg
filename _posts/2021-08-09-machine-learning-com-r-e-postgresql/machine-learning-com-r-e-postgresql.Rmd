@@ -101,9 +101,9 @@ modelo
 kmeans(USArrests,4)
 ```
 
-## Random Forest
+## Floresta aleatória
 
-Para finalizar, vamos criar mais uma função para rodar floresta aleatória. Uma vez que o  princípio é o mesmo, iremos usar somente os argumentos fórmula e data. Se você quiser, pode ir adiante e adicionar os demais argumentos. Usaremos o pacote `ranger`. Portanto, é preciso tê-lo instalado, além do dplyr.
+Para finalizar, vamos criar mais uma função para rodar floresta aleatória. Uma vez que o  princípio é o mesmo, iremos usar somente os argumentos fórmula e data. Se você quiser, pode ir adiante e adicionar os demais argumentos, fique à vontade. Usaremos o pacote `ranger`. Portanto, é preciso tê-lo instalado, além do dplyr.
 
 
 ```r
