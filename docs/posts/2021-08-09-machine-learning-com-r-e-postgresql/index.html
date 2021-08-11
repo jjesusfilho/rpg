@@ -2099,8 +2099,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <div class="d-article">
 <p>Neste tutorial, iremos mostrar como rodar um modelo estatístico ou de machine learning no PostgreSQL chamando o R. Para tanto, usaremos a extensão PL/R. Se você quiser saber mais sobre a extensão PL/R no PostgreSQL, acesse <a href="https://direito.consudata.com.br/rpsql/plr/">este tutorial</a> ou o <a href="https://github.com/postgres-plr/plr/blob/master/userguide.md">guia do usuário</a>.</p>
-<p>Um desafio a ser enfrentado é que modelos estatísticos e de machine learning geralmente retornam uma lista com uma classe atribuída. No entanto, o PostgreSQL não reconhece listas do R.</p>
-<p>Para esse problema há duas soluções possíveis. Uma delas é usar o pacote broom, que converte grande parte dos resultados de modelos em dataframe. A outra, que acho mais elegante e flexível, é armazenar o modelo em formato json ou, melhor ainda, em jsonb no PostgreSQL. Nesse sentido, o pacote jsonlite vem a calhar, uma vez que, com ele, podemos converter listas para json e enviar para o PostgreSQL. Eventualmente, bastará trazer o json do PostgreSQL para o R e transformá-lo em lista novamente.</p>
+<p>Um desafio a ser enfrentado é que modelos estatísticos e de machine learning geralmente retornam uma lista do R com uma classe atribuída. No entanto, o PostgreSQL não reconhece listas do R.</p>
+<p>Para esse problema há duas soluções possíveis. Uma delas é usar o pacote <code>broom</code>, que converte grande parte dos resultados de modelos em dataframe. A limitação dessa abordagem é que terminamos por preservar somente as informações mais relevantes, dada a estrutura retangular de dataframes.</p>
+<p>A outra, que acho mais elegante e flexível, é armazenar o modelo em formato json ou, melhor ainda, em jsonb no PostgreSQL. Nesse sentido, o pacote <code>jsonlite</code> vem a calhar, uma vez que, com ele, podemos converter listas para json e enviar para o PostgreSQL. Eventualmente, bastará trazer o json do PostgreSQL para o R e transformá-lo em lista novamente. A desvantagem em usar json é a eventual perda de precisão em números, uma vez que json é baseado em texto.</p>
 <p>Neste tutorial, iremos mostrar como rodar kmeans e floresta aleatória. Naturalmente, você pode usar outros modelos, pois a lógica é a mesma. Usarei kmeans porque um amigo e ex-aluno trouxe o desafio dias atrás. Depois disso, adotarei o mesmo método para floresta aleatória a fim de mostrar sua flexibilidade.</p>
 <p>Assumindo que você tem uma conexão com o PostgreSQL, vamos enviar o dataframe USArrests do pacote datasets para o PostgreSQL.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>DBI<span class="sc">::</span><span class="fu">dbWriteTable</span>(conn,<span class="st">&quot;us_arrests&quot;</span>, USArrests)</span></code></pre></div>
@@ -2136,11 +2137,11 @@ document.addEventListener('DOMContentLoaded', function() {
 <span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="st">    language plr</span></span>
 <span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span>)</span></code></pre></div>
-<p>Na primeira linha, criamos a função kmeans com a mesma quantidade de argumentos da função kmeans do R base. A única diferença é que o primeiro argumento é do tipo charactere, enquanto a função kmeans do R aceita qualquer objeto que possa ser convertido para matriz, ele um vetor, um dataframe ou a própria matriz. Acontece que a PL/R tem uma função que aceita uma query do PostgreSQL como argumento, de modo que, se dermos um <code>SELECT</code>, o R irá receber esse argumento como um tabela.</p>
+<p>Na primeira linha, criamos a função kmeans com a mesma quantidade de argumentos da função kmeans do R base. A única diferença é que o primeiro argumento é do tipo charactere, enquanto a função kmeans do R aceita qualquer objeto que possa ser convertido para matriz, seja um vetor, um dataframe ou a própria matriz. Acontece que a PL/R tem uma função, <code>pg.spi.exec()</code> que aceita uma query do PostgreSQL como argumento, de modo que, se dermos um <code>SELECT</code>, o R irá receber esse argumento como um tabela.</p>
 <p>Note na segunda linha que informamos jsonb como resposta. Em seguida, usamos <code>$$</code> para indicar que iniciaremos o corpo da função.</p>
 <p>Em seguida, passamos os demais argumentos contidos na própria função kmeans do R, com seus valores padrão (default). Na primeira linha do corpo, chamamos a função <code>pg.spi.exec(arg1)</code> para converter a query num dataframe. Particularmente, acho essa função fantástica, pois no fundo podemos inserir nela qualquer query que resulte numa tabela.</p>
-<p>Como o modelo tem classe “kmeans”, precisamos substituí-la por “list”, do contrário o jsonlite não saberá como converter para json. Por fim, convertemos para json com serializeJSON, em vez de toJSON, para preservar os atributos.</p>
-<p>Ao receber a resposta da função, o PostgreSQL irá automaticamente convertê-la para jsonb. Nós iremos chamá-la do R mesmo a fim de que possamos verificar se o resultado pode ser usado como objeto kmeans. Naturalmente, você pode criar uma tabela no PostgreSQL e populá-la com o resultado.</p>
+<p>Como o modelo tem classe “kmeans”, precisamos substituí-la por “list”, do contrário, o jsonlite não saberá como converter para json. Por fim, convertemos a lista que contêm o modelo para json com a função <code>serializeJSON</code> do pacote <code>jsonlite</code>, em vez de <code>toJSON</code>, a fim de preservar os atributos.</p>
+<p>Ao receber a resposta da função, o PostgreSQL irá automaticamente convertê-la para jsonb. Nós iremos chamá-la de volta para o R a fim de que possamos verificar se o resultado pode ser usado como objeto kmeans. Naturalmente, você pode criar uma tabela no PostgreSQL e populá-la com o resultado.</p>
 <pre><code>df &lt;- DBI::dbGetQuery(conn,&quot;select kmeans(&#39;select * from us_arrests&#39;,array [4]) as modelo&quot;)
 
 modelo &lt;- jsonlite::unserializeJSON(df$modelo)
@@ -2150,46 +2151,46 @@ class(modelo) &lt;- &#39;kmeans&#39;
 <p>Agora é só imprimir para ver o resultado:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>modelo</span></code></pre></div>
 <div class="layout-chunk" data-layout="l-body">
-<pre><code>K-means clustering with 4 clusters of sizes 10, 10, 14, 16
+<pre><code>K-means clustering with 4 clusters of sizes 12, 20, 14, 4
 
 Cluster means:
      Murder  Assault UrbanPop     Rape
-1  2.950000  62.7000 53.90000 11.51000
-2  5.590000 112.4000 65.60000 17.27000
+1 11.766667 257.9167 68.41667 28.93333
+2  4.270000  87.5500 59.75000 14.39000
 3  8.214286 173.2857 70.64286 22.84286
-4 11.812500 272.5625 68.31250 28.37500
+4 11.950000 316.5000 68.00000 26.70000
 
 Clustering vector:
        Alabama         Alaska        Arizona       Arkansas 
-             4              4              4              3 
+             1              1              4              3 
     California       Colorado    Connecticut       Delaware 
-             4              3              2              4 
+             1              3              2              1 
        Florida        Georgia         Hawaii          Idaho 
-             4              3              1              2 
+             4              3              2              2 
       Illinois        Indiana           Iowa         Kansas 
-             4              2              1              2 
+             1              2              2              2 
       Kentucky      Louisiana          Maine       Maryland 
-             2              4              1              4 
+             2              1              2              4 
  Massachusetts       Michigan      Minnesota    Mississippi 
-             3              4              1              4 
+             3              1              2              1 
       Missouri        Montana       Nebraska         Nevada 
-             3              2              2              4 
+             3              2              2              1 
  New Hampshire     New Jersey     New Mexico       New York 
-             1              3              4              4 
+             2              3              1              1 
 North Carolina   North Dakota           Ohio       Oklahoma 
-             4              1              2              3 
+             4              2              2              3 
         Oregon   Pennsylvania   Rhode Island South Carolina 
-             3              2              3              4 
+             3              2              3              1 
   South Dakota      Tennessee          Texas           Utah 
-             1              3              3              2 
+             2              3              3              2 
        Vermont       Virginia     Washington  West Virginia 
-             1              3              3              1 
+             2              3              3              2 
      Wisconsin        Wyoming 
-             1              3 
+             2              3 
 
 Within cluster sum of squares by cluster:
-[1]  4547.914  1480.210  9136.643 19563.863
- (between_SS / total_SS =  90.2 %)
+[1]  6705.907 19263.760  9136.643  2546.350
+ (between_SS / total_SS =  89.4 %)
 
 Available components:
 
@@ -2198,7 +2199,7 @@ Available components:
 [9] &quot;ifault&quot;      </code></pre>
 </div>
 <h2 id="floresta-aleatória">Floresta aleatória</h2>
-<p>Para finalizar, vamos criar mais uma função para rodar floresta aleatória. Uma vez que o princípio é o mesmo, iremos usar somente os argumentos fórmula e data. Se você quiser, pode ir adiante e adicionar os demais argumentos, fique à vontade. Usaremos o pacote <code>ranger</code>. Portanto, é preciso tê-lo instalado, além do dplyr.</p>
+<p>Para finalizar, vamos criar mais uma função e rodar floresta aleatória. Uma vez que o princípio é o mesmo, iremos usar somente os argumentos fórmula e data. Se você quiser, pode ir adiante e adicionar os demais argumentos, fique à vontade. Usaremos o pacote <code>ranger</code>. Portanto, é preciso tê-lo instalado, além do <code>dplyr</code> para converter todas as variáveis de texto em fatores.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>DBI<span class="sc">::</span><span class="fu">dbExecute</span>(conn,<span class="st">&quot;</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -2244,7 +2245,7 @@ Mtry:                             2
 Target node size:                 1 
 Variable importance mode:         none 
 Splitrule:                        gini 
-OOB prediction error:             4.67 % </code></pre>
+OOB prediction error:             4.00 % </code></pre>
 </div>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->

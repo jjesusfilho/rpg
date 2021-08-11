@@ -18,9 +18,11 @@ knitr::opts_chunk$set(echo = FALSE)
 
 Neste tutorial, iremos mostrar como rodar um modelo estatístico ou de machine learning no PostgreSQL chamando o R. Para tanto, usaremos a extensão PL/R. Se você quiser saber mais sobre a extensão PL/R no PostgreSQL, acesse [este tutorial](https://direito.consudata.com.br/rpsql/plr/) ou o [guia do usuário](https://github.com/postgres-plr/plr/blob/master/userguide.md).
 
-Um desafio a ser enfrentado é que modelos estatísticos e de machine learning geralmente retornam uma lista com uma classe atribuída. No entanto, o PostgreSQL não reconhece listas do R. 
+Um desafio a ser enfrentado é que modelos estatísticos e de machine learning geralmente retornam uma lista do R com uma classe atribuída. No entanto, o PostgreSQL não reconhece listas do R. 
 
-Para esse problema há duas soluções possíveis. Uma delas é usar o pacote broom, que converte grande parte dos resultados de modelos em dataframe. A outra, que acho mais elegante e flexível, é armazenar o modelo em formato json ou, melhor ainda, em jsonb no PostgreSQL. Nesse sentido, o pacote jsonlite vem a calhar, uma vez que, com ele, podemos converter listas para json e enviar para o PostgreSQL. Eventualmente, bastará  trazer o json do PostgreSQL para o R e  transformá-lo em lista novamente.
+Para esse problema há duas soluções possíveis. Uma delas é usar o pacote `broom`, que converte grande parte dos resultados de modelos em dataframe. A limitação dessa abordagem é que terminamos por preservar somente as informações mais relevantes, dada a estrutura retangular de dataframes.
+
+A outra, que acho mais elegante e flexível, é armazenar o modelo em formato json ou, melhor ainda, em jsonb no PostgreSQL. Nesse sentido, o pacote `jsonlite` vem a calhar, uma vez que, com ele, podemos converter listas para json e enviar para o PostgreSQL. Eventualmente, bastará  trazer o json do PostgreSQL para o R e  transformá-lo em lista novamente. A desvantagem em usar json é a eventual perda de precisão em números, uma vez que json é baseado em texto. 
 
 Neste tutorial, iremos mostrar como rodar kmeans e floresta aleatória. Naturalmente, você pode usar outros modelos, pois a lógica é a mesma. Usarei kmeans porque um amigo e ex-aluno trouxe o desafio dias atrás. Depois disso, adotarei o mesmo método para floresta aleatória a fim de mostrar sua flexibilidade.
 
@@ -72,15 +74,15 @@ $$
 
 ```
 
-Na primeira linha, criamos a função kmeans com a mesma quantidade de argumentos da função kmeans do R base. A única diferença é que o primeiro argumento é do tipo charactere, enquanto a função kmeans do R aceita qualquer objeto que possa ser convertido para matriz, ele um vetor, um dataframe ou a própria matriz. Acontece que a PL/R tem uma função que aceita uma query do PostgreSQL como argumento, de modo que, se dermos um `SELECT`, o R irá receber esse argumento como um tabela.
+Na primeira linha, criamos a função kmeans com a mesma quantidade de argumentos da função kmeans do R base. A única diferença é que o primeiro argumento é do tipo charactere, enquanto a função kmeans do R aceita qualquer objeto que possa ser convertido para matriz, seja um vetor, um dataframe ou a própria matriz. Acontece que a PL/R tem uma função, `pg.spi.exec()` que aceita uma query do PostgreSQL como argumento, de modo que, se dermos um `SELECT`, o R irá receber esse argumento como um tabela.
 
 Note na segunda linha que informamos jsonb como resposta. Em seguida, usamos `$$` para indicar que iniciaremos o corpo da função.
 
 Em seguida, passamos os demais argumentos contidos na própria função kmeans do R, com seus valores padrão (default). Na primeira linha do corpo, chamamos a função `pg.spi.exec(arg1)` para converter a query num dataframe. Particularmente, acho essa função fantástica, pois no fundo podemos inserir nela qualquer query que resulte numa tabela. 
 
-Como o modelo tem classe "kmeans", precisamos substituí-la por  "list", do contrário o jsonlite não saberá como converter para json. Por fim, convertemos para json com serializeJSON, em vez de toJSON, para preservar os atributos.
+Como o modelo tem classe "kmeans", precisamos substituí-la por  "list", do contrário, o jsonlite não saberá como converter para json. Por fim, convertemos a lista que contêm o modelo para json com a função `serializeJSON`  do pacote `jsonlite`, em vez de `toJSON`, a fim de preservar os atributos.
 
-Ao receber a resposta da função, o PostgreSQL irá automaticamente convertê-la para jsonb. Nós iremos chamá-la do R mesmo a fim de que possamos verificar se o resultado pode ser usado como objeto kmeans. Naturalmente, você pode criar uma tabela no PostgreSQL e populá-la com o resultado.
+Ao receber a resposta da função, o PostgreSQL irá automaticamente convertê-la para jsonb. Nós iremos chamá-la de volta para o R a fim de que possamos verificar se o resultado pode ser usado como objeto kmeans. Naturalmente, você pode criar uma tabela no PostgreSQL e populá-la com o resultado.
 
 ```
 df <- DBI::dbGetQuery(conn,"select kmeans('select * from us_arrests',array [4]) as modelo")
@@ -103,7 +105,7 @@ kmeans(USArrests,4)
 
 ## Floresta aleatória
 
-Para finalizar, vamos criar mais uma função para rodar floresta aleatória. Uma vez que o  princípio é o mesmo, iremos usar somente os argumentos fórmula e data. Se você quiser, pode ir adiante e adicionar os demais argumentos, fique à vontade. Usaremos o pacote `ranger`. Portanto, é preciso tê-lo instalado, além do dplyr.
+Para finalizar, vamos criar mais uma função e rodar floresta aleatória. Uma vez que o  princípio é o mesmo, iremos usar somente os argumentos fórmula e data. Se você quiser, pode ir adiante e adicionar os demais argumentos, fique à vontade. Usaremos o pacote `ranger`. Portanto, é preciso tê-lo instalado, além do `dplyr` para converter todas as variáveis de texto em fatores.
 
 
 ```r
