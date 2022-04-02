@@ -1,0 +1,175 @@
+---
+title: "Restrições no PostgreSQL"
+description: |
+  Noções básicas de restrições no PostgreSQL.
+author:
+  - name: José de Jesus Filho
+    url: https://rpg.consudata.com.br
+date: 2022-04-02
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introdução
+
+### Check
+
+```sql
+CREATE TABLE alunos (
+nome text,
+email text CHECK (email ~* '^.+@.+\..+$'),
+nota integer CHECK (nota <= 10 AND nota >= 0),
+data_matricula date,
+data_nascimento date,
+CHECK (data_matricula > data_nascimento)
+);
+
+```
+
+```sql
+insert into alunos values ('jose','jose@consudata.com.br',5,'2020-01-19','1974-08-31');
+insert into alunos values ('jose','jose@consudata.com.br',8,'1973-03-09','1974-08-31');
+insert into alunos values ('joao','jose@consudata.com.br',5,'2020-03-19','1979-04-25');
+```
+
+### Check nomeado
+
+```sql
+CREATE TABLE alunos (
+nome text,
+email text CONSTRAINT email_correto CHECK (email ~* '^.+@.+\..+$'),
+nota integer CONSTRAINT nota_possivel CHECK (nota < 10 AND nota >= 0),
+data_matricula date,
+data_nascimento date,
+CHECK (data_matricula > data_nascimento)
+);
+
+```
+
+## Não nulo
+
+```sql
+CREATE TABLE alunos (
+nome text,
+email text NOT NULL CHECK (email ~* '^.+@.+\..+$'),
+nota integer CHECK (nota < 10 AND nota >= 0),
+data_matricula date,
+data_nascimento date,
+CHECK (data_matricula > data_nascimento)
+);
+
+```
+
+```sql
+CREATE TABLE alunos (
+nome text,
+email text CHECK (email ~* '^.+@.+\..+$' AND email IS NOT NULL),
+nota integer CHECK (nota < 10 AND nota >= 0),
+data_matricula date,
+data_nascimento date,
+CHECK (data_matricula > data_nascimento)
+);
+
+```
+
+### Únicos
+
+```sql
+CREATE TABLE alunos (
+nome text,
+email text NOT NULL UNIQUE CHECK (email ~* '^.+@.+\..+$'),
+nota integer CHECK (nota < 10 AND nota >= 0),
+data_matricula date,
+data_nascimento date,
+CHECK (data_matricula > data_nascimento)
+);
+
+```
+
+O PostgreSQL irá criar um index btree para colunas únicas. É importante notar que como NULL não é comparável, se houver duas linhas com valores NULL na mesma coluna, haverá risco de duplicações.
+
+
+### Chave primária
+
+```sql
+CREATE TABLE alunos (
+aluno_id integer PRIMARY KEY,
+nome text,
+email text NOT NULL CHECK (email ~* '^.+@.+\..+$'),
+nota integer CHECK (nota < 10 AND nota >= 0),
+data_matricula date,
+data_nascimento date,
+CHECK (data_matricula > data_nascimento)
+);
+
+```
+```sql
+CREATE TABLE alunos (
+aluno_id integer NOT NULL UNIQUE,
+nome text,
+email text NOT NULL CHECK (email ~* '^.+@.+\..+$'),
+nota integer CHECK (nota < 10 AND nota >= 0),
+data_matricula date,
+data_nascimento date,
+CHECK (data_matricula > data_nascimento)
+);
+
+```
+### CHAVE PRIMÁRIA -  mais de uma coluna
+
+```sql
+CREATE TABLE foo (
+    a integer,
+    b integer,
+    c integer,
+    PRIMARY KEY (a, c)
+);
+```
+Pode haver apenas uma chave primária por tabela. Chaves primárias são importantes não só para documentação, como também para indexação, para uso em aplicações e para ser usada como referências a outras tabelas.
+
+
+### Chave estrangeira
+```sql
+CREATE TABLE presenca (
+    falta_id integer PRIMARY KEY,
+    aluno_id integer REFERENCES alunos (aluno_id),
+    presenca text
+);
+```
+### Chave estrangeira
+```sql
+CREATE TABLE presenca (
+    falta_id integer PRIMARY KEY,
+    aluno_id integer REFERENCES alunos,
+    presenca text
+);
+```
+
+## Chave estrangeira
+```sql
+CREATE TABLE produto (
+    produto_no integer PRIMARY KEY,
+    nome text,
+    preco numeric
+);
+
+CREATE TABLE pedidos (
+    pedido_id integer PRIMARY KEY,
+    endereco_envio text,
+    ...
+);
+
+CREATE TABLE pedidos_intens (
+    produto_no integer REFERENCES produtos ON DELETE RESTRICT,
+    pedido_id integer REFERENCES pedidos ON DELETE CASCADE,
+    quantidade integer,
+    PRIMARY KEY (produto_no, pedido_id)
+);
+```
+
+

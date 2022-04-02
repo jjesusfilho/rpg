@@ -1,5 +1,22 @@
 [
   {
+    "path": "posts/2022-04-02-restries-no-postgresql/",
+    "title": "Restrições no PostgreSQL",
+    "description": "FALSE",
+    "author": [
+      {
+        "name": "José de Jesus Filho",
+        "url": "https://rpg.consudata.com.br"
+      }
+    ],
+    "date": "2022-04-02",
+    "categories": [],
+    "contents": "\nIntrodução\nCheck\nCREATE TABLE alunos (\nnome text,\nemail text CHECK (email ~* '^.+@.+\\..+$'),\nnota integer CHECK (nota <= 10 AND nota >= 0),\ndata_matricula date,\ndata_nascimento date,\nCHECK (data_matricula > data_nascimento)\n);\ninsert into alunos values ('jose','jose@consudata.com.br',5,'2020-01-19','1974-08-31');\ninsert into alunos values ('jose','jose@consudata.com.br',8,'1973-03-09','1974-08-31');\ninsert into alunos values ('joao','jose@consudata.com.br',5,'2020-03-19','1979-04-25');\nCheck nomeado\nCREATE TABLE alunos (\nnome text,\nemail text CONSTRAINT email_correto CHECK (email ~* '^.+@.+\\..+$'),\nnota integer CONSTRAINT nota_possivel CHECK (nota < 10 AND nota >= 0),\ndata_matricula date,\ndata_nascimento date,\nCHECK (data_matricula > data_nascimento)\n);\nNão nulo\nCREATE TABLE alunos (\nnome text,\nemail text NOT NULL CHECK (email ~* '^.+@.+\\..+$'),\nnota integer CHECK (nota < 10 AND nota >= 0),\ndata_matricula date,\ndata_nascimento date,\nCHECK (data_matricula > data_nascimento)\n);\nCREATE TABLE alunos (\nnome text,\nemail text CHECK (email ~* '^.+@.+\\..+$' AND email IS NOT NULL),\nnota integer CHECK (nota < 10 AND nota >= 0),\ndata_matricula date,\ndata_nascimento date,\nCHECK (data_matricula > data_nascimento)\n);\nÚnicos\nCREATE TABLE alunos (\nnome text,\nemail text NOT NULL UNIQUE CHECK (email ~* '^.+@.+\\..+$'),\nnota integer CHECK (nota < 10 AND nota >= 0),\ndata_matricula date,\ndata_nascimento date,\nCHECK (data_matricula > data_nascimento)\n);\nO PostgreSQL irá criar um index btree para colunas únicas. É importante notar que como NULL não é comparável, se houver duas linhas com valores NULL na mesma coluna, haverá risco de duplicações.\nChave primária\nCREATE TABLE alunos (\naluno_id integer PRIMARY KEY,\nnome text,\nemail text NOT NULL CHECK (email ~* '^.+@.+\\..+$'),\nnota integer CHECK (nota < 10 AND nota >= 0),\ndata_matricula date,\ndata_nascimento date,\nCHECK (data_matricula > data_nascimento)\n);\nCREATE TABLE alunos (\naluno_id integer NOT NULL UNIQUE,\nnome text,\nemail text NOT NULL CHECK (email ~* '^.+@.+\\..+$'),\nnota integer CHECK (nota < 10 AND nota >= 0),\ndata_matricula date,\ndata_nascimento date,\nCHECK (data_matricula > data_nascimento)\n);\nCHAVE PRIMÁRIA - mais de uma coluna\nCREATE TABLE foo (\n    a integer,\n    b integer,\n    c integer,\n    PRIMARY KEY (a, c)\n);\nPode haver apenas uma chave primária por tabela. Chaves primárias são importantes não só para documentação, como também para indexação, para uso em aplicações e para ser usada como referências a outras tabelas.\nChave estrangeira\nCREATE TABLE presenca (\n    falta_id integer PRIMARY KEY,\n    aluno_id integer REFERENCES alunos (aluno_id),\n    presenca text\n);\nChave estrangeira\nCREATE TABLE presenca (\n    falta_id integer PRIMARY KEY,\n    aluno_id integer REFERENCES alunos,\n    presenca text\n);\nChave estrangeira\nCREATE TABLE produto (\n    produto_no integer PRIMARY KEY,\n    nome text,\n    preco numeric\n);\n\nCREATE TABLE pedidos (\n    pedido_id integer PRIMARY KEY,\n    endereco_envio text,\n    ...\n);\n\nCREATE TABLE pedidos_intens (\n    produto_no integer REFERENCES produtos ON DELETE RESTRICT,\n    pedido_id integer REFERENCES pedidos ON DELETE CASCADE,\n    quantidade integer,\n    PRIMARY KEY (produto_no, pedido_id)\n);\n\n\n\n",
+    "preview": {},
+    "last_modified": "2022-04-02T12:39:12-03:00",
+    "input_file": "restries-no-postgresql.knit.md"
+  },
+  {
     "path": "posts/2021-08-09-machine-learning-com-r-e-postgresql/",
     "title": "Machine learning com R e PostgreSQL",
     "description": "Neste tutorial, iremos mostrar como rodar kmeans e floresta aleatória, ou qualquer ou modelo estatístico ou de machine learning no PostgreSQL chamando o R. Com extensão PL/R isso é perfeitamente possível, simples e fácil.",
@@ -15,6 +32,23 @@
     "preview": {},
     "last_modified": "2021-08-11T07:25:32-03:00",
     "input_file": "machine-learning-com-r-e-postgresql.knit.md"
+  },
+  {
+    "path": "posts/2021-07-03-conceitos-bsicos-de-sql/",
+    "title": "Conceitos básicos de SQL",
+    "description": "Significado de siglas e recomendações de leitura",
+    "author": [
+      {
+        "name": "José de Jesus Filho",
+        "url": "https://rpg.consudata.com.br"
+      }
+    ],
+    "date": "2021-07-03",
+    "categories": [],
+    "contents": "\nSQL\nQuery: requisição enviada do cliente para o backend a fim de obter, inserir ou atualizar registros.\nSGBD: sistema gerenciador de banco de dados, ex. PostgreSQL, MySQL, Oracle, MS SQL, SQLite…\nCluster: conjunto de banco de dados, usuários\nBanco de dados\nSchema: namespace para objetos SQL (tabelas, índices, sequências, triggers)\nRelações:\nTabela\nVisão\nSequências\nÍndices\n\nHeap\nToast: mecanismo pelo qual atributos muito grandes de uma linha são armazenados em outra tabela, chamada tabela TOAST (The Oversized-Attribute Storage Technique).\nAtributos\nColunas\nTuplas: linhas, registros\nNormalização\nDenormalização\nTransação: begin end (commit)\nQueries\nSubqueries\nCTEs\nACID: atomicidade, consistência, isolamento, durabilidade\nAtomicity guarantees that the transaction completes in an all-or-nothing manner. Consistency ensures the change to data written to the database must be valid and follow predefined rules.\nIsolation determines how transaction integrity is visible to other transactions.\nDurability makes sure that transactions that have been committed will be stored in the database permanently.\nCRUD: Create, Read, Update, Delete\nDDL: Data Defition Language\nDML\nLocks\nConcorrência\nMVCC\nBloats\nPivotagem\nWindow functions\nSiglas:\nDBA: Database administrator ou administrador do banco de dados DDL: Data Definition Language ou linguagem de definição de dados: CREATE, ALTER, DROP DML: Data Modification Language ou linguagem de modificação de dados: insert, update, delete DQL: linguagem de consulta de dados: select DTL: Linguagem de transação de dados: begin, dommit, rollback DCL: Linguagem de controle de dados: GRANT, REVOKE E DENY CRUD: CREATE, READ, UPDATE ou DELETE OLAP OLTP WAL: Write-Ahead-Log TOAST: The Oversized-Attribute Storage Technique. PAGE ou BLOCK\nRecomendações\nDocumentação do PostgreSQL\nDicas de psql\nDentro do PostgreSQL\nDesigning Data Intensive Applications\n\n\n\n",
+    "preview": {},
+    "last_modified": "2022-03-19T08:27:24-03:00",
+    "input_file": "conceitos-bsicos-de-sql.knit.md"
   },
   {
     "path": "posts/2021-06-09-iterao-no-postgresql-com-lateral-joins/",
