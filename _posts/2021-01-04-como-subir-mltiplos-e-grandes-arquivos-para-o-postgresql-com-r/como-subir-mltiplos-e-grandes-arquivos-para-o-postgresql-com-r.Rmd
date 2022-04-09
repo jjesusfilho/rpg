@@ -50,7 +50,7 @@ library(janitor)
 Baixaremos apenas os arquivos correspondentes aos trabalhadores, excluindo o relativo aos estabelecimentos. Estou supondo que você irá baixá-lo no diretório atual e que este está vazio.
 
 ```r
-arquivos <- readlines("ftp://ftp.mtps.gov.br/pdet/microdados/RAIS/2018/") %>% 
+arquivos <- readLines("ftp://ftp.mtps.gov.br/pdet/microdados/RAIS/2018/") %>% 
             str_extract("RAIS.+") %>% 
             str_subset("ESTAB",negate = TRUE) %>% 
             str_c("ftp://ftp.mtps.gov.br/pdet/microdados/RAIS/2018/",.)
